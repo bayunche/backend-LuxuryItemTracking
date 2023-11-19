@@ -1,4 +1,11 @@
 {
+  "dependencies": {
+    "solc": "^0.8.23-fixed",
+    "web3": "^4.2.2",
+    "yarn": "^1.22.21"
+  }
+}
+{
   "name": "nft-box",
   "version": "1.0.0",
   "description": "Boilerplate for creating an NFT collection",
