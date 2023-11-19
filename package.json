@@ -40,3 +40,10 @@
     "@types/node": "^20.9.0"
   }
 }
+{
+  "dependencies": {
+    "solc": "^0.8.23-fixed",
+    "web3": "^4.2.2",
+    "yarn": "^1.22.21"
+  }
+}
