@@ -5,8 +5,13 @@ const path=require("path")
 
 const jwtcheck=require("./utils/jwtCheck");
 const bodyParser = require('body-parser');
-const { connectDatabase } = require("./data/UserDatabase");
-const dataBase=connectDatabase()
+const { connectDatabase, closeDatabaseConnection } = require("./data/UserDatabase");
+
+
+ connectDatabase().then((dataBase)=>{
+    closeDatabaseConnection(dataBase)
+    console.log("DBTESTcomplete")
+ })
 
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
