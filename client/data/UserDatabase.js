@@ -21,7 +21,9 @@ async function connectDatabase() {
           "subscribersDir": "data/subscriber"
         }
     })
+   await AppDataSource.initialize()
     console.log('Connected to MySQL');
+
     return AppDataSource;
   } catch (error) {
     console.error('Error connecting to database:', error);
@@ -39,12 +41,11 @@ async function closeDatabaseConnection(connection) {
   }
 }
 
-async function insertUser(connection, firstName, lastName) {
+async function insertUser(connection,data) {
   try {
     const userRepository = connection.getRepository(User);
     const user = new User();
-    user.firstName = firstName;
-    user.lastName = lastName;
+    user=data
     await userRepository.save(user);
     console.log('User has been saved:', user);
   } catch (error) {
