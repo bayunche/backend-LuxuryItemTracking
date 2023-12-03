@@ -1,15 +1,12 @@
 const argon2 = require("argon2");
 
-export function argon(password) {
+exports.argon= async(password)=> {
   // 哈希密码
-  argon2.hash(password).then((hash) => {
-    console.log("Hashed Password:", hash);
-    return hash;
-    // 在验证时使用 hash
-  });
+  console.log(password)
+  return await argon2.hash(password)
 }
 
-export function verifyArgon(hash) {
+exports.verifyArgon= async(hash)=>{
   argon2.verify(hash, "user_password").then((result) => {
     console.log("Password Match:", result);
     return result
