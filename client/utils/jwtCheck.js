@@ -9,13 +9,14 @@ const genrateToken=(userId)=>{
         userId:ulid(),
         // userId:'userId'
     },secertKey,{
-        expiresIn:'1h'
+        expiresIn:'24h'
     })
 }
 
-const verifyToken = (token) => {
+const verifyToken = async(token) => {
     try {
-      const decoded = jwt.verify(token, secretKey);
+      const decoded =  jwt.verify(token, secertKey);
+      console.log(decoded)
       return decoded;
     } catch (err) {
       console.error('JWT Verification Failed:', err);
