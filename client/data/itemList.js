@@ -34,6 +34,7 @@ const ItemList = sequelize.define("ItemList", {
     type: DataTypes.INTEGER,
     allowNull: true,
   },
+  
 });
 sequelize.sync();
 module.exports = ItemList;
