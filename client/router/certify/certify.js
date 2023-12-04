@@ -15,31 +15,35 @@ const generateSecureRandomNumber = require("../../utils/randomInt");
 const ItemList = require("../../data/itemList");
 const { ulid } = require("ulid");
 const { now } = require("moment");
-
+const moment = require("moment");
 exports.mintLuxuryItem = async (req, res) => {
-  const { itemName, itemDate, itemImage } = req.body;
-  const userId = req.userId;
-  let serialNumer = generateSecureRandomNumber();
+  let { itemName, itemDate, itemImage } = req.body;
+  let userId = req.userId;
+  
   let result = await User.findByPk(userId);
   try {
     if (result != null) {
       // const { privateKey } = result.toJSON();
       result = result.toJSON();
-      let { privateKey } = result;
-      console.log(privateKey);
-      privateKey = privateKey.toString();
+      let serialNumber = generateSecureRandomNumber();
+      let { address } = result;
+      userId = result.userId;
+      console.log(address, userId);
+      // privateKey = privateKey.toString();
+      itemDate = moment(itemDate).unix();
+      itemDate = parseInt(itemDate);
       let itemId = await mintNFTs(
         itemName,
-        serialNumer,
+        serialNumber,
         itemDate,
-        itemImage,
-        privateKey
+        address,
+        userId
       );
-      await certifyUser(serialNumer, privateKey);
+      await certifyUser(serialNumber, address);
       await ItemList.create({
         itemId: ulid(),
         userName: result.userName,
-        serialNumer,
+        serialNumber,
         itemName,
         itemDate,
         itemImage,
@@ -61,8 +65,12 @@ exports.mintLuxuryItem = async (req, res) => {
   }
 };
 exports.getItemDetails = async (req, res) => {
-  const { serialNumer } = req.body;
-  let result = await getLuxuryItemDetails(serialNumer);
+  const { serialNumer } = req.params;
+  const userId=req.userId;
+  let address=await User.findByPk(userId)
+  address=address.address
+  console.log(address)
+  let result = await getLuxuryItemDetails(serialNumer,address);
   res.send({
     result,
     msg: "success",
@@ -85,11 +93,12 @@ exports.createUserPrivateKey = async (req, res) => {
   let user = await User.findByPk(userId);
   user = user.toJSON();
   console.log(user);
-  if (!user.privateKey) {
-    let newPrivateKey = await createAccount();
-    console.log(newPrivateKey);
+  if (!user.address) {
+    let address = await createAccount(userId);
+    console.log(address);
+  
     let result = await User.update(
-      { privateKey: newPrivateKey },
+      { address: address,balance:'10' },
       {
         where: { userId: user.userId },
       }
