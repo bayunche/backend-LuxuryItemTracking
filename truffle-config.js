@@ -72,7 +72,7 @@ module.exports = {
     },
     advanced: {
       host: "127.0.0.1",
-      port: 8545,
+      port: 8551,
       network_id: "*", // Any network (default: none)
     },
 	  product:{
