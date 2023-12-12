@@ -37,11 +37,7 @@
     "web3": "^4.2.2"
   },
   "devDependencies": {
-    "@types/node": "^20.9.0"
-  }
-}
-{
-  "dependencies": {
+    "@types/node": "^20.9.0",
     "solc": "^0.8.23-fixed",
     "web3": "^4.2.2",
     "yarn": "^1.22.21"
