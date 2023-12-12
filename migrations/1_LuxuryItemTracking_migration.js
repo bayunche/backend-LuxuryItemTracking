@@ -5,7 +5,5 @@ module.exports =async function (deployer, account) {
   const baseURI = "127.0.0.1";
   const name = "LuxuryItems";
   const symbol = "LUX";
-  deployer.deploy(LuxuryItemTracking, baseURI, name, symbol, {
-    from: account[0],
-  });
+  deployer.deploy(LuxuryItemTracking, baseURI, name, symbol);
 };
