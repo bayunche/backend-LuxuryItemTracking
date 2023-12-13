@@ -31,7 +31,7 @@ app.use(
   certify
 );
 
-app.use("/login", login);
+app.use("/auth", login);
 
 const port = 3101;
 

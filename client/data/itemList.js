@@ -31,7 +31,7 @@ const ItemList = sequelize.define("ItemList", {
     allowNull: false,
   },
   serialNumber: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.INTEGER.UNSIGNED,
     allowNull: true,
   },
   
