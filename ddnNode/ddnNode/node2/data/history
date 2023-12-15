@@ -1,0 +1,8 @@
+eth.accounts
+admin.addPeer("enode://ad7b2f242f984aad952de9909f5022f4baa3fa9ca59389f3cbcd29b6cc4ddaa469c11f0c81d82a6683ea757063ccd2adb6a589a8d901b9eab25329bd3797e682@127.0.0.1:2003")
+admin.addPeer("enode://a1d457bad1a14bd0e8ff33fdc379224430602770b3a51eb012f82613935c5fb212cbee23f56749632c1a98a44821f9f87a806f8ab318bfe5fb03b4af4865f669@127.0.0.1:2001")
+eth.getAccounts()
+eth.accounts()
+eth.accounts\
+eth.accounts
+const Web3 = require('web3')
