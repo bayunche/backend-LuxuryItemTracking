@@ -15,7 +15,13 @@ exports.login = async (req, res) => {
   // }).catch((err)=>{
   //     res.send({ status: "refuse" })
   // })
-  let result = await User.findOne({ password: passwordF, userName: userName });
+  let result = await User.findAll({
+    where:{
+      userName:userName,
+      passwordF:passwordF
+    }
+  });
+  console.log(result)
   if (!result) {
     res.send({
       status: "refuse",

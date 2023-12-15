@@ -52,6 +52,7 @@ exports.mintLuxuryItem = async (req, res) => {
       });
       res.send({
         itemId,
+        serialNumber,
         msg: "success",
       });
     } else {
@@ -122,3 +123,6 @@ exports.createUserPrivateKey = async (req, res) => {
     });
   }
 };
+exports.getUserPrivateKey = async (req, res) => {
+
+}
