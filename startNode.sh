@@ -1,5 +1,7 @@
 #! /bin/bash
 
-geth --datadir ./ddnNode/node2/data --port 2002 --authrpc.port 8549 --authrpc.port 8548 --miner.etherbase="0xBBF11088Ef7Da563F836d52c24C2D88546568496"
+nohup geth --datadir ./node1/data --port 2001  --http --http.port 8548 --allow-insecure-unlock    --rpc.enabledeprecatedpersonal  > node1output.log 2>&1 &
 
-geth --datadir ./ddnNode/node1/data --port 2001 --authrpc.port 8550 --authrpc.port 8547 --miner.etherbase="0x7600A6e5307cC17Ef8CbFcE0F5D356274818745f" 
+nohup geth --datadir ./node2/data --port 2002  --http --http.port 8549 --allow-insecure-unlock    --rpc.enabledeprecatedpersonal  > node2output.log 2>&1 &
+
+nohup geth --datadir ./node3/data --port 2003  --http --http.port 8550 --allow-insecure-unlock    --rpc.enabledeprecatedpersonal   > node3output.log 2>&1 &
