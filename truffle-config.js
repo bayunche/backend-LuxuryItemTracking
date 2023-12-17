@@ -75,11 +75,11 @@ module.exports = {
       port: 8551,
       network_id: "*", // Any network (default: none)
     },
-	  product:{
-		  host:"127.0.0.1",
-port:8548,
-		  network_id:'4396'
-	  }
+    product: {
+      host: "127.0.0.1",
+      port: 8548,
+      network_id: "4396",
+    },
 
     // 其他配置...
 

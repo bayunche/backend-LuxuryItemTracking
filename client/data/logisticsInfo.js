@@ -1,46 +1,24 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("./database.js");
-const ItemList = sequelize.define("ItemList", {
+
+
+const logisiticsInfo = sequelize.define("logisiticsInfo", {
   id: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.INTEGER.UNSIGNED,
     primaryKey: true,
     autoIncrement: true,
   },
-  creater: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  itemId: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  userId: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  itemImage: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  itemDate: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  createTime: {
-    type: DataTypes.DATE,
-    allowNull: false,
-  },
-  serialNumber: {
+  logistics_id: {
     type: DataTypes.INTEGER.UNSIGNED,
-    allowNull: true,
-  },
- 
-  // 1:已注册 2:已运输 3:已销售 4：已封存
-  status: {
-    type: DataTypes.INTEGER,
     allowNull: false,
-    defaultValue: 1,
   },
+  // 1：正常 2：错误
+  logistics_status: {
+    type: DataTypes.INTEGER.UNSIGNED,
+    allowNull: false,
+  },
+  createTime: { type: DataTypes.DATE, allowNull: false },
+  creater: { type: DataTypes.STRING, allowNull: false },
   startPoint: {
     type: DataTypes.STRING,
     allowNull: true,
@@ -68,10 +46,10 @@ const ItemList = sequelize.define("ItemList", {
     type: DataTypes.STRING,
     allowNull: true,
   },
-  updater:{
+  errorMessage:{
     type:DataTypes.STRING,
     allowNull:true
   }
 });
 sequelize.sync();
-module.exports = ItemList;
+module.exports=logisiticsInfo 

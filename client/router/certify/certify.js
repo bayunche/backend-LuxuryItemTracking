@@ -16,10 +16,12 @@ const ItemList = require("../../data/itemList");
 const { ulid } = require("ulid");
 const { now } = require("moment");
 const moment = require("moment");
+const logisticsInfoData = require("../../data/logisticsInfo");
+
 exports.mintLuxuryItem = async (req, res) => {
   let { itemName, itemDate, itemImage } = req.body;
   let userId = req.userId;
-  
+
   let result = await User.findByPk(userId);
   try {
     if (result != null) {
@@ -67,11 +69,11 @@ exports.mintLuxuryItem = async (req, res) => {
 };
 exports.getItemDetails = async (req, res) => {
   const { serialNumer } = req.params;
-  const userId=req.userId;
-  let address=await User.findByPk(userId)
-  address=address.address
-  console.log(address)
-  let result = await getLuxuryItemDetails(serialNumer,address);
+  const userId = req.userId;
+  let address = await User.findByPk(userId);
+  address = address.address;
+  console.log(address);
+  let result = await getLuxuryItemDetails(serialNumer, address);
   res.send({
     result,
     msg: "success",
@@ -97,9 +99,9 @@ exports.createUserPrivateKey = async (req, res) => {
   if (!user.address) {
     let address = await createAccount(userId);
     console.log(address);
-  
+
     let result = await User.update(
-      { address: address,balance:'10' },
+      { address: address, balance: "10" },
       {
         where: { userId: user.userId },
       }
@@ -123,6 +125,81 @@ exports.createUserPrivateKey = async (req, res) => {
     });
   }
 };
-exports.getUserPrivateKey = async (req, res) => {
-
-}
+exports.updateLogisticsInfo = async (req, res) => {
+  const {
+    itemId,
+  
+    startPoint,
+    endPoint,
+    TransportWay,
+    TransportCompany,
+    TransportDate,
+    TransportNumber,
+    errorMessage,
+    status,
+  } = req.body;
+  let  userId = req.userId;
+  let item = await ItemList.findByPk(itemId);
+  let user= await User.findByPk(userId)
+ 
+  user=item.toJSON()
+  item = item.toJSON();
+  let { serialNumber } = item;
+  let {address}=user
+  let logisticsInfo = {
+    address,
+    startPoint,
+    endPoint,
+    TransportWay,
+    TransportCompany,
+    TransportDate,
+    TransportNumber,
+    errorMessage,
+    status,
+  };
+   try {
+    await updateLogisticsInfo(serialNumber, logisticsInfo,address)
+    await ItemList.update(
+      {
+        address,
+        startPoint,
+        endPoint,
+        TransportWay,
+        TransportCompany,
+        TransportDate,
+        TransportNumber,
+        status,
+      }, 
+      { where: { itemId: itemId } }
+    );
+    await  logisticsInfoData.create( {
+      logistics_id:ulid(),
+      address,
+      startPoint,
+      endPoint,
+      TransportWay,
+      TransportCompany,
+      TransportDate,
+      TransportNumber,
+      status,
+      errorMessage,
+      logistics_status:1,
+      createTime:now(),
+      creater:userId,
+    })
+    res.send({
+      msg: "更新物流信息成功",
+      data: null,
+      error: null
+    })
+   } catch (error) {
+    console.log(error);
+    res.send({
+   
+      msg: "更新物流信息失败",
+      data: null,
+      error
+    })
+    
+   }
+};
