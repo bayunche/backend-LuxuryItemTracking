@@ -5,7 +5,7 @@ const User = require("../../data/user");
 const sequelize = require("../../data/database");
 // const login = require("../../tools/data/models/login");
 const { genrateToken } = require("../../utils/jwtCheck");
-const { argon, verify } = require("../../utils/argon");
+const { argon, verifyArgon } = require("../../utils/argon");
 
 exports.login = async (req, res) => {
   let { userName, password } = req.body;
@@ -29,7 +29,7 @@ exports.login = async (req, res) => {
     });
     return;
   }
-  result = result.toJSON();
+  console.log(passwordF,result.passwordF)
   res.setHeader("Content-Type", "application/json");
   let token = genrateToken(result.userId);
   res.setHeader("Authorization", `Bearer ${token}`);
