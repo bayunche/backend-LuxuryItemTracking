@@ -6,8 +6,8 @@ exports.argon= async(password)=> {
   return await argon2.hash(password)
 }
 
-exports.verifyArgon= async(hash)=>{
-  argon2.verify(hash, "user_password").then((result) => {
+exports.verifyArgon= async(hash,password)=>{
+  argon2.verify(hash, password).then((result) => {
     console.log("Password Match:", result);
     return result
   }).catch((err)=>{

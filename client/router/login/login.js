@@ -9,21 +9,21 @@ const { argon, verifyArgon } = require("../../utils/argon");
 
 exports.login = async (req, res) => {
   let { userName, password } = req.body;
-  let passwordF = await argon(password);
   // user.find({ userName, passWordM: passwordF, condition }).then((result) => {
   //     res.send({ status: "ok", token: token, result })
   // }).catch((err)=>{
   //     res.send({ status: "refuse" })
   // })
+  let passwordF= await argon(password)
   let result = await User.findOne({
     where:{
       userName:userName,
     }
   });
   result = result.toJSON()
-   
   console.log(result)
-  if (result.passwordF!=passwordF) {
+  let result2 = await verifyArgon(result.passwordF,password)
+  if (result2 == false) {
     res.send({
       status: "refuse",
     });
