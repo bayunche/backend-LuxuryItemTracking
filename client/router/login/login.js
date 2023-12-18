@@ -15,14 +15,15 @@ exports.login = async (req, res) => {
   // }).catch((err)=>{
   //     res.send({ status: "refuse" })
   // })
-  let result = await User.findAll({
+  let result = await User.findOne({
     where:{
       userName:userName,
-      passwordF:passwordF
     }
   });
+  result = result.toJSON()
+   
   console.log(result)
-  if (!result) {
+  if (result.passwordF!=passwordF) {
     res.send({
       status: "refuse",
     });
