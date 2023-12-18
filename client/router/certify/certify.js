@@ -23,12 +23,13 @@ exports.mintLuxuryItem = async (req, res) => {
   let userId = req.userId;
 
   let result = await User.findByPk(userId);
+  result = result.toJSON();
+  let { address } = result;
   try {
-    if (result != null) {
+    if (address != null) {
       // const { privateKey } = result.toJSON();
-      result = result.toJSON();
       let serialNumber = generateSecureRandomNumber();
-      let { address } = result;
+
       userId = result.userId;
       console.log(address, userId);
       // privateKey = privateKey.toString();
