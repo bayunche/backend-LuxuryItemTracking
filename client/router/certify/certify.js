@@ -128,7 +128,6 @@ exports.createUserPrivateKey = async (req, res) => {
 exports.updateLogisticsInfo = async (req, res) => {
   const {
     itemId,
-  
     startPoint,
     endPoint,
     TransportWay,
@@ -138,16 +137,14 @@ exports.updateLogisticsInfo = async (req, res) => {
     errorMessage,
     status,
   } = req.body;
-  let  userId = req.userId;
+  let userId = req.userId;
   let item = await ItemList.findByPk(itemId);
-  let user= await User.findByPk(userId)
- 
-  user=item.toJSON()
+  let user = await User.findByPk(userId);
+  user = item.toJSON();
   item = item.toJSON();
   let { serialNumber } = item;
-  let {address}=user
+  let { address } = user;
   let logisticsInfo = {
-    address,
     startPoint,
     endPoint,
     TransportWay,
@@ -157,11 +154,10 @@ exports.updateLogisticsInfo = async (req, res) => {
     errorMessage,
     status,
   };
-   try {
-    await updateLogisticsInfo(serialNumber, logisticsInfo,address)
+  try {
+    await updateLogisticsInfo(serialNumber, logisticsInfo, address);
     await ItemList.update(
       {
-        address,
         startPoint,
         endPoint,
         TransportWay,
@@ -169,12 +165,11 @@ exports.updateLogisticsInfo = async (req, res) => {
         TransportDate,
         TransportNumber,
         status,
-      }, 
+      },
       { where: { itemId: itemId } }
     );
-    await  logisticsInfoData.create( {
-      logistics_id:ulid(),
-      address,
+    await logisticsInfoData.create({
+      logistics_id: ulid(),
       startPoint,
       endPoint,
       TransportWay,
@@ -183,23 +178,22 @@ exports.updateLogisticsInfo = async (req, res) => {
       TransportNumber,
       status,
       errorMessage,
-      logistics_status:1,
-      createTime:now(),
-      creater:userId,
-    })
+      logistics_status: 1,
+      createTime: now(),
+      creater: userId,
+    });
+
     res.send({
       msg: "更新物流信息成功",
       data: null,
-      error: null
-    })
-   } catch (error) {
+      error: null,
+    });
+  } catch (error) {
     console.log(error);
     res.send({
-   
       msg: "更新物流信息失败",
       data: null,
-      error
-    })
-    
-   }
+      error,
+    });
+  }
 };
