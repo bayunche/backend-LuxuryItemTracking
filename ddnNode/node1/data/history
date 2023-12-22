@@ -42,3 +42,6 @@ miner.setEtherbase("0x5a92a5da4f5aaa216a192eaf5ea28bf0940ccac8")
 miner.setEtherbase("0x5a92a5da4f5aaa216a192eaf5ea28bf0940ccac8")
 miner.start()
 net.peerCount
+miner.start()
+personal.listWallets
+miner.start()

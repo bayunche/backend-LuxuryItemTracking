@@ -4,3 +4,13 @@
 16:10:18.333645 version@stat F·[] S·0B[] Sc·[]
 16:10:18.335754 db@janitor F·2 G·0
 16:10:18.335788 db@open done T·3.253963ms
+=============== Dec 18, 2023 (CST) ===============
+19:09:32.038668 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+19:09:32.040735 version@stat F·[] S·0B[] Sc·[]
+19:09:32.040760 db@open opening
+19:09:32.040819 journal@recovery F·1
+19:09:32.041458 journal@recovery recovering @1
+19:09:32.050146 memdb@flush created L0@2 N·868 S·6KiB "loc..seq,v2":"version,v1"
+19:09:32.052071 version@stat F·[1] S·6KiB[6KiB] Sc·[0.25]
+19:09:32.058735 db@janitor F·3 G·0
+19:09:32.058759 db@open done T·17.992142ms
