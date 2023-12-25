@@ -171,6 +171,7 @@ exports.updateLogisticsInfo = async (req, res) => {
     );
     await logisticsInfoData.create({
       logistics_id: ulid(),
+      itemId,
       startPoint,
       endPoint,
       TransportWay,
@@ -197,4 +198,41 @@ exports.updateLogisticsInfo = async (req, res) => {
       error,
     });
   }
+};
+
+exports.getLogisticsInfo = async (req, res) => {
+  let { itemId } = req.params;
+  logisticsInfoData
+    .findAll({
+      where: {
+        itemId,
+      },
+      order: [["createTime", "DESC"]],
+    })
+    .then(async (data) => {
+      data = await data.toJSON();
+      res.send({
+        msg: "获取物流信息成功",
+        data: data,
+        error: null,
+      });
+    });
+};
+
+exports.getItemList = async (req, res) => {
+  let userId = req.userId;
+  let { pageNum, pageSize } = req.params;
+  let data = await ItemList.findAll({
+    where: {
+      userId,
+      limit: pageSize,
+      offset: pageSize * pageNum - 1,
+    },
+  });
+  data = data.toJSON();
+  res.send({
+    msg: "获取物品列表成功",
+    data,
+    error: null,
+  });
 };

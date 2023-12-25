@@ -12,6 +12,10 @@ const logisiticsInfo = sequelize.define("logisiticsInfo", {
     type: DataTypes.INTEGER.UNSIGNED,
     allowNull: false,
   },
+  itenId:{
+    type:DataTypes.STRING,
+    allowNull:false
+  },
   // 1：正常 2：错误
   logistics_status: {
     type: DataTypes.INTEGER.UNSIGNED,
