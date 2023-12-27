@@ -22,31 +22,45 @@ exports.mintNFTs = async (
 ) => {
   try {
     const account = address;
+
     // 检查账户是否已解锁
     contractAddress = address;
     const isUnlocked = await web3.eth.personal
       .unlockAccount(account, "", 1)
       .catch(() => false);
+
     const contract = new web3.eth.Contract(
       luxuryItemTrackingABI,
       contractAddress
     );
 
     if (!isUnlocked) {
-      // 账户未解锁，使用提供的密码短语解锁
+      // 如果账户未解锁，使用提供的密码短语解锁
       await web3.eth.personal.unlockAccount(account, passphrase, 600); // 解锁10分钟
     }
 
     // 铸造 NFT
-    await contract.methods
+    const transaction = await contract.methods
       .mintNFTs(_name, _serialNumber, _productionDate)
       .send({
         from: account,
         value: web3.utils.toWei("0.000001", "ether"),
       });
 
+    // 获取交易哈希、区块高度和时间戳
+    const transactionHash = transaction.transactionHash;
+    const blockNumber = transaction.blockNumber;
+    const timestamp = (await web3.eth.getBlock(blockNumber)).timestamp;
+
     console.log("NFTs minted successfully!");
-    return ulid();
+
+    // 返回生成的唯一标识符、交易哈希、区块高度和时间戳
+    return {
+      ulid: ulid(),
+      transactionHash: transactionHash,
+      blockNumber: blockNumber,
+      timestamp: timestamp,
+    };
   } catch (error) {
     console.error("Error minting NFTs:", error);
   }
@@ -55,25 +69,39 @@ exports.mintNFTs = async (
 // 更新物流信息
 exports.updateLogisticsInfo = async (serialNumber, logisticsInfo, address) => {
   try {
+    // 获取以太坊账户地址
     const account = address;
+
+    // 使用提供的 ABI（应用二进制接口）和合约地址创建一个合约实例
     const contract = new web3.eth.Contract(
       luxuryItemTrackingABI,
       contractAddress
     );
+
+    // 设置合约地址（这一行似乎放错地方，可能会导致混淆，因为 contractAddress 在代码片段中没有定义）
     contractAddress = address;
 
-    // 更新物流信息
-    await contract.methods
+    // 在智能合约中更新物流信息
+    const transaction = await contract.methods
       .updateLogisticsInfo(serialNumber, logisticsInfo)
       .send({
         from: account,
       });
 
-    console.log("Logistics info updated successfully!");
+    // 获取交易哈希
+    const transactionHash = transaction.transactionHash;
+
+    console.log("物流信息更新成功！交易哈希:", transactionHash);
+    
+    
+    return transactionHash; // 如果需要在函数外部使用交易哈希，可以返回它
   } catch (error) {
-    console.error("Error updating logistics info:", error);
+    // 在执行合约方法时处理错误
+    console.error("更新物流信息时出错：", error);
+    throw error; // 可以选择抛出错误，以便在调用方处理
   }
 };
+
 // 更新销售记录函数
 exports.updateSalesRecord = async (serialNumber, salesRecord, address) => {
   try {

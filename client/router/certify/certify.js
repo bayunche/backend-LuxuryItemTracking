@@ -17,6 +17,7 @@ const { ulid } = require("ulid");
 const { now } = require("moment");
 const moment = require("moment");
 const logisticsInfoData = require("../../data/logisticsInfo");
+const router = require("./router");
 
 exports.mintLuxuryItem = async (req, res) => {
   let { itemName, itemDate, itemImage } = req.body;
@@ -29,7 +30,6 @@ exports.mintLuxuryItem = async (req, res) => {
     if (address != null) {
       // const { privateKey } = result.toJSON();
       let serialNumber = generateSecureRandomNumber();
-
       userId = result.userId;
       console.log(address, userId);
       // privateKey = privateKey.toString();
@@ -42,7 +42,11 @@ exports.mintLuxuryItem = async (req, res) => {
         address,
         userId
       );
-      await certifyUser(serialNumber, address);
+
+      let { transactionHash, blockNumber, timeStamp } = await certifyUser(
+        serialNumber,
+        address
+      );
       await ItemList.create({
         itemId: ulid(),
         userName: result.userName,
@@ -51,7 +55,9 @@ exports.mintLuxuryItem = async (req, res) => {
         itemDate,
         itemImage,
         userId,
-        createTime: now(),
+        createTime: timeStamp,
+        blockNumber,
+        transactionHash,
       });
       res.send({
         itemId,
@@ -126,7 +132,7 @@ exports.createUserPrivateKey = async (req, res) => {
     });
   }
 };
-exports.updateLogisticsInfo = async (req, res) => {
+exports.updateLogisticInfo = async (req, res) => {
   const {
     itemId,
     startPoint,
@@ -156,7 +162,7 @@ exports.updateLogisticsInfo = async (req, res) => {
     status,
   };
   try {
-    await updateLogisticsInfo(serialNumber, logisticsInfo, address);
+   let transactionHash=  await updateLogisticsInfo(serialNumber, logisticsInfo, address);
     await ItemList.update(
       {
         startPoint,
@@ -166,6 +172,7 @@ exports.updateLogisticsInfo = async (req, res) => {
         TransportDate,
         TransportNumber,
         status,
+        transactionHash,
       },
       { where: { itemId: itemId } }
     );
@@ -235,4 +242,10 @@ exports.getItemList = async (req, res) => {
     data,
     error: null,
   });
+};
+
+exports.updateSalesRecord = async (req, res) => {
+  let { salesTime, itemId, salesPrice, distributionChannel, salesOutlet } =
+    req.body;
+  let userId = req.userId;
 };

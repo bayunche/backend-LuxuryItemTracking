@@ -53,6 +53,10 @@ const logisiticsInfo = sequelize.define("logisiticsInfo", {
   errorMessage:{
     type:DataTypes.STRING,
     allowNull:true
+  },
+  transactionHash:{
+    type:DataTypes.STRING,
+    allowNull:false
   }
 });
 sequelize.sync();

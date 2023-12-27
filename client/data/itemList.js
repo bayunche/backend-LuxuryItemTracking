@@ -71,6 +71,14 @@ const ItemList = sequelize.define("ItemList", {
   updater:{
     type:DataTypes.STRING,
     allowNull:true
+  },
+  blockNumber:{
+    type:DataTypes.STRING,
+    allowNull:false,
+  },
+  transactionHash:{
+    type:DataTypes.STRING,
+    allowNull:false,
   }
 });
 sequelize.sync();
