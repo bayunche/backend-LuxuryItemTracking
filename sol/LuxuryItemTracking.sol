@@ -4,7 +4,12 @@
 pragma solidity ^0.8.0;
 
 contract LuxuryItemTracking {
-    enum ItemStatus { Manufactured, Shipped, Delivered, Sold }
+    enum ItemStatus {
+        Manufactured,
+        Shipped,
+        Delivered,
+        Sold
+    }
 
     struct LuxuryItem {
         string name;
@@ -14,6 +19,8 @@ contract LuxuryItemTracking {
         ItemStatus status;
         string logisticsInfo;
         string salesRecord;
+        uint256 valuation; // 新增：奢侈品估值
+        string certificate; // 新增：奢侈品证书
     }
 
     mapping(uint256 => LuxuryItem) public luxuryItems;
@@ -35,6 +42,9 @@ contract LuxuryItemTracking {
 
     event UserCertified(address user, uint256 serialNumber);
 
+    event ValuationUpdated(uint256 serialNumber, uint256 newValuation);
+    event CertificateUpdated(uint256 serialNumber, string newCertificate);
+
     constructor() {
         admin = msg.sender;
     }
@@ -45,22 +55,34 @@ contract LuxuryItemTracking {
     }
 
     modifier onlyManufacturer(uint256 _serialNumber) {
-        require(msg.sender == luxuryItems[_serialNumber].manufacturer, "Only manufacturer can call this function");
+        require(
+            msg.sender == luxuryItems[_serialNumber].manufacturer,
+            "Only manufacturer can call this function"
+        );
         _;
     }
 
     modifier itemNotManufactured(uint256 _serialNumber) {
-        require(luxuryItems[_serialNumber].serialNumber == 0, "Item already exists");
+        require(
+            luxuryItems[_serialNumber].serialNumber == 0,
+            "Item already exists"
+        );
         _;
     }
 
     modifier itemManufactured(uint256 _serialNumber) {
-        require(luxuryItems[_serialNumber].serialNumber != 0, "Item does not exist");
+        require(
+            luxuryItems[_serialNumber].serialNumber != 0,
+            "Item does not exist"
+        );
         _;
     }
 
     modifier itemNotSold(uint256 _serialNumber) {
-        require(luxuryItems[_serialNumber].status != ItemStatus.Sold, "Item already sold");
+        require(
+            luxuryItems[_serialNumber].status != ItemStatus.Sold,
+            "Item already sold"
+        );
         _;
     }
 
@@ -76,45 +98,128 @@ contract LuxuryItemTracking {
             productionDate: _productionDate,
             status: ItemStatus.Manufactured,
             logisticsInfo: "",
-            salesRecord: ""
+            salesRecord: "",
+            valuation: 0, // 默认为0
+            certificate: "" // 默认为空字符串
         });
 
-        emit ItemManufactured(_name, _serialNumber, msg.sender, _productionDate);
+        emit ItemManufactured(
+            _name,
+            _serialNumber,
+            msg.sender,
+            _productionDate
+        );
     }
 
-    function shipItem(uint256 _serialNumber, string memory _logisticsInfo) public onlyManufacturer(_serialNumber) itemManufactured(_serialNumber) itemNotSold(_serialNumber) {
+    function shipItem(
+        uint256 _serialNumber,
+        string memory _logisticsInfo
+    )
+        public
+        onlyManufacturer(_serialNumber)
+        itemManufactured(_serialNumber)
+        itemNotSold(_serialNumber)
+    {
         luxuryItems[_serialNumber].status = ItemStatus.Shipped;
         luxuryItems[_serialNumber].logisticsInfo = _logisticsInfo;
 
         emit ItemShipped(_serialNumber, _logisticsInfo);
     }
 
-    function deliverItem(uint256 _serialNumber) public onlyManufacturer(_serialNumber) itemManufactured(_serialNumber) itemNotSold(_serialNumber) {
+    function deliverItem(
+        uint256 _serialNumber
+    )
+        public
+        onlyManufacturer(_serialNumber)
+        itemManufactured(_serialNumber)
+        itemNotSold(_serialNumber)
+    {
         luxuryItems[_serialNumber].status = ItemStatus.Delivered;
 
         emit ItemDelivered(_serialNumber);
     }
 
-    function sellItem(uint256 _serialNumber, string memory _salesRecord) public onlyManufacturer(_serialNumber) itemManufactured(_serialNumber) itemNotSold(_serialNumber) {
+    function sellItem(
+        uint256 _serialNumber,
+        string memory _salesRecord
+    )
+        public
+        onlyManufacturer(_serialNumber)
+        itemManufactured(_serialNumber)
+        itemNotSold(_serialNumber)
+    {
         luxuryItems[_serialNumber].status = ItemStatus.Sold;
         luxuryItems[_serialNumber].salesRecord = _salesRecord;
 
         emit ItemSold(_serialNumber, _salesRecord);
     }
 
-    function certifyUser(uint256 _serialNumber) public itemManufactured(_serialNumber) {
+    function certifyUser(
+        uint256 _serialNumber
+    ) public itemManufactured(_serialNumber) {
         userCertifications[msg.sender][_serialNumber] = true;
 
         emit UserCertified(msg.sender, _serialNumber);
     }
 
-    function getItemDetails(uint256 _serialNumber) public view returns (string memory, address, uint256, ItemStatus, string memory, string memory) {
+    function getItemDetails(
+        uint256 _serialNumber
+    )
+        public
+        view
+        returns (
+            string memory,
+            address,
+            uint256,
+            ItemStatus,
+            string memory,
+            string memory
+        )
+    {
         LuxuryItem memory item = luxuryItems[_serialNumber];
         require(item.serialNumber != 0, "Item does not exist");
-        return (item.name, item.manufacturer, item.productionDate, item.status, item.logisticsInfo, item.salesRecord);
+        return (
+            item.name,
+            item.manufacturer,
+            item.productionDate,
+            item.status,
+            item.logisticsInfo,
+            item.salesRecord
+        );
     }
 
-    function isUserCertified(address _user, uint256 _serialNumber) public view returns (bool) {
+    function isUserCertified(
+        address _user,
+        uint256 _serialNumber
+    ) public view returns (bool) {
         return userCertifications[_user][_serialNumber];
+    }
+
+    function updateValuation(
+        uint256 _serialNumber,
+        uint256 _newValuation
+    ) public onlyAdmin itemManufactured(_serialNumber) {
+        LuxuryItem storage item = luxuryItems[_serialNumber];
+        item.valuation = _newValuation;
+
+        emit ValuationUpdated(_serialNumber, _newValuation);
+    }
+
+    function updateCertificate(
+        uint256 _serialNumber,
+        string memory _newCertificate
+    ) public onlyAdmin itemManufactured(_serialNumber) {
+        LuxuryItem storage item = luxuryItems[_serialNumber];
+        item.certificate = _newCertificate;
+
+        emit CertificateUpdated(_serialNumber, _newCertificate);
+    }
+
+    function getValuationAndCertificate(
+        uint256 _serialNumber
+    ) public view returns (uint256, string memory) {
+        LuxuryItem storage item = luxuryItems[_serialNumber];
+        require(item.serialNumber != 0, "Item does not exist");
+        return (item.valuation, item.certificate);
     }
 }

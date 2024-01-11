@@ -79,7 +79,28 @@ const ItemList = sequelize.define("ItemList", {
   transactionHash:{
     type:DataTypes.STRING,
     allowNull:false,
-  }
+  },
+  qrcode:{
+    type:DataTypes.STRING,
+    allowNull:false,
+  },
+  salesTime:{
+    type:DataTypes.DATE,
+    allowNull:true,
+  },
+  salesPrice:{
+    type:DataTypes.STRING,
+    allowNull:true,
+  },
+  distributionChannel:{
+    type:DataTypes.STRING,
+    allowNull:true,
+  },
+  salesOutlet:{
+    type:DataTypes.STRING,
+    allowNull:true,
+  },
+
 });
 sequelize.sync();
 module.exports = ItemList;

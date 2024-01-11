@@ -12,7 +12,7 @@ const logisiticsInfo = sequelize.define("logisiticsInfo", {
     type: DataTypes.INTEGER.UNSIGNED,
     allowNull: false,
   },
-  itenId:{
+  itemId:{
     type:DataTypes.STRING,
     allowNull:false
   },
@@ -55,6 +55,14 @@ const logisiticsInfo = sequelize.define("logisiticsInfo", {
     allowNull:true
   },
   transactionHash:{
+    type:DataTypes.STRING,
+    allowNull:false
+  },
+  blockNumber:{
+    type:DataTypes.STRING,
+    allowNull:false
+  },
+  timestamp:{
     type:DataTypes.STRING,
     allowNull:false
   }

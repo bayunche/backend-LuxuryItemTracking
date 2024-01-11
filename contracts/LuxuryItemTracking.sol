@@ -24,6 +24,8 @@ contract LuxuryItemTracking is ERC721Enumerable, Ownable {
         string logisticsInfo;
         string salesRecord;
         mapping(address => bool) certifiedUsers;
+        uint256 valuation; // 新添加的估值字段
+        string certification; // 新添加的证书字段
     }
 
     mapping(uint256 => LuxuryItem) private luxuryItems;
@@ -41,9 +43,23 @@ contract LuxuryItemTracking is ERC721Enumerable, Ownable {
     }
 
     event DebugMessage(string message);
+// 在合约中添加估值设置事件
+event ValuationSet(uint256 indexed serialNumber, uint256 valuation);
+
+// 在合约中添加证书设置事件
+event CertificationSet(uint256 indexed serialNumber, string certification);
 
     function _baseURI() internal view virtual override returns (string memory) {
         return baseTokenURI;
+    }
+
+    function setLuxuryItemValuation(
+        uint256 _serialNumber,
+        uint256 _valuation
+    ) public onlyOwner {
+        require(_exists(_serialNumber), "Item does not exist");
+        luxuryItems[_serialNumber].valuation = _valuation;
+         emit ValuationSet(_serialNumber, _valuation);
     }
 
     function setBaseURI(string memory _baseTokenURI) public onlyOwner {
@@ -173,6 +189,15 @@ contract LuxuryItemTracking is ERC721Enumerable, Ownable {
             item.logisticsInfo,
             item.salesRecord
         );
+    }
+
+    function setLuxuryItemCertification(
+        uint256 _serialNumber,
+        string memory _certification
+    ) public onlyOwner {
+        require(_exists(_serialNumber), "Item does not exist");
+        luxuryItems[_serialNumber].certification = _certification;
+        emit CertificationSet(_serialNumber, _certification);
     }
 
     function isCertifiedUser(uint256 _serialNumber) public view returns (bool) {

@@ -22,7 +22,6 @@ exports.mintNFTs = async (
 ) => {
   try {
     const account = address;
-
     // 检查账户是否已解锁
     contractAddress = address;
     const isUnlocked = await web3.eth.personal
@@ -92,9 +91,12 @@ exports.updateLogisticsInfo = async (serialNumber, logisticsInfo, address) => {
     const transactionHash = transaction.transactionHash;
 
     console.log("物流信息更新成功！交易哈希:", transactionHash);
-    
-    
-    return transactionHash; // 如果需要在函数外部使用交易哈希，可以返回它
+
+    return {
+      transactionHash: transaction.transactionHash,
+      blockNumber: transaction.blockNumber,
+      timestamp: (await web3.eth.getBlock(transaction.blockNumber)).timestamp,
+    };
   } catch (error) {
     // 在执行合约方法时处理错误
     console.error("更新物流信息时出错：", error);
@@ -114,11 +116,18 @@ exports.updateSalesRecord = async (serialNumber, salesRecord, address) => {
     );
 
     // 更新销售记录
-    await contract.methods.updateSalesRecord(serialNumber, salesRecord).send({
-      from: account,
-    });
-
+    let transactionInfo = await contract.methods
+      .updateSalesRecord(serialNumber, salesRecord)
+      .send({
+        from: account,
+      });
     console.log("Sales record updated successfully!");
+
+    return {
+      transactionHash: transaction.transactionHash,
+      blockNumber: transaction.blockNumber,
+      timestamp: (await web3.eth.getBlock(transaction.blockNumber)).timestamp,
+    };
   } catch (error) {
     console.error("Error updating sales record:", error);
   }
@@ -129,7 +138,9 @@ exports.certifyUser = async (serialNumber, address) => {
     // 获取账户列表
     const account = address;
     contractAddress = address;
-
+    if (!isLuxuryItemExists(serialNumber)) {
+      return false;
+    }
     // 调用认证用户的函数
     const contract = new web3.eth.Contract(
       luxuryItemTrackingABI,
@@ -139,22 +150,24 @@ exports.certifyUser = async (serialNumber, address) => {
     await contract.methods.certifyUser(serialNumber).send({
       from: account,
     });
-
+    return {
+      transactionHash: transaction.transactionHash,
+      blockNumber: transaction.blockNumber,
+      timestamp: (await web3.eth.getBlock(transaction.blockNumber)).timestamp,
+    };
     console.log("User certified successfully!");
   } catch (error) {
     console.error("Error certifying user:", error);
   }
 };
 // 获取商品信息
-exports.getLuxuryItemDetails = async (serialNumber,address) => {
+exports.getLuxuryItemDetails = async (serialNumber, address) => {
   try {
     contractAddress = address;
-
     const contract = new web3.eth.Contract(
       luxuryItemTrackingABI,
       contractAddress
     );
-
     const result = await contract.methods.getItemDetails(serialNumber).call();
     return result;
   } catch (error) {
@@ -186,15 +199,59 @@ exports.createAccount = async (userId) => {
   console.log(newAccount);
   const address = newAccount;
   let initAccount = await web3.eth.getAccounts();
-  initAccount=initAccount[0]
-  console.log(initAccount)
+  initAccount = initAccount[0];
+  console.log(initAccount);
   await web3.eth.sendTransaction({
     from: initAccount,
     to: address,
     value: web3.utils.toWei("10", "ether"),
-    gas: '30000',
+    gas: "30000",
     gasPrice: web3.utils.toWei("100", "gwei"),
-
   });
   return address;
 };
+
+// // 获取账户列表（需要有挖矿权限的账户）
+// async function getAccounts() {
+//   try {
+//     const accounts = await web3.eth.getAccounts();
+//     console.log('Accounts with mining permission:', accounts);
+//     return accounts;
+//   } catch (error) {
+//     console.error('Error fetching accounts:', error);
+//     throw error;
+//   }
+// }
+
+// // 创建账户、设置余额并返回账户信息
+// async function createAndFundAccount() {
+//   try {
+//     // 生成新的账户
+//     const newAccount = await web3.eth.accounts.create();
+
+//     console.log('New Account Created:');
+//     console.log('Address:', newAccount.address);
+//     console.log('Private Key:', newAccount.privateKey);
+
+//     // 获取有挖矿权限的账户列表
+//     const minerAccounts = await getAccounts();
+
+//     // 将新账户地址添加到挖矿权限账户列表中
+//     minerAccounts.push(newAccount.address);
+
+//     // 挖矿，将新账户余额设置为 10 ETH
+//     const miner = minerAccounts[0]; // 选择第一个有挖矿权限的账户
+//     const miningTransaction = await web3.eth.sendTransaction({
+//       from: miner,
+//       to: newAccount.address,
+//       value: web3.utils.toWei('10', 'ether'),
+//     });
+
+//     console.log('Mining Transaction:', miningTransaction);
+
+//     return newAccount;
+//   } catch (error) {
+//     console.error('Error:', error);
+//     throw error;
+//   }
+// }
