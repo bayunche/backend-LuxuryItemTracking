@@ -7,6 +7,17 @@ const sequelize = require("../../data/database");
 const { genrateToken } = require("../../utils/jwtCheck");
 const { argon, verifyArgon } = require("../../utils/argon");
 
+exports.getUserInfo = async (req, res) => {
+  const userId = req.userId;
+  let userDetail=await  User.findByPk(userId)
+  userDetail=userDetail.toJSON()
+  res.send({
+    msg: "获取用户信息成功",
+    data: userDetail,
+  })
+  
+}
+
 exports.login = async (req, res) => {
   let { userName, password } = req.body;
   // user.find({ userName, passWordM: passwordF, condition }).then((result) => {
