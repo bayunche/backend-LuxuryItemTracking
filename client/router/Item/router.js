@@ -9,3 +9,4 @@ router.get("/getLogisticsInfo",item.getLogisticsInfo)
 router.get("/getLogisticsList",item.getLogisticsList)
 router.get("/getSalesList",item.getSalesList)
 router.get("getSalesDetail",item.getSalesDetail)
+module.exports = router;
