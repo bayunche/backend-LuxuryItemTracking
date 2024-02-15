@@ -6,5 +6,4 @@ router.get("/signupUser", user.createUserPrivateKey);
 
 router.get("/getUserInfo", user.getUserInfo);
 
-
 module.exports = router;
