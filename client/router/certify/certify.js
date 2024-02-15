@@ -102,44 +102,7 @@ exports.isExists = async (req, res) => {
     msg: "success",
   });
 };
-exports.createUserPrivateKey = async (req, res) => {
-  console.log(req.userId);
-  const userId = req.userId;
-  // const newAccount = web3.eth.accounts.create();
-  // const privateKey = newAccount.privateKey;
 
-  let user = await User.findByPk(userId);
-  user = user.toJSON();
-  console.log(user);
-  if (!user.address) {
-    let address = await createAccount(userId);
-    console.log(address);
-
-    let result = await User.update(
-      { address: address, balance: "10" },
-      {
-        where: { userId: user.userId },
-      }
-    );
-    console.log(result);
-    if (result != null) {
-      res.send({
-        msg: "success",
-        data: null,
-      });
-    } else {
-      res.send({
-        msg: "failed",
-        data: null,
-      });
-    }
-  } else {
-    res.send({
-      msg: "已注册区块链账户",
-      data: null,
-    });
-  }
-};
 exports.updateLogisticInfo = async (req, res) => {
   const {
     itemId,

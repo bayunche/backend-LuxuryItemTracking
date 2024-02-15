@@ -11,6 +11,8 @@ const {
 } = require("./data/UserDatabase");
 const login = require("./router/login/router");
 const certify = require("./router/certify/router");
+const user=require("./router/user/router");
+const item =require("./router/Item/router");
 connectDatabase().then((dataBase) => {
   closeDatabaseConnection(dataBase);
   console.log("DBTESTcomplete");
@@ -29,6 +31,20 @@ app.use(
     jwtcheck(req, res, next);
   },
   certify
+);
+app.use(
+  "/user",
+  function (req, res, next) {
+    jwtcheck(req, res, next);
+  },
+  user
+);
+app.use(
+  "/item",
+  function (req, res, next) {
+    jwtcheck(req, res, next);
+  },
+  item
 );
 
 app.use("/auth", login);
