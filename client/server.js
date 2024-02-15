@@ -29,26 +29,27 @@ app.use(
   "/certify",
   function (req, res, next) {
     jwtcheck(req, res, next);
-  },
-  certify
+  }
 );
 app.use(
   "/user",
   function (req, res, next) {
     jwtcheck(req, res, next);
-  },
-  user
+  }
+ 
 );
+
 app.use(
   "/item",
   function (req, res, next) {
     jwtcheck(req, res, next);
-  },
-  item
+  }
 );
 
 app.use("/auth", login);
-
+app.use("/user", user);
+app.use("/item", item);
+app.use("/certify", certify);
 const port = 3101;
 
 app.listen(port, (error) => {
