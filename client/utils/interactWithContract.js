@@ -210,6 +210,60 @@ exports.createAccount = async (userId) => {
   });
   return address;
 };
+exports.setLuxuryItemValuation = async (
+  serialNumber,
+  valuation,
+  ownerAddress
+) => {
+  try {
+    const transaction = await contract.methods
+      .setLuxuryItemValuation(serialNumber, valuation)
+      .send({
+        from: ownerAddress,
+      });
+    console.log("Valuation set successfully!");
+    return {
+      transactionHash: transaction.transactionHash,
+    };
+  } catch (error) {
+    console.error("Error setting valuation:", error);
+    throw error;
+  }
+};
+exports.setLuxuryItemCertification = async (serialNumber, certification, ownerAddress) => {
+  try {
+    const transaction = await contract.methods.setLuxuryItemCertification(serialNumber, certification).send({
+      from: ownerAddress,
+    });
+    console.log("Certification set successfully!");
+    return {
+      transactionHash: transaction.transactionHash,
+    };
+  } catch (error) {
+    console.error("Error setting certification:", error);
+    throw error;
+  }
+};
+exports.isCertifiedUser = async (serialNumber, userAddress) => {
+  try {
+    const isCertified = await contract.methods.isCertifiedUser(serialNumber).call({
+      from: userAddress,
+    });
+    console.log(`Is the user certified? ${isCertified}`);
+    return isCertified;
+  } catch (error) {
+    console.error("Error checking if user is certified:", error);
+    throw error;
+  }
+};
+exports.listenForEvents = () => {
+  contract.events.allEvents({
+    fromBlock: 'latest'
+  }, function(error, event) {
+    if (error) console.error(error);
+    console.log(event);
+  });
+};
 
 // // 获取账户列表（需要有挖矿权限的账户）
 // async function getAccounts() {
