@@ -3233,3 +3233,8 @@
 13:17:17.994852 table@remove removed @5336
 13:17:17.995358 table@remove removed @5333
 13:17:17.995414 table@remove removed @5334
+13:50:55.955668 memdb@flush N·31603 S·3MiB
+13:50:55.972737 memdb@flush created L0@5340 N·31603 S·506KiB "n:\x00..:v4,v51563811":"n:\xf3..ong,v51539858"
+13:50:55.972786 version@stat F·[1 2] S·2MiB[506KiB 2MiB] Sc·[0.25 0.02]
+13:50:55.974767 memdb@flush committed F·1 T·18.12548ms
+13:50:55.975451 journal@remove removed @5335
