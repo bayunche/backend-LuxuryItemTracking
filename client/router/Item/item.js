@@ -141,20 +141,18 @@ exports.getSalesList = async (req, res) => {
         offset: pageSize * pageNum - 1,
       },
     });
-    data=data.toJSON()
+    data = data.toJSON();
     res.send({
       msg: "获取销售信息列表成功",
       data,
       error: null,
-    })
-    
+    });
   } catch (error) {
-   console.log(error)
-   res.send({
-    msg: "获取销售信息列表失败",
-    data: null,
-    error: error,
-    
-   })    
+    console.log(error);
+    res.send({
+      msg: "获取销售信息列表失败",
+      data: null,
+      error: error,
+    });
   }
 };

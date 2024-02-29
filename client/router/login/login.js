@@ -3,80 +3,57 @@ const { connectDatabase, getAllUsers } = require("../../data/UserDatabase");
 const { ulid } = require("ulid");
 const User = require("../../data/user");
 const sequelize = require("../../data/database");
-// const login = require("../../tools/data/models/login");
-const { genrateToken } = require("../../utils/jwtCheck");
-const { argon, verifyArgon } = require("../../utils/argon");
-
-
+const { generateToken } = require("../../utils/jwtCheck");
+const { argon } = require("../../utils/argon");
 
 exports.login = async (req, res) => {
-  let { userName, password } = req.body;
-  // user.find({ userName, passWordM: passwordF, condition }).then((result) => {
-  //     res.send({ status: "ok", token: token, result })
-  // }).catch((err)=>{
-  //     res.send({ status: "refuse" })
-  // })
-  let passwordF= await argon(password)
-  let result = await User.findOne({
-    where:{
-      userName:userName,
+  try {
+    const { userName, password } = req.body;
+    const hashedPassword = await argon(password);
+    const user = await User.findOne({ where: { userName } });
+
+    if (!user) {
+      return res.send({ status: "refuse" });
     }
-  });
-  result = result.toJSON()
-  console.log(result)
-  let result2 = await verifyArgon(result.passwordF,password)
-  if (result2 == false) {
-    res.send({
-      status: "refuse",
-    });
-    return;
+
+    const isPasswordValid = await verifyArgon(user.passwordF, hashedPassword);
+
+    if (!isPasswordValid) {
+      return res.send({ status: "refuse" });
+    }
+
+    const token = generateToken(user.userId);
+
+    res.setHeader("Authorization", `Bearer ${token}`);
+    res.send({ status: "ok", msg: null, data: null });
+  } catch (error) {
+    console.error("Error in login:", error);
+    res.status(500).send({ status: "error", msg: "Internal Server Error", data: null });
   }
-  console.log(passwordF,result.passwordF)
-  res.setHeader("Content-Type", "application/json");
-  let token = genrateToken(result.userId);
-  res.setHeader("Authorization", `Bearer ${token}`);
-  res.send({
-    msg: null,
-    data: null,
-    status: "ok",
-  });
 };
+
 exports.signup = async (req, res) => {
   try {
     if (Object.keys(req.body).length === 0) {
-      res.send({
-        err: "empty",
-        data: null,
-      });
-      return;
+      return res.send({ err: "empty", data: null });
     }
-    let { userName, password } = req.body;
-    console.log(req.body);
-    // 对密码进行哈希
-    let passwordF = await argon(password); // 请确保 argon 函数的正确实现
-    // 生成 ULID
-    let userId = ulid();
-    console.log(passwordF);
-    // 创建用户对象 // 保存用户到数据库
+
+    const { userName, password } = req.body;
+    const hashedPassword = await argon(password);
+    const userId = ulid();
+
     const user = await User.create({
       userName,
-      passwordF,
+      passwordF: hashedPassword,
       userId,
-      permissions: 0, // 默认权限值
-      loginTime: now(), // 默认登录时间
+      permissions: 0,
+      loginTime: now(),
     });
 
-    // 设置响应头
     res.setHeader("Content-Type", "application/json");
-    console.log(user);
-    // 发送成功响应
     res.send({ status: "ok", msg: null, data: null });
-  } catch (err) {
-    console.error(err);
-
-    // 发送错误响应
-    res
-      .status(500)
-      .send({ status: "error", msg: "Internal Server Error", data: null });
+  } catch (error) {
+    console.error("Error in signup:", error);
+    res.status(500).send({ status: "error", msg: "Internal Server Error", data: null });
   }
 };

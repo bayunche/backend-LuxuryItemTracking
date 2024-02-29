@@ -1,26 +1,24 @@
-const jwt =require("jsonwebtoken")
+const jwt = require("jsonwebtoken");
 const { ulid } = require('ulid');
 
-const secertKey='Hatsune Miku'
+const secretKey = 'Hatsune Miku';
+const expiresIn = '24h';
 
-const genrateToken=(userId)=>{
-   
-    return jwt.sign({
-        userId:ulid(),
-        // userId:'userId'
-    },secertKey,{
-        expiresIn:'24h'
-    })
-}
+const generateToken = (userId) => {
+    const payload = {
+        userId: ulid(),
+    };
 
-const verifyToken = async(token) => {
+    return jwt.sign(payload, secretKey, { expiresIn });
+};
+
+const verifyToken = (token) => {
     try {
-      const decoded =  jwt.verify(token, secertKey);
-      console.log(decoded)
-      return decoded;
+        return jwt.verify(token, secretKey);
     } catch (err) {
-      console.error('JWT Verification Failed:', err);
-      return null;
+        console.error('JWT Verification Failed:', err);
+        return null;
     }
-  };
-  module.exports= {genrateToken,verifyToken}
+};
+
+module.exports = { generateToken, verifyToken };

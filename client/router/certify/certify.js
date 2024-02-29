@@ -7,6 +7,9 @@ const {
   updateSalesRecord,
   updateLogisticsInfo,
   createAccount,
+  setLuxuryItemCertification,
+  setLuxuryItemValuation
+
 } = require("../../utils/interactWithContract");
 const User = require("../../data/user");
 const sequelize = require("../../data/database");
@@ -248,4 +251,157 @@ exports.updateSalesRecord = async (req, res) => {
       error,
     });
   }
+};
+exports.setLuxuryItemValuation=async(req,res)=>{
+  const { itemId, valuation } = req.body;
+  let userId = req.userId;
+  let item=await ItemList.findByPk(itemId);
+  let user = await User.findByPk(userId);
+  item = item.toJSON();
+  user=user.toJSON();
+  let { serialNumber } = item;
+  let { address } = user;
+  try {
+    let { transactionHash, blockNumber, timestamp } = await setLuxuryItemValuation(
+      serialNumber,
+      valuation,
+      address
+    );
+
+    // 更新数据库中的估值信息
+    await ItemList.update(
+      { valuation },
+      { where: { itemId: itemId } }
+    );
+
+    res.send({
+      msg: "奢侈品估值更新成功",
+      data: {
+        transactionHash,
+        blockNumber,
+        timestamp
+      },
+      error: null,
+    });
+  } catch (error) {
+    console.log(error);
+    res.send({
+      msg: "奢侈品估值更新失败",
+      data: null,
+      error,
+    });
+  }
+}
+exports.setLuxuryItemCertification = async (req, res) => {
+  const { itemId, certification } = req.body;
+  let userId = req.userId;
+  let item = await ItemList.findByPk(itemId);
+  let user = await User.findByPk(userId);
+  user = user.toJSON();
+  item = item.toJSON();
+  let { serialNumber } = item;
+  let { address } = user;
+
+  try {
+    let { transactionHash, blockNumber, timestamp } = await setLuxuryItemCertification(
+      serialNumber,
+      certification,
+      address
+    );
+
+    // 更新数据库中的认证信息
+    await ItemList.update(
+      { certification },
+      { where: { itemId: itemId } }
+    );
+
+    res.send({
+      msg: "奢侈品认证信息更新成功",
+      data: {
+        transactionHash,
+        blockNumber,
+        timestamp
+      },
+      error: null,
+    });
+  } catch (error) {
+    console.log(error);
+    res.send({
+      msg: "奢侈品认证信息更新失败",
+      data: null,
+      error,
+    });
+  }
+};
+exports.isCertifiedUser = async (req, res) => {
+  const { itemId } = req.body; // 假设前端发送的请求体中包含奢侈品ID
+  let userId = req.userId; // 假设通过某种方式获取了请求用户的ID
+
+  // 从数据库中查找奢侈品和用户信息
+  let item = await ItemList.findByPk(itemId);
+  let user = await User.findByPk(userId);
+
+  if (!item || !user) {
+    return res.send({
+      msg: "无法找到奢侈品或用户信息",
+      data: null,
+      error: "Item or User not found",
+    });
+  }
+
+  user = user.toJSON();
+  item = item.toJSON();
+
+  let { serialNumber } = item; // 获取奢侈品的序列号
+  let { address } = user; // 获取用户的区块链地址
+
+  try {
+    // 调用智能合约的方法来确认用户是否为认证用户
+    const isCertified = await isCertifiedUser(serialNumber, address);
+
+    res.send({
+      msg: "认证状态查询成功",
+      data: {
+        isCertified: isCertified,
+      },
+      error: null,
+    });
+  } catch (error) {
+    console.log(error);
+    res.send({
+      msg: "认证状态查询失败",
+      data: null,
+      error,
+    });
+  }
+};
+
+exports.listenForEvents = () => {
+  // 监听认证信息更新事件
+  contract.events.LuxuryItemCertificationUpdated({
+    fromBlock: 'latest'
+  }, function(error, event) {
+    if (error) {
+      console.error("Error listening for LuxuryItemCertificationUpdated events", error);
+    } else {
+      console.log("LuxuryItemCertificationUpdated event detected:", event);
+      // 在这里添加处理事件的逻辑
+      // 例如，更新数据库中的认证状态
+    }
+  });
+
+  // 监听估值更新事件
+  contract.events.LuxuryItemValuationUpdated({
+    fromBlock: 'latest'
+  }, function(error, event) {
+    if (error) {
+      console.error("Error listening for LuxuryItemValuationUpdated events", error);
+    } else {
+      console.log("LuxuryItemValuationUpdated event detected:", event);
+      // 在这里添加处理事件的逻辑
+      // 例如，更新数据库中的估值信息
+    }
+  });
+
+  console.log("Started listening for smart contract events.");
 };
