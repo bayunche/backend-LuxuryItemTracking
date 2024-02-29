@@ -1,0 +1,85 @@
+INFO [12-15|17:24:14.462] Starting Geth on Ethereum mainnet... 
+INFO [12-15|17:24:14.462] Bumping default cache on mainnet         provided=1024 updated=4096
+INFO [12-15|17:24:14.464] Maximum peer count                       ETH=50 LES=0 total=50
+INFO [12-15|17:24:14.465] Smartcard socket not found, disabling    err="stat /run/pcscd/pcscd.comm: no such file or directory"
+WARN [12-15|17:24:14.467] Sanitizing cache to Go's GC limits       provided=4096 updated=561
+INFO [12-15|17:24:14.468] Set global gas cap                       cap=50,000,000
+INFO [12-15|17:24:14.468] Initializing the KZG library             backend=gokzg
+INFO [12-15|17:24:14.528] Allocated trie memory caches             clean=84.00MiB dirty=140.00MiB
+INFO [12-15|17:24:14.528] Defaulting to pebble as the backing database 
+INFO [12-15|17:24:14.528] Allocated cache and file handles         database=/root/ddnwork/node1/data/geth/chaindata cache=280.00MiB handles=32767
+INFO [12-15|17:24:14.552] Opened ancient database                  database=/root/ddnwork/node1/data/geth/chaindata/ancient/chain readonly=false
+INFO [12-15|17:24:14.552] State schema set to default              scheme=hash
+INFO [12-15|17:24:14.552] Initialising Ethereum protocol           network=1 dbversion=<nil>
+INFO [12-15|17:24:14.554] Writing default main-net genesis block 
+INFO [12-15|17:24:15.008] Persisted trie from memory database      nodes=12356 size=1.79MiB time=72.840238ms gcnodes=0 gcsize=0.00B gctime=0s livenodes=0 livesize=0.00B
+INFO [12-15|17:24:15.046]  
+INFO [12-15|17:24:15.046] --------------------------------------------------------------------------------------------------------------------------------------------------------- 
+INFO [12-15|17:24:15.046] Chain ID:  1 (mainnet) 
+INFO [12-15|17:24:15.046] Consensus: Beacon (proof-of-stake), merged from Ethash (proof-of-work) 
+INFO [12-15|17:24:15.046]  
+INFO [12-15|17:24:15.046] Pre-Merge hard forks (block based): 
+INFO [12-15|17:24:15.046]  - Homestead:                   #1150000  (https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/homestead.md) 
+INFO [12-15|17:24:15.046]  - DAO Fork:                    #1920000  (https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/dao-fork.md) 
+INFO [12-15|17:24:15.046]  - Tangerine Whistle (EIP 150): #2463000  (https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/tangerine-whistle.md) 
+INFO [12-15|17:24:15.046]  - Spurious Dragon/1 (EIP 155): #2675000  (https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/spurious-dragon.md) 
+INFO [12-15|17:24:15.046]  - Spurious Dragon/2 (EIP 158): #2675000  (https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/spurious-dragon.md) 
+INFO [12-15|17:24:15.046]  - Byzantium:                   #4370000  (https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/byzantium.md) 
+INFO [12-15|17:24:15.046]  - Constantinople:              #7280000  (https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/constantinople.md) 
+INFO [12-15|17:24:15.046]  - Petersburg:                  #7280000  (https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/petersburg.md) 
+INFO [12-15|17:24:15.046]  - Istanbul:                    #9069000  (https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/istanbul.md) 
+INFO [12-15|17:24:15.046]  - Muir Glacier:                #9200000  (https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/muir-glacier.md) 
+INFO [12-15|17:24:15.046]  - Berlin:                      #12244000 (https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/berlin.md) 
+INFO [12-15|17:24:15.046]  - London:                      #12965000 (https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/london.md) 
+INFO [12-15|17:24:15.046]  - Arrow Glacier:               #13773000 (https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/arrow-glacier.md) 
+INFO [12-15|17:24:15.046]  - Gray Glacier:                #15050000 (https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/gray-glacier.md) 
+INFO [12-15|17:24:15.046]  
+INFO [12-15|17:24:15.046] Merge configured: 
+INFO [12-15|17:24:15.046]  - Hard-fork specification:    https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/paris.md 
+INFO [12-15|17:24:15.046]  - Network known to be merged: true 
+INFO [12-15|17:24:15.046]  - Total terminal difficulty:  58750000000000000000000 
+INFO [12-15|17:24:15.046]  
+INFO [12-15|17:24:15.046] Post-Merge hard forks (timestamp based): 
+INFO [12-15|17:24:15.046]  - Shanghai:                    @1681338455 (https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/shanghai.md) 
+INFO [12-15|17:24:15.046]  
+INFO [12-15|17:24:15.046] --------------------------------------------------------------------------------------------------------------------------------------------------------- 
+INFO [12-15|17:24:15.046]  
+INFO [12-15|17:24:15.046] Loaded most recent local block           number=0 hash=d4e567..cb8fa3 td=17,179,869,184 age=54y8mo3w
+WARN [12-15|17:24:15.046] Failed to load snapshot                  err="missing or corrupted snapshot"
+INFO [12-15|17:24:15.049] Rebuilding state snapshot 
+INFO [12-15|17:24:15.050] Resuming state snapshot generation       root=d7f897..0f0544 accounts=0 slots=0 storage=0.00B dangling=0 elapsed=1.559ms
+INFO [12-15|17:24:15.050] Regenerated local transaction journal    transactions=0 accounts=0
+INFO [12-15|17:24:15.051] Initialized transaction indexer          limit=2,350,000
+INFO [12-15|17:24:15.068] Enabled snap sync                        head=0 hash=d4e567..cb8fa3
+INFO [12-15|17:24:15.068] Chain post-merge, sync via beacon client 
+INFO [12-15|17:24:15.068] Gasprice oracle is ignoring threshold set threshold=2
+WARN [12-15|17:24:15.073] Engine API enabled                       protocol=eth
+INFO [12-15|17:24:15.073] Starting peer-to-peer node               instance=Geth/v1.13.5-stable-916d6a44/linux-amd64/go1.21.4
+INFO [12-15|17:24:15.087] New local node record                    seq=1,702,632,255,086 id=918381bf526e8d91 ip=127.0.0.1 udp=2001 tcp=2001
+WARN [12-15|17:24:15.087] Deprecated personal namespace activated 
+INFO [12-15|17:24:15.088] IPC endpoint opened                      url=/root/ddnwork/node1/data/geth.ipc
+INFO [12-15|17:24:15.088] Generated JWT secret                     path=/root/ddnwork/node1/data/geth/jwtsecret
+INFO [12-15|17:24:15.088] HTTP server started                      endpoint=127.0.0.1:8548 auth=false prefix= cors= vhosts=localhost
+INFO [12-15|17:24:15.089] WebSocket enabled                        url=ws://127.0.0.1:8551
+INFO [12-15|17:24:15.089] HTTP server started                      endpoint=127.0.0.1:8551 auth=true  prefix= cors=localhost vhosts=localhost
+INFO [12-15|17:24:15.094] Started P2P networking                   self=enode://368fcbada478947097ade794502b83433b9cd960aa9abfd70d8ea5c3333fcf765691265fb9ef0156b6fcca1c8a4b6191a96123b40b1594af665dcdebabfc59b2@127.0.0.1:2001
+INFO [12-15|17:24:15.118] Generated state snapshot                 accounts=8893 slots=0 storage=409.64KiB dangling=0 elapsed=69.081ms
+WARN [12-15|17:24:15.135] Enabling deprecated personal namespace 
+WARN [12-15|17:24:15.136] Served eth_coinbase                      reqid=3 duration="20.378µs" err="etherbase must be explicitly specified"
+Welcome to the Geth JavaScript console!
+
+instance: Geth/v1.13.5-stable-916d6a44/linux-amd64/go1.21.4
+at block: 0 (Thu Jan 01 1970 08:00:00 GMT+0800 (CST))
+ datadir: /root/ddnwork/node1/data
+ modules: admin:1.0 debug:1.0 engine:1.0 eth:1.0 miner:1.0 net:1.0 personal:1.0 rpc:1.0 txpool:1.0 web3:1.0
+
+To exit, press ctrl-d or type exit
+> 
+INFO [12-15|17:24:15.138] HTTP server stopped                      endpoint=127.0.0.1:8548
+INFO [12-15|17:24:15.138] HTTP server stopped                      endpoint=127.0.0.1:8551
+INFO [12-15|17:24:15.138] IPC endpoint closed                      url=/root/ddnwork/node1/data/geth.ipc
+INFO [12-15|17:24:15.138] Ethereum protocol stopped 
+INFO [12-15|17:24:15.138] Transaction pool stopped 
+INFO [12-15|17:24:15.184] Writing snapshot state to disk           root=d7f897..0f0544
+INFO [12-15|17:24:15.184] Persisted trie from memory database      nodes=0     size=0.00B   time="3.236µs"   gcnodes=0 gcsize=0.00B gctime=0s livenodes=0 livesize=0.00B
+INFO [12-15|17:24:15.184] Blockchain stopped 
