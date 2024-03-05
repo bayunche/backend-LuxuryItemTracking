@@ -4,7 +4,8 @@ const { ulid } = require("ulid");
 const User = require("../../data/user");
 const sequelize = require("../../data/database");
 const { generateToken } = require("../../utils/jwtCheck");
-const { argon } = require("../../utils/argon");
+const { argon,verifyArgon } = require("../../utils/argon");
+
 
 exports.login = async (req, res) => {
   try {

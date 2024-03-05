@@ -1,3 +1,18 @@
 {
-    "compile-hero.disable-compile-files-on-did-save-code": false
+    "compile-hero.disable-compile-files-on-did-save-code": false,
+    "sqltools.connections": [
+        {
+            "mysqlOptions": {
+                "authProtocol": "default",
+                "enableSsl": "Disabled"
+            },
+            "previewLimit": 50,
+            "server": "8.134.196.44",
+            "port": 3306,
+            "driver": "MySQL",
+            "name": "backend",
+            "database": "ddn",
+            "username": "testuser"
+        }
+    ]
 }
