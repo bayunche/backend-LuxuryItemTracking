@@ -17,6 +17,7 @@ exports.login = async (req, res) => {
       return;
     }
     const isPasswordValid = await verifyArgon(user.passwordF, password);
+    console.log(isPasswordValid);
     if (!isPasswordValid) {
       res.send({ status: "refuse", msg: "用户名或密码错误" });
       return;
