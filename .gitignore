@@ -129,8 +129,12 @@ dist
 .yarn/install-state.gz
 .pnp.*
 #node
-ddnNode/
-node1/
-node2/
-node3/
+ddnNode/*
+node1/*
+node2/*
+node3/*
+ddnNode
+node1
+node2
+node3
 
