@@ -42,20 +42,34 @@ exports.createUserPrivateKey = async (req, res) => {
     console.log(result);
     if (result != null) {
       res.send({
-        msg: "success",
+        status:"success",
+        msg: "创建用户权限成功",
         data: null,
       });
     } else {
       res.send({
-        msg: "failed",
+        status:"refuse",
+        msg: "创建用户失败",
         data: null,
       });
     }
   } else {
     res.send({
       msg: "已注册区块链账户",
+      status:"refuse",
       data: null,
     });
+  }
+};
+
+exports.certifiedUser = async (req, res) => {
+  const userId = req.userId;
+  let user = await User.findByPk(userId);
+  user = user.toJSON();
+  if (user.address && user.balance) {
+    res.send({ status:"success", msg: "用户已注册区块链账户", data: user.address });
+  }else{
+    res.send({ status:"refuse",msg: "用户未注册区块链账户", data: null });
   }
 };
 
