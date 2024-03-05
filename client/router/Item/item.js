@@ -63,15 +63,18 @@ exports.getLogisticsInfo = async (req, res) => {
 };
 exports.getItemList = async (req, res) => {
   let userId = req.userId;
-  let { pageNum, pageSize } = req.params;
+  // let { pageNum, pageSize } = req.params;
   try {
     let data = await ItemList.findAll({
+      attributes: ["itemImage", "itemDate", "serialNumber"],
       where: {
-        limit: pageSize,
-        offset: pageSize * pageNum - 1,
+        // limit: pageSize,
+        // offset: pageSize * pageNum - 1,
+        userId,
       },
     });
     data = data.toJSON();
+
     res.send({
       msg: "获取物品列表成功",
       data,
