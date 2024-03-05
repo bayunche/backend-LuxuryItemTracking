@@ -13,12 +13,14 @@ const ItemList = require("../../data/itemList");
 const salesInfo = require("../../data/salesInfo");
 
 exports.getItemDetails = async (req, res) => {
-  const { serialNumer } = req.params;
+  const { itemId } = req.params;
   const userId = req.userId;
   try {
     let address = await User.findByPk(userId);
     address = address.address;
     console.log(address);
+    let serialNumer = await ItemList.findByPk(itemId);
+    serialNumer=serialNumer.serialNumber;
     let result = await getLuxuryItemDetails(serialNumer, address);
     res.send({
       result,
@@ -73,8 +75,11 @@ exports.getItemList = async (req, res) => {
         userId,
       },
     });
-    data = data.toJSON();
-
+// if (data.length === 0) {
+//   data = data.toJSON();
+  
+// }
+    console.log(data);
     res.send({
       msg: "获取物品列表成功",
       data,
