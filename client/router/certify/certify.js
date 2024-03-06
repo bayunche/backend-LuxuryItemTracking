@@ -8,8 +8,7 @@ const {
   updateLogisticsInfo,
   createAccount,
   setLuxuryItemCertification,
-  setLuxuryItemValuation
-
+  setLuxuryItemValuation,
 } = require("../../utils/interactWithContract");
 const User = require("../../data/user");
 const sequelize = require("../../data/database");
@@ -28,7 +27,7 @@ exports.mintLuxuryItem = async (req, res) => {
   let { itemName, itemDate, itemImage } = req.body;
   let userId = req.userId;
 
-  let result = await User.findByPk(userId);
+  let result = await User.findOne({ where: { userId: userId } });
   result = result.toJSON();
   let { address } = result;
   try {
@@ -119,8 +118,9 @@ exports.updateLogisticInfo = async (req, res) => {
     status,
   } = req.body;
   let userId = req.userId;
-  let item = await ItemList.findByPk(itemId);
-  let user = await User.findByPk(userId);
+  let item = await ItemList.findOne({ where: { itemId: itemId } });
+  let user = await User.findOne({ where: { userId: userId } });
+
   user = item.toJSON();
   item = item.toJSON();
   let { serialNumber } = item;
@@ -201,8 +201,8 @@ exports.updateSalesRecord = async (req, res) => {
   salesTime = new Date(salesTime);
   let userId = req.userId;
   try {
-    let item = await ItemList.findByPk(itemId);
-    let user = await User.findByPk(userId);
+    let item = await ItemList.findOne({ where: { itemId: itemId } });
+    let user = await User.findOne({ where: { userId: userId } });
     user = item.toJSON();
     item = item.toJSON();
     let { serialNumber } = item;
@@ -252,34 +252,28 @@ exports.updateSalesRecord = async (req, res) => {
     });
   }
 };
-exports.setLuxuryItemValuation=async(req,res)=>{
+exports.setLuxuryItemValuation = async (req, res) => {
   const { itemId, valuation } = req.body;
   let userId = req.userId;
-  let item=await ItemList.findByPk(itemId);
-  let user = await User.findByPk(userId);
+  let item = await ItemList.findOne({ where: { itemId: itemId } });
+  let user = await User.findOne({ where: { userId: userId } });
   item = item.toJSON();
-  user=user.toJSON();
+  user = user.toJSON();
   let { serialNumber } = item;
   let { address } = user;
   try {
-    let { transactionHash, blockNumber, timestamp } = await setLuxuryItemValuation(
-      serialNumber,
-      valuation,
-      address
-    );
+    let { transactionHash, blockNumber, timestamp } =
+      await setLuxuryItemValuation(serialNumber, valuation, address);
 
     // 更新数据库中的估值信息
-    await ItemList.update(
-      { valuation },
-      { where: { itemId: itemId } }
-    );
+    await ItemList.update({ valuation }, { where: { itemId: itemId } });
 
     res.send({
       msg: "奢侈品估值更新成功",
       data: {
         transactionHash,
         blockNumber,
-        timestamp
+        timestamp,
       },
       error: null,
     });
@@ -291,36 +285,30 @@ exports.setLuxuryItemValuation=async(req,res)=>{
       error,
     });
   }
-}
+};
 exports.setLuxuryItemCertification = async (req, res) => {
   const { itemId, certification } = req.body;
   let userId = req.userId;
-  let item = await ItemList.findByPk(itemId);
-  let user = await User.findByPk(userId);
+  let item = await ItemList.findOne({ where: { itemId: itemId } });
+  let user = await User.findOne({ where: { userId: userId } });
   user = user.toJSON();
   item = item.toJSON();
   let { serialNumber } = item;
   let { address } = user;
 
   try {
-    let { transactionHash, blockNumber, timestamp } = await setLuxuryItemCertification(
-      serialNumber,
-      certification,
-      address
-    );
+    let { transactionHash, blockNumber, timestamp } =
+      await setLuxuryItemCertification(serialNumber, certification, address);
 
     // 更新数据库中的认证信息
-    await ItemList.update(
-      { certification },
-      { where: { itemId: itemId } }
-    );
+    await ItemList.update({ certification }, { where: { itemId: itemId } });
 
     res.send({
       msg: "奢侈品认证信息更新成功",
       data: {
         transactionHash,
         blockNumber,
-        timestamp
+        timestamp,
       },
       error: null,
     });
@@ -338,8 +326,8 @@ exports.isCertifiedUser = async (req, res) => {
   let userId = req.userId; // 假设通过某种方式获取了请求用户的ID
 
   // 从数据库中查找奢侈品和用户信息
-  let item = await ItemList.findByPk(itemId);
-  let user = await User.findByPk(userId);
+  let item = await ItemList.findOne({ where: { itemId: itemId } });
+  let user = await User.findOne({ where: { itemId: itemId } });
 
   if (!item || !user) {
     return res.send({
@@ -378,30 +366,42 @@ exports.isCertifiedUser = async (req, res) => {
 
 exports.listenForEvents = () => {
   // 监听认证信息更新事件
-  contract.events.LuxuryItemCertificationUpdated({
-    fromBlock: 'latest'
-  }, function(error, event) {
-    if (error) {
-      console.error("Error listening for LuxuryItemCertificationUpdated events", error);
-    } else {
-      console.log("LuxuryItemCertificationUpdated event detected:", event);
-      // 在这里添加处理事件的逻辑
-      // 例如，更新数据库中的认证状态
+  contract.events.LuxuryItemCertificationUpdated(
+    {
+      fromBlock: "latest",
+    },
+    function (error, event) {
+      if (error) {
+        console.error(
+          "Error listening for LuxuryItemCertificationUpdated events",
+          error
+        );
+      } else {
+        console.log("LuxuryItemCertificationUpdated event detected:", event);
+        // 在这里添加处理事件的逻辑
+        // 例如，更新数据库中的认证状态
+      }
     }
-  });
+  );
 
   // 监听估值更新事件
-  contract.events.LuxuryItemValuationUpdated({
-    fromBlock: 'latest'
-  }, function(error, event) {
-    if (error) {
-      console.error("Error listening for LuxuryItemValuationUpdated events", error);
-    } else {
-      console.log("LuxuryItemValuationUpdated event detected:", event);
-      // 在这里添加处理事件的逻辑
-      // 例如，更新数据库中的估值信息
+  contract.events.LuxuryItemValuationUpdated(
+    {
+      fromBlock: "latest",
+    },
+    function (error, event) {
+      if (error) {
+        console.error(
+          "Error listening for LuxuryItemValuationUpdated events",
+          error
+        );
+      } else {
+        console.log("LuxuryItemValuationUpdated event detected:", event);
+        // 在这里添加处理事件的逻辑
+        // 例如，更新数据库中的估值信息
+      }
     }
-  });
+  );
 
   console.log("Started listening for smart contract events.");
 };

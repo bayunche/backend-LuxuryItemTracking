@@ -26,7 +26,7 @@ exports.createUserPrivateKey = async (req, res) => {
   // const newAccount = web3.eth.accounts.create();
   // const privateKey = newAccount.privateKey;
 
-  let user = await User.findByPk(userId);
+  let user = await User.findOne({where:{userId:userId}});
   user = user.toJSON();
   console.log(user);
   if (!user.address) {
@@ -64,7 +64,7 @@ exports.createUserPrivateKey = async (req, res) => {
 
 exports.certifiedUser = async (req, res) => {
   const userId = req.userId;
-  let user = await User.findByPk(userId);
+  let user = await User.findOne({where:{userId:userId}});
   user = user.toJSON();
   if (user.address && user.balance) {
     res.send({ status:"success", msg: "用户已注册区块链账户", data: user.address });
@@ -75,7 +75,7 @@ exports.certifiedUser = async (req, res) => {
 
 exports.getUserInfo = async (req, res) => {
   const userId = req.userId;
-  let userDetail = await User.findByPk(userId);
+  let userDetail = await User.findOne({where:{userId:userId}});
   userDetail = userDetail.toJSON();
   res.send({
     msg: "获取用户信息成功",

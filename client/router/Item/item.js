@@ -16,11 +16,11 @@ exports.getItemDetails = async (req, res) => {
   const { itemId } = req.params;
   const userId = req.userId;
   try {
-    let address = await User.findByPk(userId);
+    let address = await User.findOne({ where: { userId: userId } });
     address = address.address;
     console.log(address);
-    let serialNumer = await ItemList.findByPk(itemId);
-    serialNumer=serialNumer.serialNumber;
+    let serialNumer = await ItemList.findOne({ where: { itemId: itemId } });
+    serialNumer = serialNumer.serialNumber;
     let result = await getLuxuryItemDetails(serialNumer, address);
     res.send({
       result,
@@ -75,10 +75,10 @@ exports.getItemList = async (req, res) => {
         userId,
       },
     });
-// if (data.length === 0) {
-//   data = data.toJSON();
-  
-// }
+    // if (data.length === 0) {
+    //   data = data.toJSON();
+
+    // }
     console.log(data);
     res.send({
       msg: "获取物品列表成功",
@@ -123,7 +123,7 @@ exports.getLogisticsList = async (req, res) => {
 exports.getSalesDetail = async (req, res) => {
   let { salesId } = req.params;
   try {
-    let data = salesInfo.findByPk(salesId);
+    let data = salesInfo.findOne({ where: { salesId: salesId } });
     data = data.toJSON();
     res.send({
       msg: "获取销售信息详情成功",

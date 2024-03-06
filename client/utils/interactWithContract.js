@@ -193,7 +193,7 @@ exports.isLuxuryItemExists = async (serialNumber) => {
 };
 // 创建账户
 exports.createAccount = async (userId) => {
-  let result = await User.findByPk(userId);
+  let result = await User.findOne({where:{userId:userId}});
   result = result.toJSON();
   console.log(result);
   const newAccount = await web3.eth.personal.newAccount(result.userId);
