@@ -6,7 +6,7 @@ const expiresIn = '24h';
 
 const generateToken = (userId) => {
     const payload = {
-        userId: ulid(),
+        userId,
     };
 
     return jwt.sign(payload, secretKey, { expiresIn });
