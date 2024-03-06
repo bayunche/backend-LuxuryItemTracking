@@ -6,7 +6,7 @@ const { userInfo } = require("os");
 // 加载LuxuryItemTracking合约的ABI
 const luxuryItemTrackingABI =
   require("../../build/contracts/LuxuryItemTracking.json").abi;
-const web3 = new Web3("http://127.0.0.1:8548"); // 替换为你的以太坊节点地址
+const web3 = new Web3("http://127.0.0.1:8560"); // 替换为你的以太坊节点地址
 
 let contractAddress;
 
@@ -196,7 +196,7 @@ exports.createAccount = async (userId) => {
   let result = await User.findByPk(userId);
   result = result.toJSON();
   console.log(result);
-  const newAccount = await web3.eth.personal.newAccount(result.userId);
+  const newAccount = await web3.personal.newAccount(result.userId);
   
   const address = newAccount;
   let initAccount = await web3.eth.getAccounts();
