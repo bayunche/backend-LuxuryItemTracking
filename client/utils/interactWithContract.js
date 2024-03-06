@@ -9,7 +9,7 @@ const luxuryItemTrackingABI =
 const web3 = new Web3("http://127.0.0.1:8550"); // 替换为你的以太坊节点地址
 
 let contractAddress;
-
+const password = "123456";
 // const contract = new web3.eth.Contract(luxuryItemTrackingABI, contractAddress);
 
 // 创建NFTs
@@ -193,24 +193,58 @@ exports.isLuxuryItemExists = async (serialNumber) => {
 };
 // 创建账户
 exports.createAccount = async (userId) => {
-  let result = await User.findOne({where:{userId:userId}});
-  // result = result.toJSON();
-  console.log(result);
-  const newAccount = await web3.eth.personal.newAccount(result.userId);
-  
-  const address = newAccount;
-  let initAccount = await web3.eth.getAccounts();
-  initAccount = initAccount[0];
-  console.log(initAccount);
-  await web3.eth.sendTransaction({
-    from: initAccount,
-    to: address,
-    value: web3.utils.toWei("10", "ether"),
-    gas: "30000",
-    gasPrice: web3.utils.toWei("100", "gwei"),
-  });
-  return address;
+  try {
+    // 检索用户信息
+    const user = await User.findOne({ where: { userId } });
+    if (!user) {
+      throw new Error("用户未找到");
+    }
+    console.log(user);
+
+    // 使用用户的 userId 创建新的区块链账户
+    const newAccountAddress = await web3.eth.personal.newAccount(user.userId);
+    console.log(newAccountAddress);
+    // 使用相同的 userId（作为密码）解锁新创建的账户
+    let isNewAccountUnlocked = await web3.eth.personal.unlockAccount(
+      newAccountAddress,
+      userId,
+      0
+    ); // 解锁时长设定为无限时长
+    if (!isNewAccountUnlocked) {
+      throw new Error("新账户解锁失败");
+    }
+    // 获取初始账户地址
+    const initAccount = await web3.eth.getAccounts()[0];
+
+    if (!initAccount) {
+      throw new Error("初始账户未找到");
+    }
+    console.log(initAccount);
+    let isUnlocked = await web3.eth.personal.unlockAccount(
+      initAccount,
+      password,
+      600
+    ); // 解锁时长设定为600秒
+    if (!isUnlocked) {
+      throw new Error("账户解锁失败");
+    }
+    // 从初始账户向新账户发送以太币
+    await web3.eth.sendTransaction({
+      from: initAccount,
+      to: newAccountAddress,
+      value: web3.utils.toWei("10", "ether"), // 发送10 Ether
+      gas: 30000, // 设置gas限制
+      gasPrice: web3.utils.toWei("100", "gwei"), // 设置gas价格
+    });
+
+    // 返回新创建的账户地址
+    return newAccountAddress;
+  } catch (error) {
+    console.error("创建账户时出错:", error);
+    throw error; // 将错误向上抛出，便于调用函数处理错误
+  }
 };
+
 exports.setLuxuryItemValuation = async (
   serialNumber,
   valuation,
@@ -231,11 +265,17 @@ exports.setLuxuryItemValuation = async (
     throw error;
   }
 };
-exports.setLuxuryItemCertification = async (serialNumber, certification, ownerAddress) => {
+exports.setLuxuryItemCertification = async (
+  serialNumber,
+  certification,
+  ownerAddress
+) => {
   try {
-    const transaction = await contract.methods.setLuxuryItemCertification(serialNumber, certification).send({
-      from: ownerAddress,
-    });
+    const transaction = await contract.methods
+      .setLuxuryItemCertification(serialNumber, certification)
+      .send({
+        from: ownerAddress,
+      });
     console.log("Certification set successfully!");
     return {
       transactionHash: transaction.transactionHash,
@@ -247,9 +287,11 @@ exports.setLuxuryItemCertification = async (serialNumber, certification, ownerAd
 };
 exports.isCertifiedUser = async (serialNumber, userAddress) => {
   try {
-    const isCertified = await contract.methods.isCertifiedUser(serialNumber).call({
-      from: userAddress,
-    });
+    const isCertified = await contract.methods
+      .isCertifiedUser(serialNumber)
+      .call({
+        from: userAddress,
+      });
     console.log(`Is the user certified? ${isCertified}`);
     return isCertified;
   } catch (error) {
@@ -258,12 +300,15 @@ exports.isCertifiedUser = async (serialNumber, userAddress) => {
   }
 };
 exports.listenForEvents = () => {
-  contract.events.allEvents({
-    fromBlock: 'latest'
-  }, function(error, event) {
-    if (error) console.error(error);
-    console.log(event);
-  });
+  contract.events.allEvents(
+    {
+      fromBlock: "latest",
+    },
+    function (error, event) {
+      if (error) console.error(error);
+      console.log(event);
+    }
+  );
 };
 
 // // 获取账户列表（需要有挖矿权限的账户）

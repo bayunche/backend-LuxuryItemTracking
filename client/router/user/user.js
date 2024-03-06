@@ -21,44 +21,52 @@ const qrcode = require("qrcode");
 const salesInfo = require("../../data/salesInfo");
 
 exports.createUserPrivateKey = async (req, res) => {
-  console.log(req.userId);
-  const userId = req.userId;
-  // const newAccount = web3.eth.accounts.create();
-  // const privateKey = newAccount.privateKey;
+  try {
+    // Extracting userId from the request object
+    const { userId } = req;
+    console.log(userId);
 
-  let user = await User.findOne({ where: { userId: userId } });
-  // user = user.toJSON();
-  console.log(user);
-  if (!user.address) {
-    let address = await createAccount(userId);
-    console.log(address);
+    // Retrieve the user from the database
+    let user = await User.findOne({ where: { userId } });
+    console.log(user);
 
-    let result = await User.update(
-      { address: address, balance: "10" },
-      {
-        where: { userId: user.userId },
+    // Check if the user already has an address
+    if (!user || !user.address) {
+      // Also, ensure user exists before checking its properties
+      // Create a new blockchain account for the user
+      const address = await createAccount(userId);
+      console.log(address);
+
+      // Update the user's address and balance in the database
+      const [updateCount] = await User.update(
+        { address, balance: "10" }, // Directly use shorthand property names
+        { where: { userId } } // Use the same shorthand notation here
+      );
+      console.log(updateCount);
+
+      // Check if the update was successful
+      if (updateCount > 0) {
+        return res.send({
+          status: "success",
+          msg: "创建用户权限成功",
+          data: null,
+        });
+      } else {
+        return res.send({ status: "refuse", msg: "创建用户失败", data: null });
       }
-    );
-    console.log(result);
-    if (result != null) {
-      res.send({
-        status: "success",
-        msg: "创建用户权限成功",
-        data: null,
-      });
     } else {
-      res.send({
+      // User already has a registered blockchain account
+      return res.send({
         status: "refuse",
-        msg: "创建用户失败",
+        msg: "已注册区块链账户",
         data: null,
       });
     }
-  } else {
-    res.send({
-      msg: "已注册区块链账户",
-      status: "refuse",
-      data: null,
-    });
+  } catch (error) {
+    console.error(error); // Log the error for debugging purposes
+    return res
+      .status(500)
+      .send({ status: "error", msg: "服务器内部错误", data: error.toString() });
   }
 };
 
