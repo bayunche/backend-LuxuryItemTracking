@@ -195,7 +195,7 @@ exports.isLuxuryItemExists = async (serialNumber) => {
 exports.createAccount = async (userId) => {
   let result = await User.findByPk(userId);
   result = result.toJSON();
-  const newAccount = await web3.eth.personal.newAccount(result.userId);
+  const newAccount = await web3.accounts.create(result.userId);
   console.log(newAccount);
   const address = newAccount;
   let initAccount = await web3.eth.getAccounts();
