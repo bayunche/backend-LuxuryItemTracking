@@ -196,7 +196,7 @@ exports.createAccount = async (userId) => {
   let result = await User.findByPk(userId);
   result = result.toJSON();
   console.log(result);
-  const newAccount = await web3.personal.newAccount(result.userId);
+  const newAccount = await web3.eth.personal.newAccount(result.userId);
   
   const address = newAccount;
   let initAccount = await web3.eth.getAccounts();
