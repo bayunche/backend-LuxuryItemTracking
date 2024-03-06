@@ -232,7 +232,7 @@ exports.createAccount = async (userId) => {
     await web3.eth.sendTransaction({
       from: initAccount,
       to: newAccountAddress,
-      value: web3.utils.toWei("10", "ether"), // 发送10 Ether
+      value: web3.utils.toWei("5", "ether"), // 发送10 Ether
       gas: 30000, // 设置gas限制
       gasPrice: web3.utils.toWei("100", "gwei"), // 设置gas价格
     });
