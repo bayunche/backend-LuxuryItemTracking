@@ -214,7 +214,7 @@ exports.createAccount = async (userId) => {
       throw new Error("新账户解锁失败");
     }
     // 获取初始账户地址
-    const initAccount = await web3.eth.getAccounts()[0];
+    const [initAccount] = await web3.eth.getAccounts();
 
     if (!initAccount) {
       throw new Error("初始账户未找到");
