@@ -26,8 +26,8 @@ exports.createUserPrivateKey = async (req, res) => {
   // const newAccount = web3.eth.accounts.create();
   // const privateKey = newAccount.privateKey;
 
-  let user = await User.findOne({where:{userId:userId}});
-  user = user.toJSON();
+  let user = await User.findOne({ where: { userId: userId } });
+  // user = user.toJSON();
   console.log(user);
   if (!user.address) {
     let address = await createAccount(userId);
@@ -42,13 +42,13 @@ exports.createUserPrivateKey = async (req, res) => {
     console.log(result);
     if (result != null) {
       res.send({
-        status:"success",
+        status: "success",
         msg: "创建用户权限成功",
         data: null,
       });
     } else {
       res.send({
-        status:"refuse",
+        status: "refuse",
         msg: "创建用户失败",
         data: null,
       });
@@ -56,7 +56,7 @@ exports.createUserPrivateKey = async (req, res) => {
   } else {
     res.send({
       msg: "已注册区块链账户",
-      status:"refuse",
+      status: "refuse",
       data: null,
     });
   }
@@ -64,19 +64,23 @@ exports.createUserPrivateKey = async (req, res) => {
 
 exports.certifiedUser = async (req, res) => {
   const userId = req.userId;
-  let user = await User.findOne({where:{userId:userId}});
-  user = user.toJSON();
+  let user = await User.findOne({ where: { userId: userId } });
+  // user = user.toJSON();
   if (user.address && user.balance) {
-    res.send({ status:"success", msg: "用户已注册区块链账户", data: user.address });
-  }else{
-    res.send({ status:"refuse",msg: "用户未注册区块链账户", data: null });
+    res.send({
+      status: "success",
+      msg: "用户已注册区块链账户",
+      data: user.address,
+    });
+  } else {
+    res.send({ status: "refuse", msg: "用户未注册区块链账户", data: null });
   }
 };
 
 exports.getUserInfo = async (req, res) => {
   const userId = req.userId;
-  let userDetail = await User.findOne({where:{userId:userId}});
-  userDetail = userDetail.toJSON();
+  let userDetail = await User.findOne({ where: { userId: userId } });
+  // userDetail = userDetail.toJSON();
   res.send({
     msg: "获取用户信息成功",
     data: userDetail,

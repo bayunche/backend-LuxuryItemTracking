@@ -28,11 +28,10 @@ exports.mintLuxuryItem = async (req, res) => {
   let userId = req.userId;
 
   let result = await User.findOne({ where: { userId: userId } });
-  result = result.toJSON();
+  // result = result.toJSON();
   let { address } = result;
   try {
     if (address != null) {
-      // const { privateKey } = result.toJSON();
       let serialNumber = generateSecureRandomNumber();
       userId = result.userId;
       console.log(address, userId);
@@ -121,8 +120,8 @@ exports.updateLogisticInfo = async (req, res) => {
   let item = await ItemList.findOne({ where: { itemId: itemId } });
   let user = await User.findOne({ where: { userId: userId } });
 
-  user = item.toJSON();
-  item = item.toJSON();
+  // user = item.toJSON();
+  // item = item.toJSON();
   let { serialNumber } = item;
   let { address } = user;
   let logisticsInfo = {
@@ -203,8 +202,8 @@ exports.updateSalesRecord = async (req, res) => {
   try {
     let item = await ItemList.findOne({ where: { itemId: itemId } });
     let user = await User.findOne({ where: { userId: userId } });
-    user = item.toJSON();
-    item = item.toJSON();
+    // user = item.toJSON();
+    // item = item.toJSON();
     let { serialNumber } = item;
     let { address } = user;
     let salesData = {
@@ -257,8 +256,8 @@ exports.setLuxuryItemValuation = async (req, res) => {
   let userId = req.userId;
   let item = await ItemList.findOne({ where: { itemId: itemId } });
   let user = await User.findOne({ where: { userId: userId } });
-  item = item.toJSON();
-  user = user.toJSON();
+  // item = item.toJSON();
+  // user = user.toJSON();
   let { serialNumber } = item;
   let { address } = user;
   try {

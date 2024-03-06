@@ -47,7 +47,7 @@ exports.getLogisticsInfo = async (req, res) => {
         order: [["createTime", "DESC"]],
       })
       .then(async (data) => {
-        data = await data.toJSON();
+        // data = await data.toJSON();
         res.send({
           msg: "获取该物品物流信息成功",
           data: data,
@@ -104,7 +104,7 @@ exports.getLogisticsList = async (req, res) => {
         offset: pageSize * pageNum - 1,
       },
     });
-    data = data.toJSON();
+    // data = data.toJSON();
     res.send({
       msg: "获取物流信息列表成功",
       data,
@@ -124,7 +124,7 @@ exports.getSalesDetail = async (req, res) => {
   let { salesId } = req.params;
   try {
     let data = salesInfo.findOne({ where: { salesId: salesId } });
-    data = data.toJSON();
+    // data = data.toJSON();
     res.send({
       msg: "获取销售信息详情成功",
       data,
@@ -149,7 +149,7 @@ exports.getSalesList = async (req, res) => {
         offset: pageSize * pageNum - 1,
       },
     });
-    data = data.toJSON();
+    // data = data.toJSON();
     res.send({
       msg: "获取销售信息列表成功",
       data,
