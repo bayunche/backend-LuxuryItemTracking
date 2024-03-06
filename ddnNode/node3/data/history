@@ -1,7 +1,0 @@
-
-admin.peercount
-net.peerCount
-admin.addPeer("enode://d12ce687591486b9d5b3f3f7cbb3357eea878c54275845bcff4cac98368bc329e18f8ab42ddcd37b6270a6d12f7f1b5ffb19eb1719da1d1e01a85e9ee984c20d@127.0.0.1:2001")
-net.peerCount
-net.peerCount()
-net.peerCount
