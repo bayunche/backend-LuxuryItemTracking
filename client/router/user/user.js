@@ -66,6 +66,7 @@ exports.certifiedUser = async (req, res) => {
   const userId = req.userId;
   let user = await User.findOne({ where: { userId: userId } });
   // user = user.toJSON();
+  console.log(user);
   if (user.address && user.balance) {
     res.send({
       status: "success",
