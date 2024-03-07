@@ -39,7 +39,7 @@ exports.createUserPrivateKey = async (req, res) => {
 
       // Update the user's address and balance in the database
       const [updateCount] = await User.update(
-        { address, balance: "10" }, // Directly use shorthand property names
+        { address, balance: "2" }, // Directly use shorthand property names
         { where: { userId } } // Use the same shorthand notation here
       );
       console.log(updateCount);
