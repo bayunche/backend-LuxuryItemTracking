@@ -37,7 +37,7 @@ exports.mintNFTs = async (
       // 如果账户未解锁，使用提供的密码短语解锁
       await web3.eth.personal.unlockAccount(account, passphrase, 600); // 解锁10分钟
     }
-
+    console.log(contract.methods)
     // 铸造 NFT
     const transaction = await contract.methods
       .mintNFTs(_name, _serialNumber, _productionDate)
