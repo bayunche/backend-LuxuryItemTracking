@@ -83,15 +83,21 @@ exports.mintLuxuryItem = async (req, res) => {
         serialNumber,
         qrcode: qrcodeBase64,
         msg: "success",
+        status:"success"
       });
     } else {
       res.send({
-        status: 400,
+        status: "refuse",
         msg: "请先注册区块链账户",
       });
     }
   } catch (error) {
-    throw error;
+    // throw error;
+    console.log(error)
+    res.send({
+      status:"refuse",
+      msg: error,
+    })
   }
 };
 
@@ -290,8 +296,8 @@ exports.setLuxuryItemCertification = async (req, res) => {
   let userId = req.userId;
   let item = await ItemList.findOne({ where: { itemId: itemId } });
   let user = await User.findOne({ where: { userId: userId } });
-  user = user.toJSON();
-  item = item.toJSON();
+  // user = user.toJSON();
+  // item = item.toJSON();
   let { serialNumber } = item;
   let { address } = user;
 
@@ -336,8 +342,8 @@ exports.isCertifiedUser = async (req, res) => {
     });
   }
 
-  user = user.toJSON();
-  item = item.toJSON();
+  // user = user.toJSON();
+  // item = item.toJSON();
 
   let { serialNumber } = item; // 获取奢侈品的序列号
   let { address } = user; // 获取用户的区块链地址

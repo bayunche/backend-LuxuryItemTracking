@@ -50,11 +50,8 @@ exports.mintNFTs = async (
     );
 
     if (accountBalance < estimatedGas * gasPrice) {
-      res.send({
-        msg: "当前账户余额不足，请联系管理员",
-        status: "refuse",
-        data: null,
-      });
+      throw new Error("当前账户余额不足，无法完成交易");
+    
     }
     // 铸造 NFT
     const transaction = await contract.methods
