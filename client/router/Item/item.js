@@ -88,9 +88,9 @@ exports.getItemList = async (req, res) => {
   } catch (error) {
     console.log(error);
     res.send({
-      msg: "获取物品列表成功",
-      data,
-      error: null,
+      msg: "获取物品列表失败",
+      data:null,
+      status:"refuse"
     });
   }
 };

@@ -192,7 +192,7 @@ exports.getLuxuryItemDetails = async (serialNumber, address) => {
   }
 };
 // 判断奢侈品是否存在
-exports.isLuxuryItemExists = async (serialNumber) => {
+const isLuxuryItemExists = async (serialNumber) => {
   try {
     contractAddress = address;
 
@@ -208,6 +208,7 @@ exports.isLuxuryItemExists = async (serialNumber) => {
     return false;
   }
 };
+exports.isLuxuryItemExists
 // 创建账户
 exports.createAccount = async (userId) => {
   try {
@@ -246,7 +247,7 @@ exports.createAccount = async (userId) => {
       throw new Error("账户解锁失败");
     }
     const gasPrice = await web3.eth.getGasPrice(); // 获取当前的gas价格
-    
+    console.log(gasPrice)
     // 从初始账户向新账户发送以太币
     await web3.eth.sendTransaction({
       from: initAccount,
