@@ -18,8 +18,8 @@ connectDatabase().then((dataBase) => {
   console.log("DBTESTcomplete");
 });
 
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true,limit:"150mb" }));
+app.use(bodyParser.json({limit:"150mb"}));
 app.use(cors());
 //
 // app.use(jwtcheck)
