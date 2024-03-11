@@ -37,12 +37,19 @@ exports.mintNFTs = async (
       // 如果账户未解锁，使用提供的密码短语解锁
       await web3.eth.personal.unlockAccount(account, passphrase, 600); // 解锁10分钟
     }
-    console.log(contract.methods.send)
+    console.log(contract.methods.send);
+    const gasPrice = await web3.eth.getGasPrice(); // 获取当前的gas价格
+    const estimatedGas = await contract.methods
+      .mintNFT(_name, _serialNumber, _productionDate)
+      .estimateGas({ from: account });
+
     // 铸造 NFT
     const transaction = await contract.methods
       .mintNFT(_name, _serialNumber, _productionDate)
       .send({
         from: account,
+        gas: estimatedGas, // 设置预估的gas用量
+        gasPrice: gasPrice, // 使用当前的gas价格
         value: web3.utils.toWei("0.000001", "ether"),
       });
 
