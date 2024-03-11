@@ -79,6 +79,7 @@ exports.mintNFTs = async (
     };
   } catch (error) {
     console.error("Error minting NFTs:", error);
+    throw new Error("Failed to mint NFTs:", error);
   }
 };
 
