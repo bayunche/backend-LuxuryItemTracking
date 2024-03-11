@@ -51,7 +51,6 @@ exports.mintNFTs = async (
 
     if (accountBalance < estimatedGas * gasPrice) {
       throw new Error("当前账户余额不足，无法完成交易");
-    
     }
     // 铸造 NFT
     const transaction = await contract.methods
@@ -79,7 +78,7 @@ exports.mintNFTs = async (
     };
   } catch (error) {
     console.error("Error minting NFTs:", error);
-    throw new Error("Failed to mint NFTs:", error);
+    throw error;
   }
 };
 
@@ -246,13 +245,15 @@ exports.createAccount = async (userId) => {
     if (!isUnlocked) {
       throw new Error("账户解锁失败");
     }
+    const gasPrice = await web3.eth.getGasPrice(); // 获取当前的gas价格
+    
     // 从初始账户向新账户发送以太币
     await web3.eth.sendTransaction({
       from: initAccount,
       to: newAccountAddress,
       value: web3.utils.toWei("2", "ether"), // 发送10 Ether
-      gas: 30000, // 设置gas限制
-      gasPrice: web3.utils.toWei("100", "gwei"), // 设置gas价格
+      gas: 21000, // 设置gas限制
+      gasPrice: gasPrice, // 设置gas价格
     });
 
     // 返回新创建的账户地址
