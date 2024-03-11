@@ -42,7 +42,8 @@ exports.mintNFTs = async (
     const estimatedGas = await contract.methods
       .mintNFT(_name, _serialNumber, _productionDate)
       .estimateGas({ from: account });
-
+      const accountBalance = await web3.eth.getBalance(account);
+      console.log("Account balance:", web3.utils.fromWei(accountBalance, 'ether'), "ETH");
     // 铸造 NFT
     const transaction = await contract.methods
       .mintNFT(_name, _serialNumber, _productionDate)
