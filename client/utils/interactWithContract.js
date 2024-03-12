@@ -3,6 +3,7 @@ const { ulid } = require("ulid");
 const { Web3 } = require("web3");
 const User = require("../data/user");
 const { userInfo } = require("os");
+const ItemList = require("../data/itemList");
 // 加载LuxuryItemTracking合约的ABI
 const luxuryItemTrackingABI =
   require("../../build/contracts/LuxuryItemTracking.json").abi;
@@ -205,8 +206,11 @@ exports.getLuxuryItemDetails = async (serialNumber, address) => {
 // 判断奢侈品是否存在
 const isLuxuryItemExists = async (serialNumber) => {
   try {
-    contractAddress = address;
+    // contractAddress = address;
 
+    let { userId } = await ItemList.findOne({ where: serialNumber });
+    let { address } = await User.findOne({ where: userId });
+    contractAddress = address;
     const contract = new web3.eth.Contract(
       luxuryItemTrackingABI,
       contractAddress
