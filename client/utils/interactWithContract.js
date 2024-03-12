@@ -35,7 +35,7 @@ exports.mintNFTs = async (
 
     if (!isUnlocked) {
       // 如果账户未解锁，使用提供的密码短语解锁
-      await web3.eth.personal.unlockAccount(account, passphrase, 600); // 解锁10分钟
+      await web3.eth.personal.unlockAccount(account, passphrase, 0); // 解锁10分钟
     }
     console.log(contract.methods);
     const gasPrice = await web3.eth.getGasPrice(); // 获取当前的gas价格
