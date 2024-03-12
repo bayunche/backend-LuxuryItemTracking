@@ -40,6 +40,10 @@ const User = sequelize.define("User", {
   balance:{
     type:DataTypes.STRING,
     allowNull:true
+  },
+  avatar:{
+    type:DataTypes.STRING,
+    allowNull:true
   }
 });
 sequelize.sync()
