@@ -40,7 +40,7 @@ exports.mintNFTs = async (
         passphrase,
         0
       ); // 解锁10分钟
-      if (unlocked) {
+      if (!unlocked) {
         throw new Error("账户解锁失败");
       }
     }
