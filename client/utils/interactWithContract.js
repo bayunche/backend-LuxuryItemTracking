@@ -37,11 +37,14 @@ exports.mintNFTs = async (
       // 如果账户未解锁，使用提供的密码短语解锁
       await web3.eth.personal.unlockAccount(account, passphrase, 0); // 解锁10分钟
     }
-    console.log(contract.methods);
+    console.log(isUnlocked);
+    console.log("account", account)
+    console.log("passphrase",passphrase)
     const gasPrice = await web3.eth.getGasPrice(); // 获取当前的gas价格
     const estimatedGas = await contract.methods
       .mintNFT(_name, _serialNumber, _productionDate)
       .estimateGas({ from: account });
+    console.log("estimateGas", estimatedGas);
     const accountBalance = await web3.eth.getBalance(account);
     console.log(
       "Account balance:",
@@ -208,7 +211,7 @@ const isLuxuryItemExists = async (serialNumber) => {
     return false;
   }
 };
-exports.isLuxuryItemExists
+exports.isLuxuryItemExists;
 // 创建账户
 exports.createAccount = async (userId) => {
   try {
@@ -247,7 +250,7 @@ exports.createAccount = async (userId) => {
       throw new Error("账户解锁失败");
     }
     const gasPrice = await web3.eth.getGasPrice(); // 获取当前的gas价格
-    console.log(gasPrice)
+    console.log(gasPrice);
     // 从初始账户向新账户发送以太币
     await web3.eth.sendTransaction({
       from: initAccount,
