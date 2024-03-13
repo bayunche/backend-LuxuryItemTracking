@@ -49,7 +49,6 @@ exports.mintLuxuryItem = async (req, res) => {
       let dataStr = JSONBig.stringify({
         itemId,
       });
-      console.log(timeStamp);
       let qrcodeBase64 = await qrcode.toDataURL(dataStr);
       let data = {
         itemId: ulid(),
@@ -76,12 +75,12 @@ exports.mintLuxuryItem = async (req, res) => {
       await certifyUser(serialNumber, address);
 
       res.send({
-        data: JSONBig.stringify({
+        data: {
           itemId,
           serialNumber,
           qrcode: qrcodeBase64,
-        }),
-        msg: "success",
+        },
+        msg: "注册奢侈品成功",
         status: "success",
       });
     } else {
