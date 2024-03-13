@@ -183,18 +183,19 @@ exports.certifyUser = async (serialNumber, address) => {
     if (accountBalance < estimatedGas * gasPrice) {
       throw new Error("当前账户余额不足，无法完成交易");
     }
-   let transaction= await contract.methods.certifyUser(serialNumber, true).send({
-      from: account,
-      gas: estimatedGas, // 设置预估的gas用量
-      gasPrice: gasPrice, // 使用当前的gas价格
-    });
+    let transaction = await contract.methods
+      .certifyUser(serialNumber, true)
+      .send({
+        from: account,
+        gas: estimatedGas, // 设置预估的gas用量
+        gasPrice: gasPrice, // 使用当前的gas价格
+      });
     console.log("User certified successfully!");
     return {
       transactionHash: transaction.transactionHash,
       blockNumber: transaction.blockNumber,
       timestamp: (await web3.eth.getBlock(transaction.blockNumber)).timestamp,
     };
-  
   } catch (error) {
     console.error("Error certifying user:", error);
   }
@@ -215,13 +216,15 @@ exports.getLuxuryItemDetails = async (serialNumber, address) => {
 };
 // 判断奢侈品是否存在
 const isLuxuryItemExists = async (serialNumber) => {
-  console.log(serialNumber)
+  console.log(serialNumber);
   try {
     // contractAddress = address;
-   let res= await ItemList.findOne({ where: serialNumber });
-   console.log(res)
-    let { userId } = await ItemList.findOne({ where: serialNumber });
-    let { address } = await User.findOne({ where: userId });
+    let res = await ItemList.findOne({ where: { serialNumber: serialNumber } });
+    console.log(res);
+    let { userId } = await ItemList.findOne({
+      where: { serialNumber: serialNumber },
+    });
+    let { address } = await User.findOne({ where: { userId } });
     contractAddress = address;
     const contract = new web3.eth.Contract(
       luxuryItemTrackingABI,
