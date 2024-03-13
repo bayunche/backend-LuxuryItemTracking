@@ -53,11 +53,10 @@ exports.mintLuxuryItem = async (req, res) => {
       });
       console.log(timeStamp)
       let qrcodeBase64 = await qrcode.toDataURL(dataStr);
-      await ItemList.create({
+      let data={
         itemId: ulid(),
         userName: result.userName,
         creater:userName,
-
         serialNumber,
         itemName,
         itemDate,
@@ -67,7 +66,14 @@ exports.mintLuxuryItem = async (req, res) => {
         blockNumber,
         transactionHash,
         qrcode: qrcodeBase64,
-      });
+      }
+      for (const [key, value] of Object.entries(data)) {
+        if (typeof value === "bigint") {
+            console.log(`${key} is a BigInt`);
+        }
+    }
+    
+      await ItemList.create(data);
       console.log("QR code and details stored in MySQL database");
       await certifyUser(
         serialNumber,
