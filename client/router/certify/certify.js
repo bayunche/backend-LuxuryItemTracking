@@ -28,7 +28,6 @@ const JSONBig = require('json-bigint');
 exports.mintLuxuryItem = async (req, res) => {
   let { itemName, itemDate, itemImage } = req.body;
   let userId = req.userId;
-
   let result = await User.findOne({ where: { userId: userId } });
   // result = result.toJSON();
   let { address,userName } = result;
@@ -82,9 +81,11 @@ exports.mintLuxuryItem = async (req, res) => {
 
    
       res.send({
+      data:JSONBig.stringify({
         itemId,
         serialNumber,
         qrcode: qrcodeBase64,
+      }),
         msg: "success",
         status:"success"
       });
