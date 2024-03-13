@@ -176,7 +176,7 @@ exports.certifyUser = async (serialNumber, address) => {
       contractAddress
     );
 
-    await contract.methods.certifyUser(serialNumber).send({
+    await contract.methods.certifyUser(serialNumber,true).send({
       from: account,
     });
     return {
@@ -207,7 +207,6 @@ exports.getLuxuryItemDetails = async (serialNumber, address) => {
 const isLuxuryItemExists = async (serialNumber) => {
   try {
     // contractAddress = address;
-
     let { userId } = await ItemList.findOne({ where: serialNumber });
     let { address } = await User.findOne({ where: userId });
     contractAddress = address;
@@ -264,7 +263,7 @@ exports.createAccount = async (userId) => {
     const gasPrice = await web3.eth.getGasPrice(); // 获取当前的gas价格
     console.log(gasPrice);
     // 从初始账户向新账户发送以太币
-    web3.eth.sendTransaction({
+  await   web3.eth.sendTransaction({
       from: initAccount,
       to: newAccountAddress,
       value: web3.utils.toWei("2", "ether"), // 发送10 Ether
