@@ -231,7 +231,7 @@ const isLuxuryItemExists = async (serialNumber) => {
       contractAddress
     );
   console.log(contract.methods)
-    const exists = await contract.methods._exists(serialNumber).call();
+    const exists = await contract.methods.itemExists(serialNumber).call();
     return exists;
   } catch (error) {
     console.error("Error checking if luxury item exists:", error);
