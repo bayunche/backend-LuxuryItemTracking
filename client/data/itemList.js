@@ -19,7 +19,7 @@ const ItemList = sequelize.define("ItemList", {
     allowNull: false,
   },
   itemImage: {
-    type: DataTypes.LONGTEXT,
+    type: DataTypes.TEXT,
     allowNull: false,
   },
   itemDate: {
