@@ -175,9 +175,18 @@ exports.certifyUser = async (serialNumber, address) => {
       luxuryItemTrackingABI,
       contractAddress
     );
-
-    await contract.methods.certifyUser(serialNumber,true).send({
+    const gasPrice = await web3.eth.getGasPrice(); // 获取当前的gas价格
+    const accountBalance = await web3.eth.getBalance(account);
+    const estimatedGas = await contract.methods
+      .certifyUser(serialNumber, true)
+      .estimateGas({ from: account });
+    if (accountBalance < estimatedGas * gasPrice) {
+      throw new Error("当前账户余额不足，无法完成交易");
+    }
+    await contract.methods.certifyUser(serialNumber, true).send({
       from: account,
+      gas: estimatedGas, // 设置预估的gas用量
+      gasPrice: gasPrice, // 使用当前的gas价格
     });
     return {
       transactionHash: transaction.transactionHash,
@@ -263,7 +272,7 @@ exports.createAccount = async (userId) => {
     const gasPrice = await web3.eth.getGasPrice(); // 获取当前的gas价格
     console.log(gasPrice);
     // 从初始账户向新账户发送以太币
-  await   web3.eth.sendTransaction({
+    await web3.eth.sendTransaction({
       from: initAccount,
       to: newAccountAddress,
       value: web3.utils.toWei("2", "ether"), // 发送10 Ether
