@@ -218,7 +218,8 @@ const isLuxuryItemExists = async (serialNumber) => {
   console.log(serialNumber)
   try {
     // contractAddress = address;
-    await ItemList.findOne({ where: serialNumber });
+   let res= await ItemList.findOne({ where: serialNumber });
+   console.log(res)
     let { userId } = await ItemList.findOne({ where: serialNumber });
     let { address } = await User.findOne({ where: userId });
     contractAddress = address;
