@@ -51,10 +51,13 @@ exports.mintLuxuryItem = async (req, res) => {
       let dataStr = JSONBig.stringify({
         itemId
       });
+      console.log(timestamp)
       let qrcodeBase64 = await qrcode.toDataURL(dataStr);
       await ItemList.create({
         itemId: ulid(),
         userName: result.userName,
+        creater:userName,
+
         serialNumber,
         itemName,
         itemDate,
