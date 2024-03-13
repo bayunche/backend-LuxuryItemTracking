@@ -21,7 +21,7 @@ const logisiticsInfo = sequelize.define("logisiticsInfo", {
     type: DataTypes.INTEGER.UNSIGNED,
     allowNull: false,
   },
-  createTime: { type: DataTypes,BigInt, allowNull: false },
+  createTime: { type: DataTypes,BIGINT, allowNull: false },
   creater: { type: DataTypes.STRING, allowNull: false },
   startPoint: {
     type: DataTypes.STRING,
@@ -59,11 +59,11 @@ const logisiticsInfo = sequelize.define("logisiticsInfo", {
     allowNull:false
   },
   blockNumber:{
-    type:DataTypes.BigInt,
+    type:DataTypes.BIGINT,
     allowNull:false
   },
   timestamp:{
-    type:DataTypes.BigInt,
+    type:DataTypes.BIGINT,
     allowNull:false
   }
 });
