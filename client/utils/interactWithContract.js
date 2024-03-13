@@ -86,7 +86,7 @@ exports.mintNFTs = async (
       ulid: ulid(),
       transactionHash: transactionHash,
       blockNumber: blockNumber,
-      timestamp: timestamp,
+      timeStamp: timestamp,
     };
   } catch (error) {
     console.error("Error minting NFTs:", error);
