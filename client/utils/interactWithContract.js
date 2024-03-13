@@ -230,7 +230,7 @@ const isLuxuryItemExists = async (serialNumber) => {
       luxuryItemTrackingABI,
       contractAddress
     );
-
+  console.log(contract.methods)
     const exists = await contract.methods._exists(serialNumber).call();
     return exists;
   } catch (error) {
