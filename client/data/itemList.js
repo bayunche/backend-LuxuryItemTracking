@@ -13,7 +13,7 @@ const ItemList = sequelize.define("ItemList", {
   itemName:{
     type:DataTypes.STRING,
     allowNull:false
-  }
+  },
   itemId: {
     type: DataTypes.STRING,
     allowNull: false,
