@@ -29,7 +29,7 @@ exports.mintLuxuryItem = async (req, res) => {
 
   let result = await User.findOne({ where: { userId: userId } });
   // result = result.toJSON();
-  let { address } = result;
+  let { address,userName } = result;
   try {
     if (address != null) {
       let serialNumber = generateSecureRandomNumber();
@@ -38,22 +38,16 @@ exports.mintLuxuryItem = async (req, res) => {
       // privateKey = privateKey.toString();
       itemDate = moment(itemDate).unix();
       itemDate = parseInt(itemDate);
-      let itemId = await mintNFTs(
+      let {itemId,transactionHash,blockNumber,timeStamp} = await mintNFTs(
         itemName,
         serialNumber,
         itemDate,
         address,
         userId
       );
-
-      let { transactionHash, blockNumber, timeStamp } = await certifyUser(
-        serialNumber,
-        address
-      );
-
       let dataStr = JSON.stringify({
-        itemId: ulid(),
-        userName: result.userName,
+        itemId,
+        userName,
         serialNumber,
         itemName,
         itemDate,
@@ -78,6 +72,12 @@ exports.mintLuxuryItem = async (req, res) => {
         qrcode: qrcodeBase64,
       });
       console.log("QR code and details stored in MySQL database");
+      await certifyUser(
+        serialNumber,
+        address
+      );
+
+   
       res.send({
         itemId,
         serialNumber,
