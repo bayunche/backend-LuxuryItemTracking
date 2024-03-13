@@ -81,7 +81,7 @@ const ItemList = sequelize.define("ItemList", {
     allowNull:false,
   },
   qrcode:{
-    type:DataTypes.STRING,
+    type:DataTypes.TEXT,
     allowNull:false,
   },
   salesTime:{
