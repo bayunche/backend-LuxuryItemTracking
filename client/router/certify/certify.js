@@ -176,7 +176,7 @@ exports.updateLogisticInfo = async (req, res) => {
       blockNumber,
       timestamp,
       logistics_status: 1,
-      createTime: now(),
+      createTime: timestamp,
       creater: userId,
     });
 

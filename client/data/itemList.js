@@ -27,7 +27,7 @@ const ItemList = sequelize.define("ItemList", {
     allowNull: false,
   },
   createTime: {
-    type: DataTypes.DATE,
+    type: DataTypes.BigInt,
     allowNull: false,
   },
   serialNumber: {
@@ -73,7 +73,7 @@ const ItemList = sequelize.define("ItemList", {
     allowNull:true
   },
   blockNumber:{
-    type:DataTypes.STRING,
+    type:DataTypes.BigInt,
     allowNull:false,
   },
   transactionHash:{

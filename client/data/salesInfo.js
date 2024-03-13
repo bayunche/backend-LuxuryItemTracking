@@ -40,11 +40,11 @@ const salesInfo = sequelize.define("salesInfo", {
    allowNull:false
   },
   blockNumber:{
-    type:DataTypes.STRING,
+    type:DataTypes.BigInt,
     allowNull:false
   },
   timestamp:{ 
-    type:DataTypes.DATE,
+    type:DataTypes.BigInt,
     allowNull:false
   }
 

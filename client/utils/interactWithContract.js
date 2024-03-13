@@ -255,7 +255,7 @@ exports.createAccount = async (userId) => {
     let isUnlocked = await web3.eth.personal.unlockAccount(
       initAccount,
       password,
-      3600
+      0
     ); // 解锁时长设定为600秒
     if (!isUnlocked) {
       throw new Error("账户解锁失败");
