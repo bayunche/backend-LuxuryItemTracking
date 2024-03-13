@@ -22,6 +22,8 @@ const logisticsInfoData = require("../../data/logisticsInfo");
 const router = require("./router");
 const qrcode = require("qrcode");
 const salesInfo = require("../../data/salesInfo");
+const JSONBig = require('json-bigint');
+
 
 exports.mintLuxuryItem = async (req, res) => {
   let { itemName, itemDate, itemImage } = req.body;
@@ -45,7 +47,8 @@ exports.mintLuxuryItem = async (req, res) => {
         address,
         userId
       );
-      let dataStr = JSON.stringify({
+      
+      let dataStr = JSONBig.stringify({
         itemId,
         userName,
         serialNumber,
