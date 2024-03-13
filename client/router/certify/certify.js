@@ -22,15 +22,14 @@ const logisticsInfoData = require("../../data/logisticsInfo");
 const router = require("./router");
 const qrcode = require("qrcode");
 const salesInfo = require("../../data/salesInfo");
-const JSONBig = require('json-bigint');
-
+const JSONBig = require("json-bigint");
 
 exports.mintLuxuryItem = async (req, res) => {
   let { itemName, itemDate, itemImage } = req.body;
   let userId = req.userId;
   let result = await User.findOne({ where: { userId: userId } });
   // result = result.toJSON();
-  let { address,userName } = result;
+  let { address, userName } = result;
   try {
     if (address != null) {
       let serialNumber = generateSecureRandomNumber();
@@ -39,23 +38,23 @@ exports.mintLuxuryItem = async (req, res) => {
       // privateKey = privateKey.toString();
       itemDate = moment(itemDate).unix();
       itemDate = parseInt(itemDate);
-      let {itemId,transactionHash,blockNumber,timeStamp} = await mintNFTs(
+      let { itemId, transactionHash, blockNumber, timeStamp } = await mintNFTs(
         itemName,
         serialNumber,
         itemDate,
         address,
         userId
       );
-      
+
       let dataStr = JSONBig.stringify({
-        itemId
+        itemId,
       });
-      console.log(timeStamp)
+      console.log(timeStamp);
       let qrcodeBase64 = await qrcode.toDataURL(dataStr);
-      let data={
+      let data = {
         itemId: ulid(),
         userName: result.userName,
-        creater:userName,
+        creater: userName,
         serialNumber,
         itemName,
         itemDate,
@@ -65,29 +64,25 @@ exports.mintLuxuryItem = async (req, res) => {
         blockNumber,
         transactionHash,
         qrcode: qrcodeBase64,
-      }
+      };
       for (const [key, value] of Object.entries(data)) {
         if (typeof value === "bigint") {
-            console.log(`${key} is a BigInt`);
+          console.log(`${key} is a BigInt`);
         }
-    }
-    
+      }
+
       await ItemList.create(data);
       console.log("QR code and details stored in MySQL database");
-      await certifyUser(
-        serialNumber,
-        address
-      );
+      await certifyUser(serialNumber, address);
 
-   
       res.send({
-      data:JSONBig.stringify({
-        itemId,
-        serialNumber,
-        qrcode: qrcodeBase64,
-      }),
+        data: JSONBig.stringify({
+          itemId,
+          serialNumber,
+          qrcode: qrcodeBase64,
+        }),
         msg: "success",
-        status:"success"
+        status: "success",
       });
     } else {
       res.send({
@@ -97,11 +92,11 @@ exports.mintLuxuryItem = async (req, res) => {
     }
   } catch (error) {
     // throw error;
-    console.log(error)
+    console.log(error);
     res.send({
-      status:"refuse",
+      status: "refuse",
       msg: error,
-    })
+    });
   }
 };
 
