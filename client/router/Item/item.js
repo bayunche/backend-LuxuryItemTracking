@@ -13,13 +13,13 @@ const ItemList = require("../../data/itemList");
 const salesInfo = require("../../data/salesInfo");
 
 exports.getItemDetails = async (req, res) => {
-  console.log(req.params)
-  const { itemId } = req.params;
+  console.log(req.query)
+  const { itemId } = req.query;
   const userId = req.userId;
   try {
     let address = await User.findOne({ where: { userId: userId } });
     address = address.address;
-    console.log(address);
+    
     let itemData = await ItemList.findOne({
       where: { itemId: itemId },
       attributes: [
