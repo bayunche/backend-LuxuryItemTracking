@@ -68,7 +68,7 @@ exports.getItemList = async (req, res) => {
   // let { pageNum, pageSize } = req.params;
   try {
     let data = await ItemList.findAll({
-      attributes: ["id","itemName","itemImage", "itemDate", "serialNumber","value"],
+      attributes: ["id","itemId","itemName","itemImage", "itemDate", "serialNumber","value"],
       where: {
         // limit: pageSize,
         // offset: pageSize * pageNum - 1,

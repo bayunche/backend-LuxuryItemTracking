@@ -141,6 +141,8 @@ contract LuxuryItemTracking is ERC721Enumerable, Ownable {
         require(_exists(_serialNumber), "Item does not exist");
         return luxuryItems[_serialNumber].certifiedUsers[msg.sender];
     }
-
+ function itemExists(uint256 _serialNumber) public view returns (bool) {
+        return _exists(_serialNumber);
+    }
   
 }
