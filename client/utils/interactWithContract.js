@@ -40,7 +40,7 @@ exports.mintNFTs = async (
         account,
         passphrase,
         0
-      ); // 解锁10分钟
+      ); // 永久解锁
       if (!unlocked) {
         throw new Error("账户解锁失败");
       }
@@ -202,16 +202,34 @@ exports.certifyUser = async (serialNumber, address) => {
 };
 // 获取商品信息
 exports.getLuxuryItemDetails = async (serialNumber, address) => {
+  const gasPrice = await web3.eth.getGasPrice(); // 获取当前的gas价格
+  const estimatedGas = await contract.methods
+    .getItemDetails(serialNumber)
+    .estimateGas({ from: address });
   try {
-    contractAddress = address;
-    const contract = new web3.eth.Contract(
-      luxuryItemTrackingABI,
-      contractAddress
+    const isUnlocked = await web3.eth.personal
+      .unlockAccount(account, "", 1)
+      .catch(() => false);
+    const accountBalance = await web3.eth.getBalance(address);
+    console.log(
+      "Account balance:",
+      web3.utils.fromWei(accountBalance, "ether"),
+      "ETH"
     );
+
+    if (accountBalance < estimatedGas * gasPrice) {
+      throw new Error("当前账户余额不足，无法完成交易");
+    }
+
+    const contract = new web3.eth.Contract(luxuryItemTrackingABI, address);
+
     const result = await contract.methods.getItemDetails(serialNumber).call();
+
     return result;
   } catch (error) {
     console.log(`Serial Number: ${serialNumber}, Contract Address: ${address}`);
+
+    console.log(`gasPrice: ${gasPrice}, estimatedGas: ${estimatedGas}`);
     throw new Error(`${error}`);
     throw new Error(`Error getting item details: ${error}`);
   }
@@ -232,7 +250,7 @@ const isLuxuryItemExists = async (serialNumber) => {
       luxuryItemTrackingABI,
       contractAddress
     );
-  console.log(contract.methods)
+    console.log(contract.methods);
     const exists = await contract.methods.itemExists(serialNumber).call();
     return exists;
   } catch (error) {
