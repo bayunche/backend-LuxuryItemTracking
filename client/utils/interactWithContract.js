@@ -25,7 +25,7 @@ exports.mintNFTs = async (
     const account = address;
     // 检查账户是否已解锁
 
-    contractAddress = await web3.eth.getAccounts();
+   [contractAddress] = await web3.eth.getAccounts();
     console.log(contractAddress);
     
     const isUnlocked = await web3.eth.personal
