@@ -2,7 +2,7 @@ const { ulid } = require("ulid");
 
 const { Web3 } = require("web3");
 const User = require("../data/user");
-const { userInfo } = require("os");
+
 const ItemList = require("../data/itemList");
 // 加载LuxuryItemTracking合约的ABI
 const luxuryItemTrackingABI =
@@ -25,9 +25,9 @@ exports.mintNFTs = async (
     const account = address;
     // 检查账户是否已解锁
 
-   [contractAddress] = await web3.eth.getAccounts();
+    [contractAddress] = await web3.eth.getAccounts();
     console.log(contractAddress);
-    
+
     const isUnlocked = await web3.eth.personal
       .unlockAccount(account, "", 1)
       .catch(() => false);
@@ -110,7 +110,7 @@ exports.updateLogisticsInfo = async (serialNumber, logisticsInfo, address) => {
     );
 
     // 设置合约地址（这一行似乎放错地方，可能会导致混淆，因为 contractAddress 在代码片段中没有定义）
-    contractAddress = await web3.eth.getAccounts()[0];
+    [contractAddress] = await web3.eth.getAccounts();
 
     // 在智能合约中更新物流信息
     const transaction = await contract.methods
@@ -140,7 +140,7 @@ exports.updateLogisticsInfo = async (serialNumber, logisticsInfo, address) => {
 exports.updateSalesRecord = async (serialNumber, salesRecord, address) => {
   try {
     const account = address;
-    contractAddress = await web3.eth.getAccounts()[0];
+    [contractAddress] = await web3.eth.getAccounts();
 
     const contract = new web3.eth.Contract(
       luxuryItemTrackingABI,
@@ -169,7 +169,8 @@ exports.certifyUser = async (serialNumber, address) => {
   try {
     // 获取账户列表
     const account = address;
-    contractAddress = await web3.eth.getAccounts()[0];
+    [contractAddress] = await web3.eth.getAccounts();
+
     if (!isLuxuryItemExists(serialNumber)) {
       return false;
     }
@@ -241,14 +242,14 @@ exports.getLuxuryItemDetails = async (serialNumber, address, userId) => {
 const isLuxuryItemExists = async (serialNumber) => {
   console.log(serialNumber);
   try {
-    // contractAddress = address;
     let res = await ItemList.findOne({ where: { serialNumber: serialNumber } });
     console.log(res);
     let { userId } = await ItemList.findOne({
       where: { serialNumber: serialNumber },
     });
     let { address } = await User.findOne({ where: { userId } });
-    contractAddress = address;
+    [contractAddress] = await web3.eth.getAccounts();
+
     const contract = new web3.eth.Contract(
       luxuryItemTrackingABI,
       contractAddress
