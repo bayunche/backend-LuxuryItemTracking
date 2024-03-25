@@ -210,9 +210,9 @@ exports.getLuxuryItemDetails = async (serialNumber, address) => {
     .estimateGas({ from: address });
   try {
     const isUnlocked = await web3.eth.personal
-      .unlockAccount(account, "", 1)
+      .unlockAccount(address, "", 1)
       .catch(() => false);
-      console.log(`是否解锁${isUnlocked}`);
+    console.log(`是否解锁${isUnlocked}`);
     const accountBalance = await web3.eth.getBalance(address);
     console.log(
       "Account balance:",
@@ -223,7 +223,6 @@ exports.getLuxuryItemDetails = async (serialNumber, address) => {
     if (accountBalance < estimatedGas * gasPrice) {
       throw new Error("当前账户余额不足，无法完成交易");
     }
-
 
     const result = await contract.methods.getItemDetails(serialNumber).call();
 
