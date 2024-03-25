@@ -216,8 +216,8 @@ exports.getLuxuryItemDetails = async (serialNumber, address,userId) => {
     if (!isUnlocked) {
       // 如果账户未解锁，使用提供的密码短语解锁
       let unlocked = await web3.eth.personal.unlockAccount(
-        account,
-        passphrase,
+        address,
+         userId,
         0
       ); // 永久解锁
       if (!unlocked) {
