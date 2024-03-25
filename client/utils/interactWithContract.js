@@ -209,7 +209,6 @@ exports.getLuxuryItemDetails = async (serialNumber, address, userId) => {
     .getItemDetails(serialNumber)
     .estimateGas({ from: address });
   try {
-    let isUnlocked = await web3.eth.sign("test data", address);
 
     const accountBalance = await web3.eth.getBalance(address);
     console.log(
