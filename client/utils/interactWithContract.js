@@ -24,7 +24,7 @@ exports.mintNFTs = async (
   try {
     const account = address;
     // 检查账户是否已解锁
-    contractAddress = address;
+    contractAddress = await web3.eth.getAccounts()[0];
     const isUnlocked = await web3.eth.personal
       .unlockAccount(account, "", 1)
       .catch(() => false);
@@ -107,7 +107,7 @@ exports.updateLogisticsInfo = async (serialNumber, logisticsInfo, address) => {
     );
 
     // 设置合约地址（这一行似乎放错地方，可能会导致混淆，因为 contractAddress 在代码片段中没有定义）
-    contractAddress = address;
+    contractAddress = await web3.eth.getAccounts()[0];
 
     // 在智能合约中更新物流信息
     const transaction = await contract.methods
@@ -137,7 +137,7 @@ exports.updateLogisticsInfo = async (serialNumber, logisticsInfo, address) => {
 exports.updateSalesRecord = async (serialNumber, salesRecord, address) => {
   try {
     const account = address;
-    contractAddress = address;
+    contractAddress = await web3.eth.getAccounts()[0];
 
     const contract = new web3.eth.Contract(
       luxuryItemTrackingABI,
@@ -166,7 +166,7 @@ exports.certifyUser = async (serialNumber, address) => {
   try {
     // 获取账户列表
     const account = address;
-    contractAddress = address;
+    contractAddress = await web3.eth.getAccounts()[0];
     if (!isLuxuryItemExists(serialNumber)) {
       return false;
     }
@@ -209,7 +209,6 @@ exports.getLuxuryItemDetails = async (serialNumber, address, userId) => {
     .getItemDetails(serialNumber)
     .estimateGas({ from: address });
   try {
-
     const accountBalance = await web3.eth.getBalance(address);
     console.log(
       "Account balance:",
@@ -221,13 +220,11 @@ exports.getLuxuryItemDetails = async (serialNumber, address, userId) => {
       throw new Error("当前账户余额不足，无法完成交易");
     }
 
-    const result = await contract.methods.getItemDetails(serialNumber).call(
-      {
-        from: address,
-        gas: estimatedGas, // 设置预估的gas用量
-        gasPrice: gasPrice, // 使用当前的gas价格
-      }
-    );
+    const result = await contract.methods.getItemDetails(serialNumber).call({
+      from: address,
+      gas: estimatedGas, // 设置预估的gas用量
+      gasPrice: gasPrice, // 使用当前的gas价格
+    });
 
     return result;
   } catch (error) {
