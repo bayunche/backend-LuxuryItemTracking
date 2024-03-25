@@ -223,10 +223,9 @@ exports.getLuxuryItemDetails = async (serialNumber, address, userId) => {
 
     const result = await contract.methods.getItemDetails(serialNumber).call(
       {
-    
+        from: address,
         gas: estimatedGas, // 设置预估的gas用量
         gasPrice: gasPrice, // 使用当前的gas价格
-      
       }
     );
 
