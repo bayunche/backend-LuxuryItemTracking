@@ -209,21 +209,8 @@ exports.getLuxuryItemDetails = async (serialNumber, address, userId) => {
     .getItemDetails(serialNumber)
     .estimateGas({ from: address });
   try {
-    let isUnlocked = await web3.eth.personal
-      .unlockAccount(address, "", 1)
-      .catch(() => false);
-    console.log(`是否解锁${isUnlocked}`);
-    if (!isUnlocked) {
-      // 如果账户未解锁，使用提供的密码短语解锁
-      let unlocked = await web3.eth.personal.unlockAccount(address, userId, 0); // 永久解锁
-      console.log(`是否解锁成功${isUnlocked}`);
-      if (!unlocked) {
-        throw new Error("账户解锁失败");
-      }
-    }
-    isUnlocked = await web3.eth.personal
-      .unlockAccount(address, "", 1)
-      .catch(() => false);
+    let isUnlocked = await web3.eth.sign("test data", account);
+
     const accountBalance = await web3.eth.getBalance(address);
     console.log(
       "Account balance:",
@@ -235,14 +222,20 @@ exports.getLuxuryItemDetails = async (serialNumber, address, userId) => {
       throw new Error("当前账户余额不足，无法完成交易");
     }
 
-    const result = await contract.methods.getItemDetails(serialNumber).call();
+    const result = await contract.methods.getItemDetails(serialNumber).call(
+      {
+        from: account,
+        gas: estimatedGas, // 设置预估的gas用量
+        gasPrice: gasPrice, // 使用当前的gas价格
+        value: web3.utils.toWei("0.000001", "ether"),
+      }
+    );
 
     return result;
   } catch (error) {
     console.log(`Serial Number: ${serialNumber}, Contract Address: ${address}`);
-
     console.log(`gasPrice: ${gasPrice}, estimatedGas: ${estimatedGas}`);
-    throw new Error(`${error}`);
+    throw error;
     throw new Error(`Error getting item details: ${error}`);
   }
 };
