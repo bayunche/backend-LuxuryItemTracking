@@ -211,6 +211,8 @@ exports.getLuxuryItemDetails = async (serialNumber, address) => {
     const result = await contract.methods.getItemDetails(serialNumber).call();
     return result;
   } catch (error) {
+    console.log(`Serial Number: ${serialNumber}, Contract Address: ${address}`);
+    throw new Error(`${error}`);
     throw new Error(`Error getting item details: ${error}`);
   }
 };

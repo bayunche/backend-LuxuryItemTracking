@@ -17,8 +17,8 @@ exports.getItemDetails = async (req, res) => {
   const { itemId } = req.query;
   const userId = req.userId;
   try {
-    let address = await User.findOne({ where: { userId: userId } });
-    address = address.address;
+    let {address} = await User.findOne({ where: { userId: userId } });
+    
     
     let itemData = await ItemList.findOne({
       where: { itemId: itemId },
