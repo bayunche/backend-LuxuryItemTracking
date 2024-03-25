@@ -13,17 +13,29 @@ const ItemList = require("../../data/itemList");
 const salesInfo = require("../../data/salesInfo");
 
 exports.getItemDetails = async (req, res) => {
+  console.log(req.params)
   const { itemId } = req.params;
   const userId = req.userId;
   try {
     let address = await User.findOne({ where: { userId: userId } });
     address = address.address;
     console.log(address);
-    let serialNumer = await ItemList.findOne({ where: { itemId: itemId } });
-    serialNumer = serialNumer.serialNumber;
+    let itemData = await ItemList.findOne({
+      where: { itemId: itemId },
+      attributes: [
+        "id",
+        "itemId",
+        "itemName",
+        "itemImage",
+        "itemDate",
+        "serialNumber",
+        "value",
+      ],
+    });
+    let { serialNumer } = itemData;
     let result = await getLuxuryItemDetails(serialNumer, address);
     res.send({
-      result,
+      data: { itemData, result },
       msg: "success",
     });
   } catch (error) {
@@ -68,7 +80,15 @@ exports.getItemList = async (req, res) => {
   // let { pageNum, pageSize } = req.params;
   try {
     let data = await ItemList.findAll({
-      attributes: ["id","itemId","itemName","itemImage", "itemDate", "serialNumber","value"],
+      attributes: [
+        "id",
+        "itemId",
+        "itemName",
+        "itemImage",
+        "itemDate",
+        "serialNumber",
+        "value",
+      ],
       where: {
         // limit: pageSize,
         // offset: pageSize * pageNum - 1,
@@ -89,8 +109,8 @@ exports.getItemList = async (req, res) => {
     console.log(error);
     res.send({
       msg: "获取物品列表失败",
-      data:null,
-      status:"refuse"
+      data: null,
+      status: "refuse",
     });
   }
 };
