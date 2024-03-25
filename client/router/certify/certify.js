@@ -72,7 +72,6 @@ exports.mintLuxuryItem = async (req, res) => {
 
       await ItemList.create(data);
       console.log("QR code and details stored in MySQL database");
-      await certifyUser(serialNumber, address);
 
       res.send({
         data: {
