@@ -24,8 +24,8 @@ exports.getItemDetails = async (req, res) => {
       where: { itemId: itemId },
 
     });
-    let { serialNumer } = itemData;
-    let result = await getLuxuryItemDetails(serialNumer, address);
+    let { serialNumber } = itemData;
+    let result = await getLuxuryItemDetails(serialNumber, address);
     res.send({
       data: { itemData, result },
       msg: "success",
