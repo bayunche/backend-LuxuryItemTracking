@@ -22,15 +22,7 @@ exports.getItemDetails = async (req, res) => {
     
     let itemData = await ItemList.findOne({
       where: { itemId: itemId },
-      attributes: [
-        "id",
-        "itemId",
-        "itemName",
-        "itemImage",
-        "itemDate",
-        "serialNumber",
-        "value",
-      ],
+
     });
     let { serialNumer } = itemData;
     let result = await getLuxuryItemDetails(serialNumer, address);
