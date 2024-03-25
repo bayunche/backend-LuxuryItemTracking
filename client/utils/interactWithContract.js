@@ -202,6 +202,8 @@ exports.certifyUser = async (serialNumber, address) => {
 };
 // 获取商品信息
 exports.getLuxuryItemDetails = async (serialNumber, address) => {
+  const contract = new web3.eth.Contract(luxuryItemTrackingABI, address);
+
   const gasPrice = await web3.eth.getGasPrice(); // 获取当前的gas价格
   const estimatedGas = await contract.methods
     .getItemDetails(serialNumber)
@@ -210,6 +212,7 @@ exports.getLuxuryItemDetails = async (serialNumber, address) => {
     const isUnlocked = await web3.eth.personal
       .unlockAccount(account, "", 1)
       .catch(() => false);
+      console.log(`是否解锁${isUnlocked}`);
     const accountBalance = await web3.eth.getBalance(address);
     console.log(
       "Account balance:",
@@ -221,7 +224,6 @@ exports.getLuxuryItemDetails = async (serialNumber, address) => {
       throw new Error("当前账户余额不足，无法完成交易");
     }
 
-    const contract = new web3.eth.Contract(luxuryItemTrackingABI, address);
 
     const result = await contract.methods.getItemDetails(serialNumber).call();
 
