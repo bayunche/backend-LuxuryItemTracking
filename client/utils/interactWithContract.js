@@ -201,7 +201,7 @@ exports.certifyUser = async (serialNumber, address) => {
   }
 };
 // 获取商品信息
-exports.getLuxuryItemDetails = async (serialNumber, address) => {
+exports.getLuxuryItemDetails = async (serialNumber, address,userId) => {
   const contract = new web3.eth.Contract(luxuryItemTrackingABI, address);
 
   const gasPrice = await web3.eth.getGasPrice(); // 获取当前的gas价格
@@ -209,10 +209,25 @@ exports.getLuxuryItemDetails = async (serialNumber, address) => {
     .getItemDetails(serialNumber)
     .estimateGas({ from: address });
   try {
-    const isUnlocked = await web3.eth.personal
+    let  isUnlocked = await web3.eth.personal
       .unlockAccount(address, "", 1)
       .catch(() => false);
     console.log(`是否解锁${isUnlocked}`);
+    if (!isUnlocked) {
+      // 如果账户未解锁，使用提供的密码短语解锁
+      let unlocked = await web3.eth.personal.unlockAccount(
+        account,
+        passphrase,
+        0
+      ); // 永久解锁
+      if (!unlocked) {
+        throw new Error("账户解锁失败");
+      }
+    }
+    console.log(`是否解锁${isUnlocked}`);
+    isUnlocked = await web3.eth.personal
+    .unlockAccount(address, "", 1)
+    .catch(() => false);
     const accountBalance = await web3.eth.getBalance(address);
     console.log(
       "Account balance:",
