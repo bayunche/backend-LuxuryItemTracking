@@ -11,23 +11,25 @@ const User = require("../../data/user");
 const logisticsInfoData = require("../../data/logisticsInfo");
 const ItemList = require("../../data/itemList");
 const salesInfo = require("../../data/salesInfo");
+const JSONBig = require("json-bigint");
 
 exports.getItemDetails = async (req, res) => {
-  console.log(req.query)
+  console.log(req.query);
   const { itemId } = req.query;
   const userId = req.userId;
   try {
-    let {address} = await User.findOne({ where: { userId: userId } });
-    
-    
+    let { address } = await User.findOne({ where: { userId: userId } });
+
     let itemData = await ItemList.findOne({
       where: { itemId: itemId },
-
     });
     let { serialNumber } = itemData;
-    let result = await getLuxuryItemDetails(serialNumber, address,userId);
+    // 出现问题暂时无法解决先注释
+    // let result = await getLuxuryItemDetails(serialNumber, address, userId);
+    itemData = JSONBig.stringify(itemData);
     res.send({
-      data: { itemData, result },
+      // data: { itemData, result },
+      data: itemData,
       msg: "success",
     });
   } catch (error) {

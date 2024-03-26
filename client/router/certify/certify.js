@@ -98,8 +98,9 @@ exports.mintLuxuryItem = async (req, res) => {
 };
 
 exports.isExists = async (req, res) => {
-  const { serialNumer } = req.body;
-  let result = await isLuxuryItemExists(serialNumer);
+  const { itemId } = req.query;
+  let { serialNumber } = ItemList.findOne({ where: { itemId: itemId } });
+  let result = await isLuxuryItemExists(serialNumber);
   res.send({
     result,
     msg: "success",
