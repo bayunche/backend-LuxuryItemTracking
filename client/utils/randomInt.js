@@ -2,13 +2,11 @@ const crypto = require("crypto");
 
 // 生成安全的随机数
 function generateSecureRandomNumber() {
-  const byteLength = 4; // 4 bytes = 32 bits (adjust as needed)
-  const randomBuffer = crypto.randomBytes(byteLength);
+  const timestamp = BigInt(Date.now());
+  const randomPart = BigInt(Math.floor(Math.random() * 10000)); // 生成一个较小的随机数
+  return (timestamp << 16n) + randomPart; // 将时间戳和随机数结合
 
-  // 将随机字节转换为一个无符号整数
-  const secureRandomNumber = randomBuffer.readUInt32LE();
-
-  return secureRandomNumber;
+ 
 }
 
 
