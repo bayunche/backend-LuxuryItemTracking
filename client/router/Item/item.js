@@ -26,7 +26,7 @@ exports.getItemDetails = async (req, res) => {
     let { serialNumber } = itemData;
     // 出现问题暂时无法解决先注释
     // let result = await getLuxuryItemDetails(serialNumber, address, userId);
-    itemData = JSONBig.stringify(itemData);
+    // itemData = JSONBig.stringify(itemData);
     res.send({
       // data: { itemData, result },
       data: itemData,
