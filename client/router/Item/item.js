@@ -78,7 +78,6 @@ exports.getItemList = async (req, res) => {
         "itemName",
         "itemImage",
         "itemDate",
-        "serialNumber",
         "value",
       ],
       where: {
