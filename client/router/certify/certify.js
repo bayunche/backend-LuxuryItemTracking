@@ -76,7 +76,7 @@ exports.mintLuxuryItem = async (req, res) => {
       res.send({
         data: {
           itemId,
-          serialNumber,
+
           qrcode: qrcodeBase64,
         },
         msg: "注册奢侈品成功",
