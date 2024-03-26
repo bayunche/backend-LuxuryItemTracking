@@ -16,9 +16,9 @@ const JSONBig = require("json-bigint");
 exports.getItemDetails = async (req, res) => {
   console.log(req.query);
   const { itemId } = req.query;
-  const userId = req.userId;
+  // const userId = req.userId;
   try {
-    let { address } = await User.findOne({ where: { userId: userId } });
+    // let { address } = await User.findOne({ where: { userId: userId } });
 
     let itemData = await ItemList.findOne({
       where: { itemId: itemId },
