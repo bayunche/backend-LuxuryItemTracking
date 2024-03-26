@@ -205,7 +205,9 @@ exports.certifyUser = async (serialNumber, address) => {
 };
 // 获取商品信息
 exports.getLuxuryItemDetails = async (serialNumber, address, userId) => {
-  const contract = new web3.eth.Contract(luxuryItemTrackingABI, address);
+  contractAddress = await web3.eth.getAccounts()[0];
+
+  const contract = new web3.eth.Contract(luxuryItemTrackingABI, contractAddress);
 
   const gasPrice = await web3.eth.getGasPrice(); // 获取当前的gas价格
   const estimatedGas = await contract.methods
