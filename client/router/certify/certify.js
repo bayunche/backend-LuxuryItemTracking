@@ -47,10 +47,8 @@ exports.mintLuxuryItem = async (req, res) => {
         userId
       );
 
-      let dataStr = JSONBig.stringify({
-        itemId,
-      });
-      let qrcodeBase64 = await qrcode.toDataURL(dataStr);
+      let dataStr = {itemId}
+      let qrcodeBase64 = qrcode.toDataURL(dataStr);
       let data = {
         itemId: ulid(),
         userName: result.userName,
