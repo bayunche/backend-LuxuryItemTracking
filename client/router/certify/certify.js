@@ -48,8 +48,8 @@ exports.mintLuxuryItem = async (req, res) => {
       );
       let itemId = ulid();
       let codeData = { itemId };
-      
-      let qrcodeBase64 = qrcode.toDataURL(JSON.stringify(codeData));
+
+      let qrcodeBase64 = await qrcode.toDataURL(JSON.stringify(codeData));
       let data = {
         itemId: itemId,
         userName: result.userName,
