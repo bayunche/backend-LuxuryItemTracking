@@ -27,7 +27,7 @@ const JSONBig = require("json-bigint");
 exports.mintLuxuryItem = async (req, res) => {
   let { itemName, itemDate, itemImage } = req.body;
   let userId = req.userId;
-  console.log(itemDate)
+  console.log(itemDate);
   let result = await User.findOne({ where: { userId: userId } });
   // result = result.toJSON();
   let { address, userName } = result;
@@ -37,20 +37,20 @@ exports.mintLuxuryItem = async (req, res) => {
       userId = result.userId;
       console.log(address, userId);
       // privateKey = privateKey.toString();
-      itemDate = moment(itemDate).unix()
+      itemDate = moment(itemDate).unix();
       itemDate = parseInt(itemDate);
-      let { itemId, transactionHash, blockNumber, timeStamp } = await mintNFTs(
+      let { transactionHash, blockNumber, timeStamp } = await mintNFTs(
         itemName,
         serialNumber,
         itemDate,
         address,
         userId
       );
-
-      let dataStr = {itemId}
-      let qrcodeBase64 = qrcode.toDataURL(dataStr);
+      let itemId = ulid();
+      let codeData = { itemId };
+      let qrcodeBase64 = qrcode.toDataURL(codeData);
       let data = {
-        itemId: ulid(),
+        itemId: itemId,
         userName: result.userName,
         creater: userName,
         serialNumber,
