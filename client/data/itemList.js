@@ -103,7 +103,10 @@ const ItemList = sequelize.define("ItemList", {
     type:DataTypes.STRING,
     allowNull:true,
   },
-
+  description:{
+    type:DataTypes.STRING,
+    allowNull:true,
+  }
 });
 sequelize.sync();
 module.exports = ItemList;

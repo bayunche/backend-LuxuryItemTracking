@@ -23,22 +23,35 @@ const router = require("./router");
 const qrcode = require("qrcode");
 const salesInfo = require("../../data/salesInfo");
 const JSONBig = require("json-bigint");
+const transactionLog = require("../../data/transactionLog");
 
+// 导出mintLuxuryItem函数，用于处理发送的请求
 exports.mintLuxuryItem = async (req, res) => {
+  // 从请求中获取itemName、itemDate和itemImage
   let { itemName, itemDate, itemImage } = req.body;
+  // 获取当前用户的userId
   let userId = req.userId;
+  // 打印itemDate
   console.log(itemDate);
+  // 查询当前用户的信息
   let result = await User.findOne({ where: { userId: userId } });
+  // 将查询结果转换为JSON
   // result = result.toJSON();
   let { address, userName } = result;
   try {
+    // 如果用户已经注册了地址
     if (address != null) {
+      // 生成随机数
       let serialNumber = generateSecureRandomNumber();
+      // 将用户的userId赋值给serialNumber
       userId = result.userId;
       console.log(address, userId);
+      // 将私钥转换为字符串
       // privateKey = privateKey.toString();
+      // 将itemDate从ISO 8601格式转换为Unix时间戳
       itemDate = moment(itemDate).unix();
       itemDate = parseInt(itemDate);
+      // 调用mintNFTs函数，生成交易hash
       let { transactionHash, blockNumber, timeStamp } = await mintNFTs(
         itemName,
         serialNumber,
@@ -46,10 +59,11 @@ exports.mintLuxuryItem = async (req, res) => {
         address,
         userId
       );
+      // 生成唯一标识符
       let itemId = ulid();
-      let codeData = { itemId };
-
+      // 生成二维码
       let qrcodeBase64 = await qrcode.toDataURL(JSON.stringify(codeData));
+      // 生成数据
       let data = {
         itemId: itemId,
         userName: result.userName,
@@ -64,15 +78,29 @@ exports.mintLuxuryItem = async (req, res) => {
         transactionHash,
         qrcode: qrcodeBase64,
       };
+      // 打印数据中的BigInt
       for (const [key, value] of Object.entries(data)) {
         if (typeof value === "bigint") {
           console.log(`${key} is a BigInt`);
         }
       }
 
+      // 将数据存入MySQL数据库
       await ItemList.create(data);
+      // 创建交易记录
+      let transactionLogData = {
+        transactionHash,
+        itemId,
+        itemName,
+        creater: userName,
+        userId,
+        createTime: moment().unix(),
+        blockNumber,
+        description: "注册奢侈品",
+      };
+      await transactionLog.create(transactionLogData);
       console.log("QR code and details stored in MySQL database");
-
+      // 返回二维码和详情给前端
       res.send({
         data: {
           itemId,
@@ -88,7 +116,7 @@ exports.mintLuxuryItem = async (req, res) => {
       });
     }
   } catch (error) {
-    // throw error;
+    // 抛出错误
     console.log(error);
     res.send({
       status: "refuse",
