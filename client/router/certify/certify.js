@@ -62,6 +62,9 @@ exports.mintLuxuryItem = async (req, res) => {
       // 生成唯一标识符
       let itemId = ulid();
       // 生成二维码
+      let codeData = {
+        itemId,
+      };
       let qrcodeBase64 = await qrcode.toDataURL(JSON.stringify(codeData));
       // 生成数据
       let data = {
