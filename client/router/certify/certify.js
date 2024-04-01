@@ -99,6 +99,7 @@ exports.mintLuxuryItem = async (req, res) => {
         userId,
         createTime: moment().unix(),
         blockNumber,
+        serialNumber,
         description: "注册奢侈品",
       };
       await transactionLog.create(transactionLogData);
