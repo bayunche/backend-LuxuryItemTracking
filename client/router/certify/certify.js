@@ -87,7 +87,7 @@ exports.mintLuxuryItem = async (req, res) => {
           console.log(`${key} is a BigInt`);
         }
       }
-
+      console.log(data.serialNumber)
       // 将数据存入MySQL数据库
       await ItemList.create(data);
       // 创建交易记录
