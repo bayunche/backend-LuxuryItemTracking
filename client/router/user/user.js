@@ -95,3 +95,81 @@ exports.getUserInfo = async (req, res) => {
     data: userDetail,
   });
 };
+
+exports.editUserInfo = async (req, res) => {
+  const userId = req.userId;
+  const { userName, permissions, phone, email, avatar } = req.body;
+  //请求参数都不能为空
+  if (!userName || !permissions || !phone || !email || !avatar) {
+    return res.send({ status: "refuse", msg: "请求参数不能为空", data: null });
+  }
+  const userDetail = await User.findOne({ where: { userId: userId } });
+  if (userDetail) {
+    const [updateCount] = await User.update(
+      {
+        userName,
+        permissions,
+        phone,
+        email,
+        avatar,
+      },
+      {
+        where: { userId: userId },
+      }
+    );
+    if (updateCount > 0) {
+      return res.send({
+        status: "success",
+        msg: "修改用户信息成功",
+        data: null,
+      });
+    } else {
+      return res.send({
+        status: "refuse",
+        msg: "修改用户信息失败",
+        data: null,
+      });
+    }
+  } else {
+    return res.send({ status: "refuse", msg: "未找到该用户", data: null });
+  }
+};
+exports.editUserPassword = async (req, res) => {
+  const userId = req.userId;
+  const { oldPassword, newPassword } = req.body;
+  //请求参数都不能为空
+  if (!oldPassword || !newPassword) {
+    return res.send({ status: "refuse", msg: "请求参数不能为空", data: null });
+  }
+
+  const userDetail = await User.findOne({ where: { userId: userId } });
+  const isPasswordValid = await verifyArgon(userDetail.passwordF, oldPassword);
+
+  if (isPasswordValid) {
+    const hashedPassword = await argon(newPassword);
+    console.log(hashedPassword);
+    const [updateCount] = await User.update(
+      {
+        passwordF: hashedPassword,
+      },
+      {
+        where: { userId: userId },
+      }
+    );
+    if (updateCount > 0) {
+      return res.send({
+        status: "success",
+        msg: "修改用户密码成功",
+        data: null,
+      });
+    } else {
+      return res.send({
+        status: "refuse",
+        msg: "修改用户密码失败",
+        data: null,
+      });
+    }
+  } else {
+    return res.send({ status: "refuse", msg: "原密码错误", data: null });
+  }
+};
