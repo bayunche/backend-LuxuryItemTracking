@@ -19,6 +19,7 @@ const logisticsInfoData = require("../../data/logisticsInfo");
 const router = require("./router");
 const qrcode = require("qrcode");
 const salesInfo = require("../../data/salesInfo");
+const { verifyArgon, argon } = require("../../utils/argon");
 
 exports.createUserPrivateKey = async (req, res) => {
   try {
@@ -141,7 +142,6 @@ exports.editUserPassword = async (req, res) => {
   if (!oldPassword || !newPassword) {
     return res.send({ status: "refuse", msg: "请求参数不能为空", data: null });
   }
-
   const userDetail = await User.findOne({ where: { userId: userId } });
   const isPasswordValid = await verifyArgon(userDetail.passwordF, oldPassword);
 
