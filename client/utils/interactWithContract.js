@@ -102,6 +102,7 @@ exports.updateLogisticsInfo = async (serialNumber, logisticsInfo, address) => {
   try {
     // 获取以太坊账户地址
     const account = address;
+   [contractAddress] = await web3.eth.getAccounts();
 
     // 使用提供的 ABI（应用二进制接口）和合约地址创建一个合约实例
     const contract = new web3.eth.Contract(
@@ -110,7 +111,7 @@ exports.updateLogisticsInfo = async (serialNumber, logisticsInfo, address) => {
     );
 
     // 设置合约地址（这一行似乎放错地方，可能会导致混淆，因为 contractAddress 在代码片段中没有定义）
-    [contractAddress] = await web3.eth.getAccounts();
+   
 
     // 在智能合约中更新物流信息
     const transaction = await contract.methods
@@ -206,7 +207,10 @@ exports.certifyUser = async (serialNumber, address) => {
 };
 // 获取商品信息
 exports.getLuxuryItemDetails = async (serialNumber, address, userId) => {
-  const contract = new web3.eth.Contract(luxuryItemTrackingABI, address);
+  [contractAddress] = await web3.eth.getAccounts();
+
+
+  const contract = new web3.eth.Contract(luxuryItemTrackingABI, contractAddress);
 
   const gasPrice = await web3.eth.getGasPrice(); // 获取当前的gas价格
   const estimatedGas = await contract.methods
@@ -225,7 +229,7 @@ exports.getLuxuryItemDetails = async (serialNumber, address, userId) => {
     }
 
     const result = await contract.methods.getItemDetails(serialNumber).call({
-      from: address,
+      from: contractAddress,
       gas: estimatedGas, // 设置预估的gas用量
       gasPrice: gasPrice, // 使用当前的gas价格
     });

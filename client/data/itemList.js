@@ -27,7 +27,7 @@ const ItemList = sequelize.define("ItemList", {
     allowNull: false,
   },
   itemDate: {
-    type: DataTypes.STRING,
+    type: DataTypes.INTEGER,
     allowNull: false,
   },
   createTime: {
@@ -35,10 +35,9 @@ const ItemList = sequelize.define("ItemList", {
     allowNull: false,
   },
   serialNumber: {
-    type: DataTypes.INTEGER.UNSIGNED,
+    type: DataTypes.BIGINT,
     allowNull: true,
   },
- 
   // 1:已注册 2:已运输 3:已销售 4：已封存
   status: {
     type: DataTypes.INTEGER,
@@ -104,7 +103,10 @@ const ItemList = sequelize.define("ItemList", {
     type:DataTypes.STRING,
     allowNull:true,
   },
-
+  description:{
+    type:DataTypes.STRING,
+    allowNull:true,
+  }
 });
 sequelize.sync();
 module.exports = ItemList;

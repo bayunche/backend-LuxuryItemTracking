@@ -44,6 +44,14 @@ const User = sequelize.define("User", {
   avatar:{
     type:DataTypes.STRING,
     allowNull:true
+  },
+  email:{
+    type:DataTypes.STRING,
+    allowNull:true
+  },
+  phone:{
+    type:DataTypes.STRING,
+    allowNull:true
   }
 });
 sequelize.sync()
