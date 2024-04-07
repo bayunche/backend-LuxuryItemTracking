@@ -100,39 +100,51 @@ exports.getUserInfo = async (req, res) => {
 exports.editUserInfo = async (req, res) => {
   const userId = req.userId;
   const { userName, permissions, phone, email, avatar } = req.body;
-  //请求参数都不能为空
-  if (!userName || !permissions || !phone || !email || !avatar) {
-    return res.send({ status: "refuse", msg: "请求参数不能为空", data: null });
-  }
-  const userDetail = await User.findOne({ where: { userId: userId } });
-  if (userDetail) {
-    const [updateCount] = await User.update(
-      {
-        userName,
-        permissions,
-        phone,
-        email,
-        avatar,
-      },
-      {
-        where: { userId: userId },
-      }
-    );
-    if (updateCount > 0) {
-      return res.send({
-        status: "success",
-        msg: "修改用户信息成功",
-        data: null,
-      });
-    } else {
-      return res.send({
-        status: "refuse",
-        msg: "修改用户信息失败",
-        data: null,
-      });
+  //如果没找到该用户
+  try {
+    let user = await User.findOne({ where: { userId: userId } });
+    if (!user) {
+      return res.send({ status: "refuse", msg: "未找到该用户", data: null });
     }
-  } else {
-    return res.send({ status: "refuse", msg: "未找到该用户", data: null });
+  } catch (error) {
+    console.log(error);
+    return res.send({
+      status: "refuse",
+      msg: "服务器内部错误",
+      data: null,
+    });
+  }
+
+  //只修改不为空的请求参数
+  try {
+    if (userName) {
+      await User.update({ userName }, { where: { userId: userId } });
+    }
+    if (permissions) {
+      await User.update({ permissions }, { where: { userId: userId } });
+    }
+    if (phone) {
+      await User.update({ phone }, { where: { userId: userId } });
+    }
+    if (email) {
+      await User.update({ email }, { where: { userId: userId } });
+    }
+    if (avatar) {
+      await User.update({ avatar }, { where: { userId: userId } });
+    }
+
+    res.send({
+      status: "success",
+      msg: "修改用户信息成功",
+      data: null,
+    });
+  } catch (err) {
+    console.log(err);
+    return res.send({
+      status: "refuse",
+      msg: "修改用户信息失败",
+      data: null,
+    });
   }
 };
 exports.editUserPassword = async (req, res) => {
