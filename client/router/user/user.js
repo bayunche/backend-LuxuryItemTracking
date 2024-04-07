@@ -99,7 +99,7 @@ exports.getUserInfo = async (req, res) => {
 
 exports.editUserInfo = async (req, res) => {
   const userId = req.userId;
-  const { userName, permissions, phone, email, avatar } = req.body;
+  const { userName, permissions, phone, email, avatar, name } = req.body;
   //如果没找到该用户
   try {
     let user = await User.findOne({ where: { userId: userId } });
@@ -131,6 +131,9 @@ exports.editUserInfo = async (req, res) => {
     }
     if (avatar) {
       await User.update({ avatar }, { where: { userId: userId } });
+    }
+    if (name) {
+      await User.update({ name }, { where: { userId: userId } });
     }
 
     res.send({
