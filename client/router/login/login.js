@@ -48,9 +48,9 @@ exports.signup = async (req, res) => {
       passwordF: hashedPassword,
       userId,
       permissions: 0,
+      name: userName,
       loginTime: now(),
     });
-
     res.setHeader("Content-Type", "application/json");
     res.send({ status: "ok", msg: null, data: null });
   } catch (error) {
