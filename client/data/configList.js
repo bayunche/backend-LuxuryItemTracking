@@ -13,4 +13,4 @@ const configList = sequelize.define("configList", {
   },
 });
 sequelize.sync();
-module.exports = configList ;
+module.exports = configList;
