@@ -63,7 +63,6 @@ exports.signup = async (req, res) => {
 };
 
 exports.getTopUp = async (req, res) => {
-  const { userId } = req;
   try {
     let result = await configList.findOne({ where: { id: 1 } });
     return res.send({

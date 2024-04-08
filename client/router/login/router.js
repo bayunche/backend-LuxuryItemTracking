@@ -4,6 +4,6 @@ const login = require("./login");
 
 router.post("/login", login.login);
 router.post("/signup", login.signup);
-router.post("/topup", login.getTopUp);
+router.get("/topup", login.getTopUp);
 
 module.exports = router;
