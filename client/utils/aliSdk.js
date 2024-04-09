@@ -44,13 +44,14 @@ exports.getOrderStr = async (total_amount, userId) => {
     //   // notify_url: "",
     //   // passback_params: encodedUserId,
     // });
+    
     const result = alipay.pageExec("alipay.trade.wap.pay", {
       bizContent: {
         // extend_params: {
         //   specified_seller_name: "区块链充值系统",
         // },
         product_code: "QUICK_WAP_WAY",
-        out_trade_no: order_on,
+        out_trade_no: order_on(),
         total_amount: total_amount,
         subject: "区块链余额充值",
         // quit_url: "https://www.bilibili.com/",
@@ -64,7 +65,7 @@ exports.getOrderStr = async (total_amount, userId) => {
         //   specified_seller_name: "区块链充值系统",
         // },
         product_code: "QUICK_WAP_WAY",
-        out_trade_no: order_on,
+        out_trade_no: order_on(),
         total_amount: total_amount,
         subject: "区块链余额充值",
         // quit_url: "https://www.bilibili.com/",
