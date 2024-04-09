@@ -226,7 +226,7 @@ exports.getCharge = async (req, res) => {
   const { userId } = req;
   const { value} = req.body;
  try {
-  let schema=getScheme(value,userId);
+  let schema= await getScheme(value,userId);
   res.send({
     status: "success",
     msg: "获取订单链接成功",
