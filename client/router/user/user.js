@@ -20,7 +20,7 @@ const router = require("./router");
 const qrcode = require("qrcode");
 const salesInfo = require("../../data/salesInfo");
 const { verifyArgon, argon } = require("../../utils/argon");
-const { default: getOrderStr } = require("../../utils/aliSdk");
+const { getOrderStr } = require("../../utils/aliSdk");
 
 exports.createUserPrivateKey = async (req, res) => {
   try {
