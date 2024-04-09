@@ -34,7 +34,7 @@ exports.getOrderStr = async (total_amount, userId) => {
 try {
   const formData = new AlipayFormData();
   formData.setMethod("get");
-  const encodedUserId = encodeURI(userId);
+  const encodedUserId = encodeURI({userId});
   formData.addField("bizContent", {
     out_trade_no: order_on,
     total_amount: total_amount,
@@ -51,23 +51,22 @@ try {
       },
       product_code: "QUICK_WAP_WAY",
       out_trade_no: order_on,
-      quit_url: "",
+      quit_url: "https://www.bilibili.com/",
       passback_params: encodedUserId,
       total_amount: total_amount,
       subject: "区块链余额充值",
     },
     method:'GET'
-   
   },"GET");
   // console.log()
-  await alipay.exec(
-    "alipay.trade.wap.pay",
-    {},
-    {
-      formData: formData,
-    },
-    { validateSign: true }
-  );
+  // await alipay.exec(
+  //   "alipay.trade.wap.pay",
+  //   {},
+  //   {
+  //     formData: formData,
+  //   },
+  //   { validateSign: true }
+  // );
   return result;
 } catch (error) {
   console.log(error)
