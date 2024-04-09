@@ -9,9 +9,9 @@ const User = sequelize.define("User", {
     primaryKey: true,
     autoIncrement: true,
   },
-  name:{
-  type: DataTypes.STRING,
-  allowNull: false,
+  name: {
+    type: DataTypes.STRING,
+    allowNull: false,
   },
   userName: {
     type: DataTypes.STRING,
@@ -33,30 +33,30 @@ const User = sequelize.define("User", {
     type: DataTypes.DATE,
     allowNull: false,
   },
-  privateKey:{
+  privateKey: {
     type: DataTypes.STRING,
     allowNull: true,
   },
-  address:{
-   type:DataTypes.STRING,
-   allowNull:true 
+  address: {
+    type: DataTypes.STRING,
+    allowNull: true,
   },
-  balance:{
-    type:DataTypes.STRING,
-    allowNull:true
+  balance: {
+    type: DataTypes.LONGTEXT,
+    allowNull: true,
   },
-  avatar:{
-    type:DataTypes.TEXT,
-    allowNull:true
+  avatar: {
+    type: DataTypes.TEXT,
+    allowNull: true,
   },
-  email:{
-    type:DataTypes.STRING,
-    allowNull:true
+  email: {
+    type: DataTypes.STRING,
+    allowNull: true,
   },
-  phone:{
-    type:DataTypes.STRING,
-    allowNull:true
-  }
+  phone: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
 });
-sequelize.sync()
+sequelize.sync();
 module.exports = User;

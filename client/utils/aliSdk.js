@@ -130,16 +130,17 @@ exports.getAliOrderResult = async (
         let userInfo = await User.findOne({ where: { userId } });
         let beforeBalance = Number(userInfo.balance);
         let afterBalance = beforeBalance + Number(total_amount);
-
-        await tradeList.create({
+        let tradeData = {
           beforeBalance: beforeBalance + "",
           afterBalance: beforeBalance + "",
           balance: total_amount + "",
           tradeTime: result.sendPayDate,
           userId,
           out_trade_no,
-          trueValue: result.totalAmount+"",
-        });
+          trueValue: result.totalAmount + "",
+        };
+        console.log(tradeData);
+        await tradeList.create(tradeData);
 
         await User.update({ balance: afterBalance }, { where: { userId } });
         return result;
