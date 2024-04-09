@@ -40,9 +40,9 @@ try {
     total_amount: total_amount,
     subject: "区块链余额充值",
     product_code: "QUICK_WAP_WAY",
-    quit_url: "",
-    notify_url: "",
-    passback_params: encodedUserId,
+    // quit_url: "",
+    // notify_url: "",
+    // passback_params: encodedUserId,
   });
   const result = alipay.pageExec( "alipay.trade.wap.pay",{
     bizContent: {
