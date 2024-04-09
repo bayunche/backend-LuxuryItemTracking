@@ -89,7 +89,12 @@ exports.getOrderStr = async (total_amount, userId) => {
   }
 };
 //获取订单结果
-exports.getAliOrderResult = async (out_trade_no, userId, trueValue) => {
+exports.getAliOrderResult = async (
+  out_trade_no,
+  userId,
+  trueValue,
+  retries = 10
+) => {
   // 预先等待30秒
   await new Promise((resolve) => setTimeout(resolve, 30000));
   console.log("awaitComplete");
@@ -105,11 +110,19 @@ exports.getAliOrderResult = async (out_trade_no, userId, trueValue) => {
       result.tradeStatus != "TRADE_FINISHED"
     ) {
       // 如果订单状态不是成功或完成，再次等待30秒后重试
-      setTimeout(() => {
-        exports
-          .getAliOrderResult(out_trade_no, userId, trueValue)
-          .catch(console.error);
-      }, 30000);
+      if (retries > 0) {
+        console.log(
+          `订单状态未完成，将在30秒后重试，剩余重试次数: ${retries - 1}`
+        );
+        setTimeout(() => {
+          exports
+            .getAliOrderResult(out_trade_no, userId, trueValue, retries - 1)
+            .catch(console.error);
+        }, 30000);
+      } else {
+        console.log("重试次数用尽，停止重试。");
+        return null; // 可以根据实际需求返回一个错误或其他值
+      }
     } else {
       try {
         let total_amount = trueValue;
@@ -119,9 +132,9 @@ exports.getAliOrderResult = async (out_trade_no, userId, trueValue) => {
         let afterBalance = beforeBalance + Number(total_amount);
 
         await tradeList.create({
-          beforeBalance: beforeBalance+"",
-          afterBalance:beforeBalance+"",
-          balance: total_amount+"",
+          beforeBalance: beforeBalance + "",
+          afterBalance: beforeBalance + "",
+          balance: total_amount + "",
           tradeTime: result.sendPayDate,
           userId,
           out_trade_no,
