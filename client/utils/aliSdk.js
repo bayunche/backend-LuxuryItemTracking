@@ -22,8 +22,8 @@ const order_on = () => {
   return nonce_str;
 };
 
-const getOrderStr = async (total_amount, userId) => {
-    const encodedUserId=encodeURI(userId)
+exports.getOrderStr = async (total_amount, userId) => {
+  const encodedUserId = encodeURI(userId);
   const result = await alipay.sdkExec("alipay.trade.app.pay", {
     bizContent: {
       extend_params: {
@@ -31,13 +31,10 @@ const getOrderStr = async (total_amount, userId) => {
       },
       out_trade_no: order_on,
 
-      passback_params:encodedUserId,
+      passback_params: encodedUserId,
       total_amount: total_amount,
       subject: "区块链余额充值",
     },
   });
   return result;
-};
-module.exports = {
-  getOrderStr,
 };

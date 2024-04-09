@@ -22,6 +22,7 @@ const salesInfo = require("../../data/salesInfo");
 const { verifyArgon, argon } = require("../../utils/argon");
 const { getOrderStr } = require("../../utils/aliSdk");
 
+
 exports.createUserPrivateKey = async (req, res) => {
   try {
     // Extracting userId from the request object
@@ -193,7 +194,6 @@ exports.editUserPassword = async (req, res) => {
 exports.getAliOrderInfo = async (req, res) => {
   const { userId } = req;
   const { value } = req.body;
-
   //沙箱环境
   try {
     let orderStr = await getOrderStr(value, userId);
