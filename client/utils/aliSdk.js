@@ -44,7 +44,7 @@ try {
     notify_url: "",
     passback_params: encodedUserId,
   });
-  const result = alipay.pageExec("alipay.trade.wap.pay", {
+  const result = alipay.pageExec("GET", {
     bizContent: {
       extend_params: {
         specified_seller_name: "区块链充值系统",
@@ -56,7 +56,7 @@ try {
       total_amount: total_amount,
       subject: "区块链余额充值",
     },
-    methods: "GET",
+   
   });
   // console.log()
   await alipay.exec(
