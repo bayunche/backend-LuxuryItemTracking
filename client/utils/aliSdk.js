@@ -90,21 +90,26 @@ exports.getOrderStr = async (total_amount, userId) => {
 };
 //获取订单结果
 exports.getAliOrderResult = async (out_trade_no, userId, trueValue) => {
+  // 预先等待30秒
+  await new Promise(resolve => setTimeout(resolve, 30000));
+
   try {
     const result = await alipay.exec("alipay.trade.query", {
       bizContent: {
         out_trade_no: out_trade_no,
       },
     });
+
     if (
       result.trade_status != "TRADE_SUCCESS" &&
       result.trade_status != "TRADE_FINISHED"
     ) {
+      // 如果订单状态不是成功或完成，再次等待30秒后重试
       setTimeout(() => {
         exports
           .getAliOrderResult(out_trade_no, userId, trueValue)
           .catch(console.error);
-      }, 3000);
+      }, 30000);
     } else {
       try {
         let total_amount = trueValue;
@@ -112,16 +117,16 @@ exports.getAliOrderResult = async (out_trade_no, userId, trueValue) => {
         let userInfo = await User.findOne({ where: { userId } });
         let beforeBalance = Number(userInfo.balance);
         let afterBalance = beforeBalance + Number(total_amount);
-        let balance = total_amount;
-        let tradeTime = result.send_pay_date;
+        
         await tradeList.create({
           beforeBalance,
           afterBalance,
-          balance,
-          tradeTime,
+          balance: total_amount,
+          tradeTime: result.send_pay_date,
           userId,
           out_trade_no,
         });
+
         await User.update({ balance: afterBalance }, { where: { userId } });
         return result;
       } catch (error) {
@@ -134,6 +139,7 @@ exports.getAliOrderResult = async (out_trade_no, userId, trueValue) => {
     return null;
   }
 };
+
 exports.getScheme = async (total_amount, userId) => {
   const encodedUserId = encodeURI(userId);
   const result = await alipay.sdkExec("alipay.trade.app.pay", {
