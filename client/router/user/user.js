@@ -20,7 +20,7 @@ const router = require("./router");
 const qrcode = require("qrcode");
 const salesInfo = require("../../data/salesInfo");
 const { verifyArgon, argon } = require("../../utils/argon");
-const { getOrderStr } = require("../../utils/aliSdk");
+const { getOrderStr, getScheme } = require("../../utils/aliSdk");
 const Pingpp = require("pingpp");
 
 exports.createUserPrivateKey = async (req, res) => {
@@ -220,59 +220,68 @@ const getClientIp = (req) => {
  * Represents a book.
  * @constructor
  * @param {value} Number - 订单数额
- * @param {string} type - 请求支付的渠道 1.alipay_wap支付宝 2.wx_wap 微信支付
  *
  */
 exports.getCharge = async (req, res) => {
   const { userId } = req;
-  const { value, type } = req.body;
-  try {
-    const ip = getClientIp(req);
-    const pingpp = Pingpp("sk_test_4qPiHSrX54yTWL8C48zHSaLS");
-    pingpp.setPrivateKey(
-      "MIICXgIBAAKBgQCgHA1Z0ZoG+tSGDbAeorSNN6/zRWCSDRu3+73aSrnpNXIivLPG" +
-        `7vekZzvT48Cy6gMg5m9MNJfnCSU5RIUPvhKQ4pWYhRmNF3XiYArd4lzPzZAYQKxB` +
-        "Yw1LoAssaHc9nppGrZr7DlSKCGMpIvH9FpJXrAWS9n08eABou1TnrBB8nwIDAQAB" +
-        "NnGVnvSEb1mD9/T3Oi8tx2R+yEQiqfRdziWWjRmD4DpPyXd3SwZNYsgP7lNaTnij" +
-        "VBAML9XoGSmUAHZN9aYPBEUyje5JzSlQD4FWkyUb4ZGK8GKxAkEA0Xh2S3PSzMoB" +
-        "x9J63d8hYRaBDhIN7O67tapRHvtMR2iwk16GSwJ9LfFG0M9LCmHzcl/NJVprRA1h" +
-        "xswFA98yIwJBAMOsres1+Dyo0dQ1ml9YHABzvG8QfnGaL8Td6r9VR9VNCD0QIfUN" +
-        "6mWayGiYMY/vkih3J4wxInGW9f6JCV3bvVUCQBnHCj+0zC85eMifZVFigRgSjeUu" +
-        "YZpTsrPjdsIqSLPM9VXdXwdiEgeSVpWhvOlVLoFXusYq/2JLh0nQl5lnYSMCQQCJ" +
-        "LbEL+d0a4Zug8ydTeli/NGRBVMXgbKDaml1tX6MpdYS2Em5L90KBkr63HSN57hGA" +
-        "TvCpxvSHv7abiITJiTi1AkEAhsFb5npG2kEalRqD80ddRq7xS+l/Cv08EhTgyMNn" +
-        "9ZzMR2PmQ2PhZm7Fi+fybsXvZ1d08UEd+xwcit5L1sTIeg=="
-    );
-    let chargeObj;
-    pingpp.charges.create(
-      {
-        subject: "区块链充值",
-        body: `￥ ${value}`,
-        amount: value * 100,
-        order_no: "123456789",
-        channel: type,
-        currency: "cny",
-        client_ip: ip,
-        app: { id: "app_j5uPyPLmnDKCjHuD" },
-      },
-      (err, charge) => {
-        if (err) {
-          console.log(err);
-          return new Error(err);
-        }
-        return res.send({
-          status: "success",
-          msg: "获取订单信息成功",
-          data: chargeObj,
-        });
-      }
-    );
-  } catch (error) {
-    console.error(error);
-    return res.send({
-      status: "refuse",
-      msg: "获取订单信息失败",
-      data: null,
-    });
-  }
+  const { value} = req.body;
+ try {
+  let schema=getScheme(value,userId);
+  res.send({
+    status: "success",
+    msg: "获取订单链接成功",
+    data: schema,
+  })
+ } catch (error) {
+  
+ }
+  // try {
+  //   const ip = getClientIp(req);
+  //   const pingpp = Pingpp("sk_test_4qPiHSrX54yTWL8C48zHSaLS");
+  //   pingpp.setPrivateKey(
+  //     "MIICXgIBAAKBgQCgHA1Z0ZoG+tSGDbAeorSNN6/zRWCSDRu3+73aSrnpNXIivLPG" +
+  //       `7vekZzvT48Cy6gMg5m9MNJfnCSU5RIUPvhKQ4pWYhRmNF3XiYArd4lzPzZAYQKxB` +
+  //       "Yw1LoAssaHc9nppGrZr7DlSKCGMpIvH9FpJXrAWS9n08eABou1TnrBB8nwIDAQAB" +
+  //       "NnGVnvSEb1mD9/T3Oi8tx2R+yEQiqfRdziWWjRmD4DpPyXd3SwZNYsgP7lNaTnij" +
+  //       "VBAML9XoGSmUAHZN9aYPBEUyje5JzSlQD4FWkyUb4ZGK8GKxAkEA0Xh2S3PSzMoB" +
+  //       "x9J63d8hYRaBDhIN7O67tapRHvtMR2iwk16GSwJ9LfFG0M9LCmHzcl/NJVprRA1h" +
+  //       "xswFA98yIwJBAMOsres1+Dyo0dQ1ml9YHABzvG8QfnGaL8Td6r9VR9VNCD0QIfUN" +
+  //       "6mWayGiYMY/vkih3J4wxInGW9f6JCV3bvVUCQBnHCj+0zC85eMifZVFigRgSjeUu" +
+  //       "YZpTsrPjdsIqSLPM9VXdXwdiEgeSVpWhvOlVLoFXusYq/2JLh0nQl5lnYSMCQQCJ" +
+  //       "LbEL+d0a4Zug8ydTeli/NGRBVMXgbKDaml1tX6MpdYS2Em5L90KBkr63HSN57hGA" +
+  //       "TvCpxvSHv7abiITJiTi1AkEAhsFb5npG2kEalRqD80ddRq7xS+l/Cv08EhTgyMNn" +
+  //       "9ZzMR2PmQ2PhZm7Fi+fybsXvZ1d08UEd+xwcit5L1sTIeg=="
+  //   );
+  //   let chargeObj;
+  //   pingpp.charges.create(
+  //     {
+  //       subject: "区块链充值",
+  //       body: `￥ ${value}`,
+  //       amount: value * 100,
+  //       order_no: "123456789",
+  //       channel: type,
+  //       currency: "cny",
+  //       client_ip: ip,
+  //       app: { id: "app_j5uPyPLmnDKCjHuD" },
+  //     },
+  //     (err, charge) => {
+  //       if (err) {
+  //         console.log(err);
+  //         return new Error(err);
+  //       }
+  //       return res.send({
+  //         status: "success",
+  //         msg: "获取订单信息成功",
+  //         data: chargeObj,
+  //       });
+  //     }
+  //   );
+  // } catch (error) {
+  //   console.error(error);
+  //   return res.send({
+  //     status: "refuse",
+  //     msg: "获取订单信息失败",
+  //     data: null,
+  //   });
+  // }
 };
