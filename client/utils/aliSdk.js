@@ -55,7 +55,7 @@ exports.getOrderStr = async (total_amount, userId) => {
       total_amount: total_amount,
       subject: "区块链余额充值",
     },
-    methods: "Get",
+    methods: "GET",
   });
   // console.log()
   await alipay.exec(
