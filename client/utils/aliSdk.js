@@ -1,5 +1,7 @@
 const { default: AliPayForm } = require("alipay-sdk/lib/form");
 const { urlencoded } = require("body-parser");
+const User = require("../data/user");
+const tradeList = require("../data/tradeList");
 
 const AliSdk = require("alipay-sdk").default;
 const AlipayFormData = require("alipay-sdk/lib/form").default;
@@ -44,32 +46,32 @@ exports.getOrderStr = async (total_amount, userId) => {
     //   // notify_url: "",
     //   // passback_params: encodedUserId,
     // });
-    
+    const out_trade_no = order_on();
     const result = alipay.pageExec("alipay.trade.wap.pay", {
       bizContent: {
         // extend_params: {
         //   specified_seller_name: "区块链充值系统",
         // },
         product_code: "QUICK_WAP_WAY",
-        out_trade_no: order_on(),
+        out_trade_no: out_trade_no,
         total_amount: total_amount,
         subject: "区块链余额充值",
-        // quit_url: "https://www.bilibili.com/",
-        // passback_params: encodedUserId,
+        quit_url: "https://www.bilibili.com/",
+        passback_params: encodedUserId,
       },
       method: "GET",
     });
     console.log({
       bizContent: {
-        // extend_params: {
-        //   specified_seller_name: "区块链充值系统",
-        // },
+        extend_params: {
+          specified_seller_name: "区块链充值系统",
+        },
         product_code: "QUICK_WAP_WAY",
-        out_trade_no: order_on(),
+        out_trade_no: out_trade_no,
         total_amount: total_amount,
         subject: "区块链余额充值",
-        // quit_url: "https://www.bilibili.com/",
-        // passback_params: encodedUserId,
+        quit_url: "https://www.bilibili.com/",
+        passback_params: encodedUserId,
       },
       method: "GET",
     });
@@ -81,9 +83,53 @@ exports.getOrderStr = async (total_amount, userId) => {
     //   },
     //   { validateSign: true }
     // );
-    return result;
+    return { orderStr: result, out_trade_no: out_trade_no };
   } catch (error) {
     console.log(error);
+  }
+};
+//获取订单结果
+exports.getAliOrderResult = async (out_trade_no, userId) => {
+  try {
+    const result = await alipay.exec("alipay.trade.query", {
+      bizContent: {
+        out_trade_no: out_trade_no,
+      },
+    });
+    if (
+      result.trade_status != "TRADE_SUCCESS" ||
+      result.trade_status != "TRADE_FINISHED"
+    ) {
+      setTimeout(async () => {
+        getAliOrderResult(out_trade_no, userId);
+      }, 3000);
+    } else {
+      try {
+        let total_amount = result.total_amount;
+        //订单完成
+        let userInfo = await User.findOne({ where: { userId } });
+        let beforeBalance = Number(userInfo.balance);
+        let afterBalance = beforeBalance + Number(total_amount);
+        let balance = total_amount;
+        let tradeTime = result.send_pay_date;
+        await tradeList.create({
+          beforeBalance,
+          afterBalance,
+          balance,
+          tradeTime,
+          userId,
+          out_trade_no,
+        });
+        await User.update({ balance: afterBalance }, { where: { userId } });
+        return result;
+      } catch (error) {
+        console.error(error);
+        return null;
+      }
+    }
+  } catch (error) {
+    console.error(error);
+    return null;
   }
 };
 exports.getScheme = async (total_amount, userId) => {

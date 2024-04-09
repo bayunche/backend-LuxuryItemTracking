@@ -20,7 +20,11 @@ const router = require("./router");
 const qrcode = require("qrcode");
 const salesInfo = require("../../data/salesInfo");
 const { verifyArgon, argon } = require("../../utils/argon");
-const { getOrderStr, getScheme } = require("../../utils/aliSdk");
+const {
+  getOrderStr,
+  getScheme,
+  getAliOrderResult,
+} = require("../../utils/aliSdk");
 const Pingpp = require("pingpp");
 
 exports.createUserPrivateKey = async (req, res) => {
@@ -196,17 +200,20 @@ exports.getAliOrderInfo = async (req, res) => {
   const { value } = req.body;
   //沙箱环境
   try {
-    let orderStr = await getOrderStr(value, userId);
+    let { orderStr, out_trade_no } = await getOrderStr(value, userId);
     res.send({
       status: "success",
       msg: "获取订单信息成功",
       data: orderStr,
     });
+
+    return await getAliOrderResult(out_trade_no, userId);
   } catch (error) {
     console.log(error);
     return res.send({ status: "refuse", msg: "获取订单信息失败", data: null });
   }
 };
+
 //获取请求的客户端ip
 const getClientIp = (req) => {
   return (
@@ -224,17 +231,15 @@ const getClientIp = (req) => {
  */
 exports.getCharge = async (req, res) => {
   const { userId } = req;
-  const { value} = req.body;
- try {
-  let schema= await getScheme(value,userId);
-  res.send({
-    status: "success",
-    msg: "获取订单链接成功",
-    data: schema,
-  })
- } catch (error) {
-  
- }
+  const { value } = req.body;
+  try {
+    let schema = await getScheme(value, userId);
+    res.send({
+      status: "success",
+      msg: "获取订单链接成功",
+      data: schema,
+    });
+  } catch (error) {}
   // try {
   //   const ip = getClientIp(req);
   //   const pingpp = Pingpp("sk_test_4qPiHSrX54yTWL8C48zHSaLS");
