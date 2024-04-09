@@ -261,13 +261,13 @@ exports.getCharge = async (req, res) => {
           return;
         }
         chargeObj = charge;
+        return res.send({
+          status: "success",
+          msg: "获取订单信息成功",
+          data: chargeObj,
+        });
       }
     );
-    return res.send({
-      status: "success",
-      msg: "获取订单信息成功",
-      data: chargeObj,
-    });
   } catch (error) {
     console.error(error);
     return res.send({
