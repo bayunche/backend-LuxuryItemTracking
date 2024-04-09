@@ -31,6 +31,7 @@ const order_on = () => {
 };
 
 exports.getOrderStr = async (total_amount, userId) => {
+try {
   const formData = new AlipayFormData();
   formData.setMethod("get");
   const encodedUserId = encodeURI(userId);
@@ -67,6 +68,10 @@ exports.getOrderStr = async (total_amount, userId) => {
     { validateSign: true }
   );
   return result;
+} catch (error) {
+  console.log(error)
+}
+
 };
 exports.getScheme = async (total_amount, userId) => {
   const encodedUserId = encodeURI(userId);
