@@ -144,7 +144,17 @@ exports.getAliOrderResult = async (
         return result;
       } catch (error) {
         console.error(error);
-        return null;
+        if (retries > 0) {
+          console.log(`请求失败，将在30秒后重试，剩余重试次数: ${retries - 1}`);
+          setTimeout(() => {
+            exports
+              .getAliOrderResult(out_trade_no, userId, trueValue, retries - 1)
+              .catch(console.error);
+          }, 30000); // 等待30秒后重试
+        } else {
+          console.log("重试次数用尽，停止重试。");
+          return null;
+        }
       }
     }
   } catch (error) {
