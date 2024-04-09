@@ -258,7 +258,7 @@ exports.getCharge = async (req, res) => {
       (err, charge) => {
         if (err) {
           console.log(err);
-          return;
+          return new Error(err);
         }
         chargeObj = charge;
         return res.send({
