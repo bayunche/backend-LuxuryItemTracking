@@ -128,11 +128,12 @@ exports.getAliOrderResult = async (
         let total_amount = trueValue;
         //订单完成
         let userInfo = await User.findOne({ where: { userId } });
+        console.log(total_amount)
         let beforeBalance = Number(userInfo.balance);
         let afterBalance = beforeBalance + Number(total_amount);
         let tradeData = {
           beforeBalance: beforeBalance + "",
-          afterBalance: beforeBalance + "",
+          afterBalance: afterBalance+"",
           balance: total_amount + "",
           tradeTime: result.sendPayDate,
           userId,
