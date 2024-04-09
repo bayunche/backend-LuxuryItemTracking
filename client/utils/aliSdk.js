@@ -92,14 +92,14 @@ exports.getOrderStr = async (total_amount, userId) => {
 exports.getAliOrderResult = async (out_trade_no, userId, trueValue) => {
   // 预先等待30秒
   await new Promise((resolve) => setTimeout(resolve, 30000));
-console.log("awaitComplete")
+  console.log("awaitComplete");
   try {
     const result = await alipay.exec("alipay.trade.query", {
       bizContent: {
         out_trade_no: out_trade_no,
       },
     });
-
+    console.log(result.trade_status);
     if (
       result.trade_status != "TRADE_SUCCESS" &&
       result.trade_status != "TRADE_FINISHED"
