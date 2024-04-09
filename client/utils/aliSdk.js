@@ -89,7 +89,7 @@ exports.getOrderStr = async (total_amount, userId) => {
   }
 };
 //获取订单结果
-exports.getAliOrderResult = async (out_trade_no, userId) => {
+exports.getAliOrderResult = async (out_trade_no, userId, trueValue) => {
   try {
     const result = await alipay.exec("alipay.trade.query", {
       bizContent: {
@@ -97,15 +97,17 @@ exports.getAliOrderResult = async (out_trade_no, userId) => {
       },
     });
     if (
-      result.trade_status != "TRADE_SUCCESS" ||
+      result.trade_status != "TRADE_SUCCESS" &&
       result.trade_status != "TRADE_FINISHED"
     ) {
-      setTimeout(async () => {
-        getAliOrderResult(out_trade_no, userId);
+      setTimeout(() => {
+        exports
+          .getAliOrderResult(out_trade_no, userId, trueValue)
+          .catch(console.error);
       }, 3000);
     } else {
       try {
-        let total_amount = result.total_amount;
+        let total_amount = trueValue;
         //订单完成
         let userInfo = await User.findOne({ where: { userId } });
         let beforeBalance = Number(userInfo.balance);
