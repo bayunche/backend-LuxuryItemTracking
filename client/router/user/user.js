@@ -208,7 +208,7 @@ exports.getAliOrderInfo = async (req, res) => {
   }
 };
 //获取请求的客户端ip
-const getClientIp = () => {
+const getClientIp = (req) => {
   return (
     req.headers["x-forwarded-for"] ||
     req.connection.remoteAddress ||
@@ -227,7 +227,7 @@ exports.getCharge = async (req, res) => {
   const { userId } = req;
   const { value, type } = req.body;
   try {
-    const ip = getClientIp();
+    const ip = getClientIp(req);
     const pingpp = Pingpp("sk_test_4qPiHSrX54yTWL8C48zHSaLS");
     pingpp.setPrivateKey(
       "MIICXgIBAAKBgQCgHA1Z0ZoG+tSGDbAeorSNN6/zRWCSDRu3+73aSrnpNXIivLPG" +
