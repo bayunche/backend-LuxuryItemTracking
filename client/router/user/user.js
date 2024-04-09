@@ -260,7 +260,6 @@ exports.getCharge = async (req, res) => {
           console.log(err);
           return new Error(err);
         }
-        chargeObj = charge;
         return res.send({
           status: "success",
           msg: "获取订单信息成功",

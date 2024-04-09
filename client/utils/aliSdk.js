@@ -1,7 +1,8 @@
+const { default: AliPayForm } = require("alipay-sdk/lib/form");
 const { urlencoded } = require("body-parser");
 
 const AliSdk = require("alipay-sdk").default;
-
+const AlipayFormData = require("alipay-sdk/lib/form").default;
 const alipay = new AliSdk({
   appId: "9021000135698648",
   privateKey:
@@ -23,18 +24,40 @@ const order_on = () => {
 };
 
 exports.getOrderStr = async (total_amount, userId) => {
-  const encodedUserId = encodeURI(userId);
-  const result = await alipay.sdkExec("alipay.trade.app.pay", {
-    bizContent: {
-      extend_params: {
-        specified_seller_name: "区块链充值系统",
-      },
-      out_trade_no: order_on,
+  const formData = new AlipayFormData();
+  formData.setMethod("get");
 
-      passback_params: encodedUserId,
-      total_amount: total_amount,
-      subject: "区块链余额充值",
-    },
+  const encodedUserId = encodeURI(userId);
+  formData.addField("bizContent", {
+    out_trade_no: order_on,
+    total_amount: total_amount,
+    subject: "区块链余额充值",
+    quit_url: "",
+    notify_url: "",
+    passback_params: encodedUserId,
   });
+  const result = await alipay.exec(
+    "alipay.trade.wap.pay",
+    {},
+    {
+      formData: formData,
+    },
+    { validateSign: true }
+  );
+  return result
+
+  // const result = await alipay.sdkExec("alipay.trade.wap.pay", {
+  //   bizContent: {
+  //     extend_params: {
+  //       specified_seller_name: "区块链充值系统",
+  //     },
+  //     out_trade_no: order_on,
+  //     quit_url:"",
+  //     passback_params: encodedUserId,
+  //     total_amount: total_amount,
+  //     subject: "区块链余额充值",
+  //   },
+  // });
+
   return result;
 };
