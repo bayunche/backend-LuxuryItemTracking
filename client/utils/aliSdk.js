@@ -31,48 +31,59 @@ const order_on = () => {
 };
 
 exports.getOrderStr = async (total_amount, userId) => {
-try {
-  const formData = new AlipayFormData();
-  formData.setMethod("get");
-  const encodedUserId = encodeURI({userId});
-  formData.addField("bizContent", {
-    out_trade_no: order_on,
-    total_amount: total_amount,
-    subject: "区块链余额充值",
-    product_code: "QUICK_WAP_WAY",
-    // quit_url: "",
-    // notify_url: "",
-    // passback_params: encodedUserId,
-  });
-  const result = alipay.pageExec( "alipay.trade.wap.pay",{
-    bizContent: {
-      // extend_params: {
-      //   specified_seller_name: "区块链充值系统",
-      // },
-      product_code: "QUICK_WAP_WAY",
+  try {
+    const formData = new AlipayFormData();
+    formData.setMethod("get");
+    const encodedUserId = encodeURI({ userId });
+    formData.addField("bizContent", {
       out_trade_no: order_on,
       total_amount: total_amount,
       subject: "区块链余额充值",
-      // quit_url: "https://www.bilibili.com/",
+      product_code: "QUICK_WAP_WAY",
+      // quit_url: "",
+      // notify_url: "",
       // passback_params: encodedUserId,
-
-    },
-    method:'GET'
-  });
-  // console.log()
-  // await alipay.exec(
-  //   "alipay.trade.wap.pay",
-  //   {},
-  //   {
-  //     formData: formData,
-  //   },
-  //   { validateSign: true }
-  // );
-  return result;
-} catch (error) {
-  console.log(error)
-}
-
+    });
+    const result = alipay.pageExec("alipay.trade.wap.pay", {
+      bizContent: {
+        // extend_params: {
+        //   specified_seller_name: "区块链充值系统",
+        // },
+        product_code: "QUICK_WAP_WAY",
+        out_trade_no: order_on,
+        total_amount: total_amount,
+        subject: "区块链余额充值",
+        // quit_url: "https://www.bilibili.com/",
+        // passback_params: encodedUserId,
+      },
+      method: "GET",
+    });
+    console.log({
+      bizContent: {
+        // extend_params: {
+        //   specified_seller_name: "区块链充值系统",
+        // },
+        product_code: "QUICK_WAP_WAY",
+        out_trade_no: order_on,
+        total_amount: total_amount,
+        subject: "区块链余额充值",
+        // quit_url: "https://www.bilibili.com/",
+        // passback_params: encodedUserId,
+      },
+      method: "GET",
+    });
+    // await alipay.exec(
+    //   "alipay.trade.wap.pay",
+    //   {},
+    //   {
+    //     formData: formData,
+    //   },
+    //   { validateSign: true }
+    // );
+    return result;
+  } catch (error) {
+    console.log(error);
+  }
 };
 exports.getScheme = async (total_amount, userId) => {
   const encodedUserId = encodeURI(userId);
