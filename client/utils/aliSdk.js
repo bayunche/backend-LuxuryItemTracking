@@ -99,7 +99,7 @@ exports.getAliOrderResult = async (out_trade_no, userId, trueValue) => {
         out_trade_no: out_trade_no,
       },
     });
-    console.log(result.trade_status);
+    console.log(result);
     if (
       result.trade_status != "TRADE_SUCCESS" &&
       result.trade_status != "TRADE_FINISHED"
