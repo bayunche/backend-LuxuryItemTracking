@@ -38,4 +38,6 @@ const getOrderStr = async (total_amount, userId) => {
   });
   return result;
 };
-exports.getOrderStr;
+module.exports = {
+  getOrderStr,
+};
