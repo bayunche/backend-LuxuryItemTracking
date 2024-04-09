@@ -7,4 +7,5 @@ router.get("/certifiedUser", user.certifiedUser);
 router.get("/getUserInfo", user.getUserInfo);
 router.post('/editPassword',user.editUserPassword)
 router.post('/editUserInfo',user.editUserInfo)
+router.post("/getAliOrderInfo",user.getAliOrderInfo)
 module.exports = router;

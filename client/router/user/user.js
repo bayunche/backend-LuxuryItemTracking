@@ -20,6 +20,7 @@ const router = require("./router");
 const qrcode = require("qrcode");
 const salesInfo = require("../../data/salesInfo");
 const { verifyArgon, argon } = require("../../utils/argon");
+const { default: getOrderStr } = require("../../utils/aliSdk");
 
 exports.createUserPrivateKey = async (req, res) => {
   try {
@@ -186,5 +187,23 @@ exports.editUserPassword = async (req, res) => {
     }
   } else {
     return res.send({ status: "refuse", msg: "原密码错误", data: null });
+  }
+};
+
+exports.getAliOrderInfo = async (req, res) => {
+  const { userId } = req;
+  const { value } = req.body;
+
+  //沙箱环境
+  try {
+    let orderStr = await getOrderStr(value, userId);
+    res.send({
+      status: "success",
+      msg: "获取订单信息成功",
+      data: orderStr,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.send({ status: "refuse", msg: "获取订单信息失败", data: null });
   }
 };
