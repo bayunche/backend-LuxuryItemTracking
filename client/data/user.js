@@ -42,7 +42,7 @@ const User = sequelize.define("User", {
     allowNull: true,
   },
   balance: {
-    type: DataTypes.LONGTEXT,
+    type: DataTypes.TEXT,
     allowNull: true,
   },
   avatar: {
