@@ -43,7 +43,7 @@ exports.getOrderStr = async (total_amount, userId) => {
     notify_url: "",
     passback_params: encodedUserId,
   });
-  alipay.pageExec("get", {
+  const result =await alipay.pageExec("GET", {
     bizContent: {
       extend_params: {
         specified_seller_name: "区块链充值系统",
@@ -56,7 +56,7 @@ exports.getOrderStr = async (total_amount, userId) => {
     },
   });
   // console.log()
-  const result = await alipay.exec(
+   await alipay.exec(
     "alipay.trade.wap.pay",
     {},
     {
