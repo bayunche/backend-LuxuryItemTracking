@@ -32,18 +32,18 @@ const order_on = () => {
 
 exports.getOrderStr = async (total_amount, userId) => {
   try {
-    const formData = new AlipayFormData();
-    formData.setMethod("get");
+    // const formData = new AlipayFormData();
+    // formData.setMethod("get");
     const encodedUserId = encodeURI({ userId });
-    formData.addField("bizContent", {
-      out_trade_no: order_on,
-      total_amount: total_amount,
-      subject: "区块链余额充值",
-      product_code: "QUICK_WAP_WAY",
-      // quit_url: "",
-      // notify_url: "",
-      // passback_params: encodedUserId,
-    });
+    // formData.addField("bizContent", {
+    //   out_trade_no: order_on,
+    //   total_amount: total_amount,
+    //   subject: "区块链余额充值",
+    //   product_code: "QUICK_WAP_WAY",
+    //   // quit_url: "",
+    //   // notify_url: "",
+    //   // passback_params: encodedUserId,
+    // });
     const result = alipay.pageExec("alipay.trade.wap.pay", {
       bizContent: {
         // extend_params: {
