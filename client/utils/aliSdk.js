@@ -138,6 +138,7 @@ exports.getAliOrderResult = async (
           tradeTime: result.sendPayDate,
           userId,
           out_trade_no,
+          trueValue: result.totalAmount+"",
         });
 
         await User.update({ balance: afterBalance }, { where: { userId } });
