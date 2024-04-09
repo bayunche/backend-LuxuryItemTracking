@@ -8,5 +8,5 @@ router.get("/getUserInfo", user.getUserInfo);
 router.post('/editPassword',user.editUserPassword)
 router.post('/editUserInfo',user.editUserInfo)
 router.post("/getAliOrderInfo",user.getAliOrderInfo)
-router.post("getCharge",user.getCharge)
+router.post("/getCharge",user.getCharge)
 module.exports = router;
