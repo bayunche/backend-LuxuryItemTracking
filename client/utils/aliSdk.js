@@ -48,7 +48,7 @@ exports.getOrderStr = async (total_amount, userId) => {
       extend_params: {
         specified_seller_name: "区块链充值系统",
       },
-      
+      product_code: "QUICK_WAP_WAY",
       out_trade_no: order_on,
       quit_url: "",
       passback_params: encodedUserId,
@@ -56,10 +56,9 @@ exports.getOrderStr = async (total_amount, userId) => {
       subject: "区块链余额充值",
     },
     methods: "Get",
-
   });
   // console.log()
-   await alipay.exec(
+  await alipay.exec(
     "alipay.trade.wap.pay",
     {},
     {
@@ -68,18 +67,16 @@ exports.getOrderStr = async (total_amount, userId) => {
     { validateSign: true }
   );
   return result;
-
-
 };
 exports.getScheme = async (total_amount, userId) => {
   const encodedUserId = encodeURI(userId);
-    const result = await alipay.sdkExec("alipay.trade.app.pay", {
+  const result = await alipay.sdkExec("alipay.trade.app.pay", {
     bizContent: {
       extend_params: {
         specified_seller_name: "区块链充值系统",
       },
       out_trade_no: order_on,
-      quit_url:"",
+      quit_url: "",
 
       passback_params: encodedUserId,
       total_amount: total_amount,
@@ -88,4 +85,4 @@ exports.getScheme = async (total_amount, userId) => {
   });
 
   return result;
-}
+};
