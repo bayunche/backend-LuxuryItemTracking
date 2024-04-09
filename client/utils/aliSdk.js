@@ -101,8 +101,8 @@ exports.getAliOrderResult = async (out_trade_no, userId, trueValue) => {
     });
     console.log(result);
     if (
-      result.trade_status != "TRADE_SUCCESS" &&
-      result.trade_status != "TRADE_FINISHED"
+      result.tradeStatus != "TRADE_SUCCESS" &&
+      result.tradeStatus != "TRADE_FINISHED"
     ) {
       // 如果订单状态不是成功或完成，再次等待30秒后重试
       setTimeout(() => {
@@ -119,9 +119,9 @@ exports.getAliOrderResult = async (out_trade_no, userId, trueValue) => {
         let afterBalance = beforeBalance + Number(total_amount);
 
         await tradeList.create({
-          beforeBalance,
-          afterBalance,
-          balance: total_amount,
+          beforeBalance: beforeBalance+"",
+          afterBalance:beforeBalance+"",
+          balance: total_amount+"",
           tradeTime: result.send_pay_date,
           userId,
           out_trade_no,

@@ -29,10 +29,14 @@ const tradeList = sequelize.define("tradeList", {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  tradeTime:{
-    type:DataTypes.DATE,
-    allowNull:false
-  }
+  tradeTime: {
+    type: DataTypes.DATE,
+    allowNull: false,
+  },
+  trueValue: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
 });
 sequelize.sync();
 module.exports = tradeList;
