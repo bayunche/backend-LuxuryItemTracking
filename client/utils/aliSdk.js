@@ -91,8 +91,8 @@ exports.getOrderStr = async (total_amount, userId) => {
 //获取订单结果
 exports.getAliOrderResult = async (out_trade_no, userId, trueValue) => {
   // 预先等待30秒
-  await new Promise(resolve => setTimeout(resolve, 30000));
-
+  await new Promise((resolve) => setTimeout(resolve, 30000));
+console.log("awaitComplete")
   try {
     const result = await alipay.exec("alipay.trade.query", {
       bizContent: {
@@ -117,7 +117,7 @@ exports.getAliOrderResult = async (out_trade_no, userId, trueValue) => {
         let userInfo = await User.findOne({ where: { userId } });
         let beforeBalance = Number(userInfo.balance);
         let afterBalance = beforeBalance + Number(total_amount);
-        
+
         await tradeList.create({
           beforeBalance,
           afterBalance,
