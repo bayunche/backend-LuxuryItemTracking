@@ -122,7 +122,7 @@ exports.getAliOrderResult = async (out_trade_no, userId, trueValue) => {
           beforeBalance: beforeBalance+"",
           afterBalance:beforeBalance+"",
           balance: total_amount+"",
-          tradeTime: result.send_pay_date,
+          tradeTime: result.sendPayDate,
           userId,
           out_trade_no,
         });
