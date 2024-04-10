@@ -216,6 +216,7 @@ exports.getLuxuryItemDetails = async (serialNumber) => {
     const estimatedGas = await contract.methods.getItemDetails(serialNumber).estimateGas({
       from:contractAddress
     })
+    console.log("startDebug")
     const debug=await contract.methods.isCertifiedUser(serialNumber).call()
     console.log(debug)
     const result = await contract.methods.getItemDetails(serialNumber).send({
