@@ -42,7 +42,8 @@ exports.mintLuxuryItem = async (req, res) => {
     // 如果用户已经注册了地址
     if (address != null) {
       // 生成随机数
-      let serialNumber = generateSecureRandomNumber();
+      // let serialNumber = generateSecureRandomNumber();
+      // serialNumber=BigInt(serialNumber)
       // 将用户的userId赋值给serialNumber
       userId = result.userId;
       console.log(address, userId);
@@ -52,9 +53,8 @@ exports.mintLuxuryItem = async (req, res) => {
       itemDate = moment(itemDate).unix();
       itemDate = parseInt(itemDate);
       // 调用mintNFTs函数，生成交易hash
-      let { transactionHash, blockNumber, timeStamp } = await mintNFTs(
+      let { transactionHash, blockNumber, timeStamp,    serialNumber, } = await mintNFTs(
         itemName,
-        serialNumber,
         itemDate,
         address,
         userId
@@ -87,7 +87,7 @@ exports.mintLuxuryItem = async (req, res) => {
           console.log(`${key} is a BigInt`);
         }
       }
-      console.log(data.serialNumber)
+      console.log(data.serialNumber);
       // 将数据存入MySQL数据库
       await ItemList.create(data);
       // 创建交易记录

@@ -4,27 +4,25 @@ const { Web3 } = require("web3");
 const User = require("../data/user");
 
 const ItemList = require("../data/itemList");
+const generateSecureRandomNumber = require("./randomInt");
 // 加载LuxuryItemTracking合约的ABI
 const luxuryItemTrackingABI =
   require("../../build/contracts/LuxuryItemTracking.json").abi;
 const web3 = new Web3("http://127.0.0.1:8548"); // 替换为你的以太坊节点地址
 
 let contractAddress;
-const password = "123456";
+// 生产环境
+// const password = "123456";
+// 本地环境
+const password = "";
 // const contract = new web3.eth.Contract(luxuryItemTrackingABI, contractAddress);
 
 // 创建NFTs
-exports.mintNFTs = async (
-  _name,
-  _serialNumber,
-  _productionDate,
-  address,
-  passphrase
-) => {
+exports.mintNFTs = async (_name, _productionDate, address, passphrase) => {
   try {
     const account = address;
     // 检查账户是否已解锁
-
+    const serialNumber = generateSecureRandomNumber();
     [contractAddress] = await web3.eth.getAccounts();
     console.log(contractAddress);
 
@@ -54,7 +52,7 @@ exports.mintNFTs = async (
 
     const gasPrice = await web3.eth.getGasPrice(); // 获取当前的gas价格
     const estimatedGas = await contract.methods
-      .mintNFT(_name, _serialNumber, _productionDate)
+      .mintNFT(_name,serialNumber, _productionDate)
       .estimateGas({ from: account });
     console.log("estimateGas", estimatedGas);
     const accountBalance = await web3.eth.getBalance(account);
@@ -69,7 +67,7 @@ exports.mintNFTs = async (
     }
     // 铸造 NFT
     const transaction = await contract.methods
-      .mintNFT(_name, _serialNumber, _productionDate)
+      .mintNFT(_name,serialNumber, _productionDate)
       .send({
         from: account,
         gas: estimatedGas, // 设置预估的gas用量
@@ -79,6 +77,7 @@ exports.mintNFTs = async (
 
     // 获取交易哈希、区块高度和时间戳
     const transactionHash = transaction.transactionHash;
+
     const blockNumber = transaction.blockNumber;
     const timestamp = (await web3.eth.getBlock(blockNumber)).timestamp;
 
@@ -90,6 +89,7 @@ exports.mintNFTs = async (
       transactionHash: transactionHash,
       blockNumber: blockNumber,
       timeStamp: timestamp,
+      serialNumber,
     };
   } catch (error) {
     console.error("Error minting NFTs:", error);
@@ -204,25 +204,24 @@ exports.certifyUser = async (serialNumber, address) => {
   }
 };
 // 获取商品信息
-exports.getLuxuryItemDetails = async (serialNumber, address) => {
+exports.getLuxuryItemDetails = async (serialNumber) => {
   [contractAddress] = await web3.eth.getAccounts();
-  console.log(contractAddress);
-
   const contract = new web3.eth.Contract(
     luxuryItemTrackingABI,
     contractAddress
   );
   try {
-    const result = await contract.methods.getItemDetails(serialNumber).call();
+    console.log(serialNumber);
+    const result = await contract.methods.getItemDetails(serialNumber).send({
+      from:contractAddress
+    })
     // 处理并显示返回的结果
-    console.log("Item Name:", result[0]);
-    console.log("Manufacturer Address:", result[1]);
-    console.log("Production Date:", new Date(result[2] * 1000).toISOString()); // 假设生产日期以Unix时间戳格式返回
-    console.log("Logistics Info:", result[3]);
-    console.log("Sales Record:", result[4]);
+   console.log(result)
     return result;
   } catch (error) {
-    console.log(`Serial Number: ${serialNumber}, Contract Address: ${contractAddress}`);
+    console.log(
+      `Serial Number: ${serialNumber}, Contract Address: ${contractAddress}`
+    );
     // throw error;
     throw new Error(`Error getting item details: ${error}`);
   }
