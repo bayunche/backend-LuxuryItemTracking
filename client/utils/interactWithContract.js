@@ -103,7 +103,6 @@ exports.updateLogisticsInfo = async (serialNumber, logisticsInfo, address) => {
     // 获取以太坊账户地址
     const account = address;
     [contractAddress] = await web3.eth.getAccounts();
-
     // 使用提供的 ABI（应用二进制接口）和合约地址创建一个合约实例
     const contract = new web3.eth.Contract(
       luxuryItemTrackingABI,
@@ -205,38 +204,22 @@ exports.certifyUser = async (serialNumber, address) => {
   }
 };
 // 获取商品信息
-exports.getLuxuryItemDetails = async (serialNumber, address, userId) => {
+exports.getLuxuryItemDetails = async (serialNumber, address) => {
   [contractAddress] = await web3.eth.getAccounts();
+  console.log(contractAddress);
 
   const contract = new web3.eth.Contract(
     luxuryItemTrackingABI,
     contractAddress
   );
-
-  const gasPrice = await web3.eth.getGasPrice(); // 获取当前的gas价格
-  const estimatedGas = await contract.methods
-    .getItemDetails(serialNumber)
-    .estimateGas({ from: address });
   try {
-    const accountBalance = await web3.eth.getBalance(address);
-    console.log(
-      "Account balance:",
-      web3.utils.fromWei(accountBalance, "ether"),
-      "ETH"
-    );
-
-    if (accountBalance < estimatedGas * gasPrice) {
-      throw new Error("当前账户余额不足，无法完成交易");
-    }
-
-   contract.methods.getItemDetails(serialNumber).call()
-   .then((result)=>{
-console.log(result)
-
-   }).catch((error)=>{
-    console.error(error)
-   })
-  
+    const result = await contract.methods.getItemDetails(serialNumber).call();
+    // 处理并显示返回的结果
+    console.log("Item Name:", result[0]);
+    console.log("Manufacturer Address:", result[1]);
+    console.log("Production Date:", new Date(result[2] * 1000).toISOString()); // 假设生产日期以Unix时间戳格式返回
+    console.log("Logistics Info:", result[3]);
+    console.log("Sales Record:", result[4]);
     return result;
   } catch (error) {
     console.log(`Serial Number: ${serialNumber}, Contract Address: ${address}`);
