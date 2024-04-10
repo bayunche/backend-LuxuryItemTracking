@@ -223,7 +223,6 @@ exports.getLuxuryItemDetails = async (serialNumber, address) => {
     return result;
   } catch (error) {
     console.log(`Serial Number: ${serialNumber}, Contract Address: ${address}`);
-    console.log(`gasPrice: ${gasPrice}, estimatedGas: ${estimatedGas}`);
     // throw error;
     throw new Error(`Error getting item details: ${error}`);
   }
