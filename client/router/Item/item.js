@@ -16,7 +16,7 @@ const JSONBig = require("json-bigint");
 exports.getItemDetails = async (req, res) => {
   console.log(req.query);
   const { itemId } = req.query;
-  // const userId = req.userId;
+  const userId = req.userId;
   try {
     // let { address } = await User.findOne({ where: { userId: userId } });
 
@@ -25,11 +25,11 @@ exports.getItemDetails = async (req, res) => {
     });
     let { serialNumber } = itemData;
     // 出现问题暂时无法解决先注释
-    // let result = await getLuxuryItemDetails(serialNumber, address, userId);
-    // itemData = JSONBig.stringify(itemData);
+    let result = await getLuxuryItemDetails(serialNumber, address, userId);
+    itemData = JSONBig.stringify(itemData);
     console.log(itemData);
     res.send({
-      // data: { itemData, result },
+      data: { itemData, result },
       data: itemData,
       msg: "success",
     });

@@ -197,7 +197,7 @@ exports.editUserPassword = async (req, res) => {
 
 exports.getAliOrderInfo = async (req, res) => {
   const { userId } = req;
-  const { value,trueValue } = req.body;
+  const { value, trueValue } = req.body;
   //沙箱环境
   try {
     let { orderStr, out_trade_no } = await getOrderStr(value, userId);
@@ -207,7 +207,7 @@ exports.getAliOrderInfo = async (req, res) => {
       data: orderStr,
     });
 
-    return await getAliOrderResult(out_trade_no, userId,trueValue);
+    return await getAliOrderResult(out_trade_no, userId, trueValue);
   } catch (error) {
     console.log(error);
     return res.send({ status: "refuse", msg: "获取订单信息失败", data: null });

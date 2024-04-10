@@ -102,7 +102,7 @@ exports.updateLogisticsInfo = async (serialNumber, logisticsInfo, address) => {
   try {
     // 获取以太坊账户地址
     const account = address;
-   [contractAddress] = await web3.eth.getAccounts();
+    [contractAddress] = await web3.eth.getAccounts();
 
     // 使用提供的 ABI（应用二进制接口）和合约地址创建一个合约实例
     const contract = new web3.eth.Contract(
@@ -111,7 +111,6 @@ exports.updateLogisticsInfo = async (serialNumber, logisticsInfo, address) => {
     );
 
     // 设置合约地址（这一行似乎放错地方，可能会导致混淆，因为 contractAddress 在代码片段中没有定义）
-   
 
     // 在智能合约中更新物流信息
     const transaction = await contract.methods
@@ -172,7 +171,7 @@ exports.certifyUser = async (serialNumber, address) => {
     const account = address;
     [contractAddress] = await web3.eth.getAccounts();
 
-    if (!isLuxuryItemExists(serialNumber)) {
+    if (!exports.isLuxuryItemExists(serialNumber)) {
       return false;
     }
     // 调用认证用户的函数
@@ -209,8 +208,10 @@ exports.certifyUser = async (serialNumber, address) => {
 exports.getLuxuryItemDetails = async (serialNumber, address, userId) => {
   [contractAddress] = await web3.eth.getAccounts();
 
-
-  const contract = new web3.eth.Contract(luxuryItemTrackingABI, contractAddress);
+  const contract = new web3.eth.Contract(
+    luxuryItemTrackingABI,
+    contractAddress
+  );
 
   const gasPrice = await web3.eth.getGasPrice(); // 获取当前的gas价格
   const estimatedGas = await contract.methods
@@ -243,7 +244,7 @@ exports.getLuxuryItemDetails = async (serialNumber, address, userId) => {
   }
 };
 // 判断奢侈品是否存在
-const isLuxuryItemExists = async (serialNumber) => {
+exports.isLuxuryItemExists = async (serialNumber) => {
   console.log(serialNumber);
   try {
     let res = await ItemList.findOne({ where: { serialNumber: serialNumber } });
@@ -266,7 +267,6 @@ const isLuxuryItemExists = async (serialNumber) => {
     return false;
   }
 };
-exports.isLuxuryItemExists;
 // 创建账户
 exports.createAccount = async (userId) => {
   try {
