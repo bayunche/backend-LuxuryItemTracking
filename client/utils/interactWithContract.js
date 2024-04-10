@@ -229,11 +229,7 @@ exports.getLuxuryItemDetails = async (serialNumber, address, userId) => {
       throw new Error("当前账户余额不足，无法完成交易");
     }
 
-    const result = await contract.methods.getItemDetails(serialNumber).call({
-      from: contractAddress,
-      gas: estimatedGas, // 设置预估的gas用量
-      gasPrice: gasPrice, // 使用当前的gas价格
-    });
+    const result = await contract.methods.getItemDetails(serialNumber).call();
 
     return result;
   } catch (error) {
