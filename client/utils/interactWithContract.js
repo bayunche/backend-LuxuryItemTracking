@@ -218,6 +218,8 @@ exports.getLuxuryItemDetails = async (serialNumber) => {
     })
     const result = await contract.methods.getItemDetails(serialNumber).send({
       from: contractAddress,
+      gasPrice:estimatedGas,
+      gas:estimatedGas,
     })
     // 处理并显示返回的结果
    console.log(result)
