@@ -212,9 +212,7 @@ exports.getLuxuryItemDetails = async (serialNumber) => {
   );
   try {
     console.log(serialNumber);
-    const result = await contract.methods.getItemDetails(serialNumber).send({
-      from:contractAddress
-    })
+    const result = await contract.methods.getItemDetails(serialNumber).call()
     // 处理并显示返回的结果
    console.log(result)
     return result;
