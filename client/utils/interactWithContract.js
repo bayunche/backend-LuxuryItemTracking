@@ -222,7 +222,7 @@ exports.getLuxuryItemDetails = async (serialNumber, address) => {
     console.log("Sales Record:", result[4]);
     return result;
   } catch (error) {
-    console.log(`Serial Number: ${serialNumber}, Contract Address: ${address}`);
+    console.log(`Serial Number: ${serialNumber}, Contract Address: ${contractAddress}`);
     // throw error;
     throw new Error(`Error getting item details: ${error}`);
   }
