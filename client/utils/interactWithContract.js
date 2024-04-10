@@ -229,7 +229,13 @@ exports.getLuxuryItemDetails = async (serialNumber, address, userId) => {
       throw new Error("当前账户余额不足，无法完成交易");
     }
 
-    const result = await contract.methods.getItemDetails(serialNumber).call();
+   contract.methods.getItemDetails(serialNumber).call()
+   .then((result)=>{
+console.log(result)
+
+   }).catch((error)=>{
+    console.error(error)
+   })
   
     return result;
   } catch (error) {
