@@ -129,24 +129,34 @@ contract LuxuryItemTracking is ERC721Enumerable, Ownable {
         emit LuxuryItemCertificationUpdated(_serialNumber, _isCertified);
     }
 
-    function getItemDetails(
-        uint256 _serialNumber
+  function getItemDetails(uint256 _serialNumber)
+    public
+    view
+    returns (
+        string memory,
+        address,
+        uint256,
+        string memory,
+        string memory
     )
-        public
-        view
-        returns (string memory, address, uint256, string memory, string memory)
-    {
-        require(_exists(_serialNumber), "Item does not exist");
+{
+    require(_exists(_serialNumber), "Item does not exist");
 
-        LuxuryItem storage item = luxuryItems[_serialNumber];
-        return (
-            item.name,
-            item.manufacturer,
-            item.productionDate,
-            item.logisticsInfo,
-            item.salesRecord
-        );
-    }
+    LuxuryItem storage item = luxuryItems[_serialNumber];
+    // 检查 logisticsInfo 是否为空，如果是，则返回一个默认值
+    string memory logisticsInfo = bytes(item.logisticsInfo).length > 0 ? item.logisticsInfo : "No logistics info available";
+    // 检查 salesRecord 是否为空，如果是，则返回一个默认值
+    string memory salesRecord = bytes(item.salesRecord).length > 0 ? item.salesRecord : "No sales record available";
+
+    return (
+        item.name,
+        item.manufacturer,
+        item.productionDate,
+        logisticsInfo,
+        salesRecord
+    );
+}
+
 
     function setLuxuryItemCertification(
         uint256 _serialNumber,
