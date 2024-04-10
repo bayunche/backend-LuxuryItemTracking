@@ -230,12 +230,12 @@ exports.getLuxuryItemDetails = async (serialNumber, address, userId) => {
     }
 
     const result = await contract.methods.getItemDetails(serialNumber).call();
-
+  
     return result;
   } catch (error) {
     console.log(`Serial Number: ${serialNumber}, Contract Address: ${address}`);
     console.log(`gasPrice: ${gasPrice}, estimatedGas: ${estimatedGas}`);
-    throw error;
+    // throw error;
     throw new Error(`Error getting item details: ${error}`);
   }
 };
