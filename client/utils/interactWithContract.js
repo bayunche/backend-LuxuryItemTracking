@@ -212,6 +212,10 @@ exports.getLuxuryItemDetails = async (serialNumber) => {
   );
   try {
     console.log(serialNumber);
+    const gasPrice = await web3.eth.getGasPrice(); // 获取当前的gas价格
+    const estimatedGas = await contract.methods.getItemDetails(serialNumber).estimateGas({
+      from:contractAddress
+    })
     const result = await contract.methods.getItemDetails(serialNumber).send({
       from: contractAddress,
     })
