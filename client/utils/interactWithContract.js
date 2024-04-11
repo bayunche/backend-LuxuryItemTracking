@@ -10,7 +10,7 @@ const ethers = require('ethers');
 const luxuryItemTrackingABI =
   require("../../build/contracts/LuxuryItemTracking.json").abi;
 const web3 = new Web3("http://127.0.0.1:8548"); // 替换为你的以太坊节点地址
-const provider = new ethers.providers.JsonRpcProvider('http://127.0.0.1:8548');
+const provider = new ethers.JsonRpcProvider('http://127.0.0.1:8548');
 let contractAddress;
 // 生产环境
 // const password = "123456";
