@@ -29,7 +29,7 @@ const transactionLog = require("../../data/transactionLog");
 // 导出mintLuxuryItem函数，用于处理发送的请求
 exports.mintLuxuryItem = async (req, res) => {
   // 从请求中获取itemName、itemDate和itemImage
-  let { itemName, itemDate, itemImage, brand, model,value } = req.body;
+  let { itemName, itemDate, itemImage, brand, model } = req.body;
   // 获取当前用户的userId
   let userId = req.userId;
   // 打印itemDate
@@ -94,7 +94,6 @@ exports.mintLuxuryItem = async (req, res) => {
         blockNumber,
         brand,
         model,
-        value,
         transactionHash,
         qrcode: qrcodeBase64,
       };
