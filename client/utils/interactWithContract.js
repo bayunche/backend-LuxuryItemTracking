@@ -17,7 +17,7 @@ const luxuryGoodsNFT = new ethers.Contract(
   luxuryItemTrackingABI,
   provider
 );
-
+let password='123456'
 exports.registerLuxuryItem = async (
   brand,
   model,
