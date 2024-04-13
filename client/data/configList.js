@@ -7,7 +7,7 @@ const configList = sequelize.define("configList", {
     autoIncrement: true,
   },
   TopUp: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.FLOAT,
     allowNull: true,
   },
 });

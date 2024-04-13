@@ -10,6 +10,10 @@ const ItemList = sequelize.define("ItemList", {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  value:{
+    type:DataTypes.STRING,
+    allowNull:false
+  },
   brand: {
     type: DataTypes.STRING,
     allowNull: false,

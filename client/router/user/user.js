@@ -32,25 +32,30 @@ exports.createUserPrivateKey = async (req, res) => {
   try {
     // Extracting userId from the request object
     const { userId } = req;
-    console.log(userId);
+    const { value, trueValue } = req.body;
 
+    let { orderStr, out_trade_no } = await getOrderStr(value, userId);
+    res.send({
+      status: "success",
+      msg: "获取订单信息成功",
+      data: orderStr,
+    });
+    await getAliOrderResult(out_trade_no, userId, trueValue)
     // Retrieve the user from the database
     let user = await User.findOne({ where: { userId } });
-    
-
     // Check if the user already has an address
     if (!user || !user.address) {
       // Also, ensure user exists before checking its properties
       // Create a new blockchain account for the user
 
       // const address = await createAccount(userId);
-      
-      const {address,privateKey}=await createAccountEthers(userId)
+
+      const { address, privateKey } = await createAccountEthers(userId);
       console.log(address);
 
       // Update the user's address and balance in the database
       const [updateCount] = await User.update(
-        { address, balance: "2",privateKey }, // Directly use shorthand property names
+        { address, balance: "2", privateKey }, // Directly use shorthand property names
         { where: { userId } } // Use the same shorthand notation here
       );
       console.log(updateCount);

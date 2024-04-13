@@ -24,7 +24,7 @@ exports.login = async (req, res) => {
       return;
     }
     const token = generateToken(user.userId);
-
+    User.update({ loginTime: now() }, { where: { userId: user.userId } });
     res.setHeader("Authorization", `Bearer ${token}`);
     res.send({ status: "ok", msg: null, data: null });
   } catch (error) {
@@ -44,11 +44,17 @@ exports.signup = async (req, res) => {
     const hashedPassword = await argon(password);
     const userId = ulid();
     console.log(hashedPassword);
+    // 检查用户名是否已存在
+    const existingUser = await User.findOne({ where: { userName } });
+    if (existingUser) {
+      return res.send({ status: "refuse", msg: "用户名已存在", data: null });
+    }
     const user = await User.create({
       userName,
       passwordF: hashedPassword,
       userId,
       permissions: 0,
+      balace: "0.00",
       name: userName,
       loginTime: now(),
     });
