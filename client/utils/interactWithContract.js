@@ -17,7 +17,7 @@ const luxuryGoodsNFT = new ethers.Contract(
   luxuryItemTrackingABI,
   provider
 );
-let password='123456'
+
 exports.registerLuxuryItem = async (
   brand,
   model,
@@ -91,7 +91,7 @@ exports.getLuxuryDetails = async (tokenId, privateKey) => {
 
 // let contractAddress;
 // 生产环境
-// const password = "123456";
+const password = "123456";
 // 本地环境
 // const password = "";
 // const contract = new web3.eth.Contract(luxuryItemTrackingABI, contractAddress);
