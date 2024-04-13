@@ -9,6 +9,7 @@ const {
   createAccount,
   setLuxuryItemCertification,
   setLuxuryItemValuation,
+  registerLuxuryItem,
 } = require("../../utils/interactWithContract");
 const User = require("../../data/user");
 const sequelize = require("../../data/database");
@@ -28,7 +29,7 @@ const transactionLog = require("../../data/transactionLog");
 // 导出mintLuxuryItem函数，用于处理发送的请求
 exports.mintLuxuryItem = async (req, res) => {
   // 从请求中获取itemName、itemDate和itemImage
-  let { itemName, itemDate, itemImage } = req.body;
+  let { itemName, itemDate, itemImage, brand, model,value } = req.body;
   // 获取当前用户的userId
   let userId = req.userId;
   // 打印itemDate
@@ -37,7 +38,7 @@ exports.mintLuxuryItem = async (req, res) => {
   let result = await User.findOne({ where: { userId: userId } });
   // 将查询结果转换为JSON
   // result = result.toJSON();
-  let { address, userName } = result;
+  let { address, userName, privateKey } = result;
   try {
     // 如果用户已经注册了地址
     if (address != null) {
@@ -53,12 +54,24 @@ exports.mintLuxuryItem = async (req, res) => {
       itemDate = moment(itemDate).unix();
       itemDate = parseInt(itemDate);
       // 调用mintNFTs函数，生成交易hash
-      let { transactionHash, blockNumber, timeStamp,    serialNumber, } = await mintNFTs(
-        itemName,
+      // let { transactionHash, blockNumber, timeStamp, serialNumber } =
+      //   await mintNFTs(itemName, itemDate, address, userId);
+      let {
+        transactionHash,
+        blockNumber,
+        timeStamp,
+        serialNumber,
+        balance,
+        tokenId,
+      } = await registerLuxuryItem(
+        brand,
+        model,
         itemDate,
         address,
-        userId
+        userId,
+        privateKey
       );
+      console.log(tokenId);
       // 生成唯一标识符
       let itemId = ulid();
       // 生成二维码
@@ -76,8 +89,12 @@ exports.mintLuxuryItem = async (req, res) => {
         itemDate,
         itemImage,
         userId,
+        tokenId,
         createTime: timeStamp,
         blockNumber,
+        brand,
+        model,
+        value,
         transactionHash,
         qrcode: qrcodeBase64,
       };
@@ -103,6 +120,7 @@ exports.mintLuxuryItem = async (req, res) => {
         description: "注册奢侈品",
       };
       await transactionLog.create(transactionLogData);
+      await User.update({ balance }, { where: { userId: userId } });
       console.log("QR code and details stored in MySQL database");
       // 返回二维码和详情给前端
       res.send({
@@ -155,10 +173,9 @@ exports.updateLogisticInfo = async (req, res) => {
   let item = await ItemList.findOne({ where: { itemId: itemId } });
   let user = await User.findOne({ where: { userId: userId } });
 
-  // user = item.toJSON();
-  // item = item.toJSON();
-  let { serialNumber } = item;
-  let { address } = user;
+
+  let { tokenId } = item;
+  let { privateKey, address,userName } = user;
   let logisticsInfo = {
     startPoint,
     endPoint,
@@ -169,14 +186,22 @@ exports.updateLogisticInfo = async (req, res) => {
     errorMessage,
     status,
   };
+  let data = {
+    shippingDate: TransportDate,
+    carrier: TransportCompany,
+    trackingNumber: TransportNumber,
+    status: status,
+  };
   try {
-    let { transactionHash, blockNumber, timestamp } = await updateLogisticsInfo(
-      serialNumber,
-      String(logisticsInfo),
+    let { transactionHash, blockNumber, timestamp,balance } = await updateLogisticsInfo(
+      tokenId,
+      data,
+      privateKey,
       address
     );
     await ItemList.update(
       {
+        logistics_id: ulid(),
         startPoint,
         endPoint,
         TransportWay,
@@ -200,12 +225,23 @@ exports.updateLogisticInfo = async (req, res) => {
       errorMessage,
       transactionHash,
       blockNumber,
-      timestamp,
-      logistics_status: 1,
+      timestamp:moment(timestamp).unix(),
+      logistics_status: status,
       createTime: timestamp,
       creater: userId,
     });
-
+    await transactionLog.create({
+      creater: userName,
+      itemName: item.itemName,
+      itemId: item.itemId,
+      userId: user.userId,
+      createTime: timestamp,
+      serialNumber: item.serialNumber,
+      blockNumber: blockNumber,
+      transactionHash,
+      description: "更新物流信息",
+    })
+    await user.update({ balance }, { where: { userId: userId } });
     res.send({
       msg: "更新物流信息成功",
       data: null,
@@ -230,6 +266,7 @@ exports.updateSalesRecord = async (req, res) => {
     distributionChannel,
     salesOutlet,
     salesStatus,
+    buyer,
   } = req.body;
   // 获取用户id
   salesTime = new Date(salesTime);
@@ -237,25 +274,25 @@ exports.updateSalesRecord = async (req, res) => {
   try {
     let item = await ItemList.findOne({ where: { itemId: itemId } });
     let user = await User.findOne({ where: { userId: userId } });
-    // user = item.toJSON();
-    // item = item.toJSON();
-    let { serialNumber } = item;
-    let { address } = user;
+    let { tokenId } = item;
+    let { address, privateKey,userName } = user;
     let salesData = {
       salesTime,
       itemId,
       salesPrice,
       distributionChannel,
       salesOutlet,
+      salesStatus
     };
-
+    let data = {
+      salesDate: salesTime,
+      price: salesPrice,
+      buyer: buyer,
+    };
     // 创建销售记录
-    let transactionInfo = await updateSalesRecord(
-      serialNumber,
-      String(salesData),
-      address
-    );
-    let { transactionHash, blockNumber, timestamp } = transactionInfo;
+    let { transactionHash, blockNumber, timestamp, balance } =
+      await updateSalesRecord(tokenId, data, address,privateKey);
+      console.log(transactionHash)
     await ItemList.update(
       {
         salesTime,
@@ -266,11 +303,26 @@ exports.updateSalesRecord = async (req, res) => {
       },
       { where: { itemId: itemId } }
     );
-    salesInfo.create({
+    await salesInfo.create({
       salesId: ulid(),
       ...salesData,
-      ...transactionInfo,
+      transactionHash,
+      blockNumber,
+      timestamp:moment(timestamp).unix(),
     });
+    await User.update({ balance }, { where: { userId: userId } });
+    await transactionLog.create({
+      creater: userName,
+      itemName: item.itemName,
+      itemId: item.itemId,
+      userId: user.userId,
+      createTime: timestamp,
+      serialNumber: item.serialNumber,
+      blockNumber: blockNumber,
+      transactionHash,
+      description: "更新销售信息",
+    })
+   
     res.send({
       msg: "更新销售信息成功",
       data: null,
@@ -278,7 +330,6 @@ exports.updateSalesRecord = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
-
     res.send({
       msg: "更新销售信息失败",
       data: null,

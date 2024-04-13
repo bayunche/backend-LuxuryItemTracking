@@ -6,6 +6,7 @@ const {
   updateSalesRecord,
   updateLogisticsInfo,
   createAccount,
+  getLuxuryDetails,
 } = require("../../utils/interactWithContract");
 const User = require("../../data/user");
 const logisticsInfoData = require("../../data/logisticsInfo");
@@ -19,14 +20,14 @@ exports.getItemDetails = async (req, res) => {
   const userId = req.userId;
   try {
     let { address } = await User.findOne({ where: { userId: userId } });
-
     let itemData = await ItemList.findOne({
       where: { itemId: itemId },
     });
-    let { serialNumber } = itemData;
-    serialNumber=BigInt(serialNumber)
-    console.log(typeof serialNumber, serialNumber)
-    let result = await getLuxuryItemDetails(serialNumber);
+    let { serialNumber, tokenId } = itemData;
+    console.log(typeof tokenId, tokenId);
+    let { privateKey } = await User.findOne({ where: { userId: userId } });
+    // let result = await getLuxuryItemDetails(tokenId, privateKey);
+    let result =await getLuxuryDetails(tokenId,privateKey)
     // itemData = JSONBig.stringify(itemData);
     console.log(result);
     res.send({

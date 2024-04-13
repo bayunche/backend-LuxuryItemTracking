@@ -8,7 +8,7 @@ const salesInfo = sequelize.define("salesInfo", {
     autoIncrement: true,
   },
   salesId: {
-    type: DataTypes.INTEGER.UNSIGNED,
+    type: DataTypes.STRING,
     allowNull: false,
   },
   itemId:{

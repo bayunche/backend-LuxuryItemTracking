@@ -142,7 +142,6 @@ exports.getAliOrderResult = async (
         };
         console.log(tradeData);
         await tradeList.create(tradeData);
-
         await User.update({ balance: afterBalance }, { where: { userId } });
         return result;
       } catch (error) {

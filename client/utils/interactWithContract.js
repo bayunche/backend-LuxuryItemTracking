@@ -1,133 +1,214 @@
 const { ulid } = require("ulid");
-
 const { Web3 } = require("web3");
 const User = require("../data/user");
-
 const ItemList = require("../data/itemList");
 const generateSecureRandomNumber = require("./randomInt");
 // 加载LuxuryItemTracking合约的ABI
-const ethers = require('ethers');
+const ethers = require("ethers");
+const moment = require("moment");
 const luxuryItemTrackingABI =
-  require("../../build/contracts/LuxuryItemTracking.json").abi;
+  require("../../build/contracts/LuxuryGoodsNFT.json").abi;
 const web3 = new Web3("http://127.0.0.1:8548"); // 替换为你的以太坊节点地址
-const provider = new ethers.JsonRpcProvider('http://127.0.0.1:8548');
-let contractAddress;
-// 生产环境
-// const password = "123456";
-// 本地环境
-const password = "";
-// const contract = new web3.eth.Contract(luxuryItemTrackingABI, contractAddress);
+const provider = new ethers.JsonRpcProvider("http://127.0.0.1:8548");
 
-// 创建NFTs
-exports.mintNFTs = async (_name, _productionDate, address, passphrase) => {
+const contracterAddress = require("../../client/contract-config.json").address;
+const luxuryGoodsNFT = new ethers.Contract(
+  contracterAddress,
+  luxuryItemTrackingABI,
+  provider
+);
+
+exports.registerLuxuryItem = async (
+  brand,
+  model,
+  manufactureDate,
+  address,
+  passphrase,
+  privateKey
+) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const serialNumber = generateSecureRandomNumber().toString();
+      const wallet = new ethers.Wallet(privateKey, provider);
+
+      const luxuryGoodsNFTWithSigner = luxuryGoodsNFT.connect(wallet);
+
+      manufactureDate = moment(manufactureDate).toLocaleString();
+      console.log(brand, model, manufactureDate, serialNumber);
+
+      luxuryGoodsNFTWithSigner.once(
+        "LuxuryItemRegistered",
+        async (tokenId, brand, model, event) => {
+          console.log(
+            `NFT with tokenId ${tokenId} has been registered for brand ${brand} and model ${model}`
+          );
+          const balance = await provider.getBalance(address);
+          const balanceInEth = ethers.formatEther(balance);
+          // 获取区块时间戳
+          const block = await provider.getBlock(receipt.blockNumber);
+          const timestamp = block.timestamp;
+          console.log("timestamp", timestamp);
+
+          // 可以在这里处理 tokenId，例如保存到数据库
+          console.log(tokenId);
+          console.log(`Transaction successful with hash: ${tx.hash}`);
+          console.log(`Block Number: ${receipt.blockNumber}`);
+          resolve({
+            serialNumber,
+            tokenId,
+            transactionHash: tx.hash,
+            blockNumber: receipt.blockNumber,
+            timeStamp: block.timestamp,
+            balance: balanceInEth,
+          });
+        }
+      );
+      const tx = await luxuryGoodsNFTWithSigner.registerLuxuryItem(
+        brand,
+        model,
+        manufactureDate,
+        serialNumber
+      );
+      const receipt = await tx.wait(); // 等待交易被挖矿
+    } catch (error) {
+      console.log(error);
+      reject(error);
+    }
+  });
+};
+
+exports.getLuxuryDetails = async (tokenId, privateKey) => {
+  const wallet = new ethers.Wallet(privateKey, provider);
+  const luxuryGoodsNFTWithSigner = luxuryGoodsNFT.connect(wallet);
   try {
-    const account = address;
-    // 检查账户是否已解锁
-    const serialNumber = generateSecureRandomNumber();
-    [contractAddress] = await web3.eth.getAccounts();
-    console.log(contractAddress);
-
-    const isUnlocked = await web3.eth.personal
-      .unlockAccount(account, "", 1)
-      .catch(() => false);
-
-    const contract = new web3.eth.Contract(
-      luxuryItemTrackingABI,
-      contractAddress
-    );
-
-    if (!isUnlocked) {
-      // 如果账户未解锁，使用提供的密码短语解锁
-      let unlocked = await web3.eth.personal.unlockAccount(
-        account,
-        passphrase,
-        0
-      ); // 永久解锁
-      if (!unlocked) {
-        throw new Error("账户解锁失败");
-      }
-    }
-    console.log(isUnlocked);
-    console.log("account", account);
-    console.log("passphrase", passphrase);
-
-    const gasPrice = await web3.eth.getGasPrice(); // 获取当前的gas价格
-    const estimatedGas = await contract.methods
-      .mintNFT(_name,serialNumber, _productionDate)
-      .estimateGas({ from: account });
-    console.log("estimateGas", estimatedGas);
-    const accountBalance = await web3.eth.getBalance(account);
-    console.log(
-      "Account balance:",
-      web3.utils.fromWei(accountBalance, "ether"),
-      "ETH"
-    );
-
-    if (accountBalance < estimatedGas * gasPrice) {
-      throw new Error("当前账户余额不足，无法完成交易");
-    }
-    // 铸造 NFT
-    const transaction = await contract.methods
-      .mintNFT(_name,serialNumber, _productionDate)
-      .send({
-        from: account,
-        gas: estimatedGas, // 设置预估的gas用量
-        gasPrice: gasPrice, // 使用当前的gas价格
-        value: web3.utils.toWei("0.000001", "ether"),
-      });
-
-    // 获取交易哈希、区块高度和时间戳
-    const transactionHash = transaction.transactionHash;
-
-    const blockNumber = transaction.blockNumber;
-    const timestamp = (await web3.eth.getBlock(blockNumber)).timestamp;
-
-    console.log("NFTs minted successfully!");
-
-    // 返回生成的唯一标识符、交易哈希、区块高度和时间戳
-    return {
-      ulid: ulid(),
-      transactionHash: transactionHash,
-      blockNumber: blockNumber,
-      timeStamp: timestamp,
-      serialNumber,
-    };
+    const result = await luxuryGoodsNFTWithSigner.getLuxuryItemDetails(tokenId);
+    console.log("Luxury Item Details:", result);
+    return result;
   } catch (error) {
-    console.error("Error minting NFTs:", error);
-    throw error;
+    console.error("Error fetching luxury item details:", error);
   }
 };
 
+// let contractAddress;
+// 生产环境
+// const password = "123456";
+// 本地环境
+// const password = "";
+// const contract = new web3.eth.Contract(luxuryItemTrackingABI, contractAddress);
+
+// 创建NFTs
+// exports.mintNFTs = async (_name, _productionDate, address, passphrase) => {
+//   try {
+//     const account = address;
+//     // 检查账户是否已解锁
+//     const serialNumber = generateSecureRandomNumber();
+//     [contractAddress] = await web3.eth.getAccounts();
+//     console.log(contractAddress);
+
+//     const isUnlocked = await web3.eth.personal
+//       .unlockAccount(account, "", 1)
+//       .catch(() => false);
+
+//     const contract = new web3.eth.Contract(
+//       luxuryItemTrackingABI,
+//       contractAddress
+//     );
+
+//     if (!isUnlocked) {
+//       // 如果账户未解锁，使用提供的密码短语解锁
+//       let unlocked = await web3.eth.personal.unlockAccount(
+//         account,
+//         passphrase,
+//         0
+//       ); // 永久解锁
+//       if (!unlocked) {
+//         throw new Error("账户解锁失败");
+//       }
+//     }
+//     console.log(isUnlocked);
+//     console.log("account", account);
+//     console.log("passphrase", passphrase);
+
+//     const gasPrice = await web3.eth.getGasPrice(); // 获取当前的gas价格
+//     const estimatedGas = await contract.methods
+//       .mintNFT(_name, serialNumber, _productionDate)
+//       .estimateGas({ from: account });
+//     console.log("estimateGas", estimatedGas);
+//     const accountBalance = await web3.eth.getBalance(account);
+//     console.log(
+//       "Account balance:",
+//       web3.utils.fromWei(accountBalance, "ether"),
+//       "ETH"
+//     );
+
+//     if (accountBalance < estimatedGas * gasPrice) {
+//       throw new Error("当前账户余额不足，无法完成交易");
+//     }
+//     // 铸造 NFT
+//     const transaction = await contract.methods
+//       .mintNFT(_name, serialNumber, _productionDate)
+//       .send({
+//         from: account,
+//         gas: estimatedGas, // 设置预估的gas用量
+//         gasPrice: gasPrice, // 使用当前的gas价格
+//         value: web3.utils.toWei("0.000001", "ether"),
+//       });
+
+//     // 获取交易哈希、区块高度和时间戳
+//     const transactionHash = transaction.transactionHash;
+
+//     const blockNumber = transaction.blockNumber;
+//     const timestamp = (await web3.eth.getBlock(blockNumber)).timestamp;
+
+//     console.log("NFTs minted successfully!");
+
+//     // 返回生成的唯一标识符、交易哈希、区块高度和时间戳
+//     return {
+//       ulid: ulid(),
+//       transactionHash: transactionHash,
+//       blockNumber: blockNumber,
+//       timeStamp: timestamp,
+//       serialNumber,
+//     };
+//   } catch (error) {
+//     console.error("Error minting NFTs:", error);
+//     throw error;
+//   }
+// };
+
 // 更新物流信息
-exports.updateLogisticsInfo = async (serialNumber, logisticsInfo, address) => {
+exports.updateLogisticsInfo = async (
+  tokenId,
+  logisticsInfo,
+  privateKey,
+  address
+) => {
+  let { shippingDate, carrier, trackingNumber, status } = logisticsInfo;
+  const wallet = new ethers.Wallet(privateKey, provider);
+  const luxuryGoodsNFTWithSigner = luxuryGoodsNFT.connect(wallet);
   try {
-    // 获取以太坊账户地址
-    const account = address;
-    [contractAddress] = await web3.eth.getAccounts();
-    // 使用提供的 ABI（应用二进制接口）和合约地址创建一个合约实例
-    const contract = new web3.eth.Contract(
-      luxuryItemTrackingABI,
-      contractAddress
-    );
-
-    // 设置合约地址（这一行似乎放错地方，可能会导致混淆，因为 contractAddress 在代码片段中没有定义）
-
     // 在智能合约中更新物流信息
-    const transaction = await contract.methods
-      .updateLogisticsInfo(serialNumber, logisticsInfo)
-      .send({
-        from: account,
-      });
-
-    // 获取交易哈希
-    const transactionHash = transaction.transactionHash;
-
-    console.log("物流信息更新成功！交易哈希:", transactionHash);
-
+    const transaction = await luxuryGoodsNFTWithSigner.setLogisticsInfo(
+      tokenId,
+      shippingDate,
+      carrier,
+      trackingNumber,
+      status
+    );
+    const receipt = await transaction.wait(); // 等待交易被挖掘
+    const balance = await provider.getBalance(address);
+    const balanceInEth = ethers.formatEther(balance);
+    // 获取区块时间戳
+    const block = await provider.getBlock(receipt.blockNumber);
+    const timestamp =  new Date(moment.unix(block.timestamp));
+    
+    console.log("物流信息更新成功！交易哈希:", transaction.hash);
+  console.log("时间戳", timestamp)
     return {
-      transactionHash: transaction.transactionHash,
-      blockNumber: transaction.blockNumber,
-      timestamp: (await web3.eth.getBlock(transaction.blockNumber)).timestamp,
+      transactionHash: transaction.hash,
+      blockNumber: receipt.blockNumber,
+      timestamp: timestamp,
+      balance: balanceInEth,
     };
   } catch (error) {
     // 在执行合约方法时处理错误
@@ -137,28 +218,36 @@ exports.updateLogisticsInfo = async (serialNumber, logisticsInfo, address) => {
 };
 
 // 更新销售记录函数
-exports.updateSalesRecord = async (serialNumber, salesRecord, address) => {
+exports.updateSalesRecord = async (
+  tokenId,
+  salesRecord,
+  address,
+  privateKey
+) => {
+  const { saleDate, price, buyer } = salesRecord;
+  const wallet = new ethers.Wallet(privateKey, provider);
+  const luxuryGoodsNFTWithSigner = luxuryGoodsNFT.connect(wallet);
+console.log(tokenId)
   try {
-    const account = address;
-    [contractAddress] = await web3.eth.getAccounts();
-
-    const contract = new web3.eth.Contract(
-      luxuryItemTrackingABI,
-      contractAddress
+    const tx = await luxuryGoodsNFTWithSigner.setSalesRecord(
+      tokenId,
+      moment(saleDate).toLocaleString(),
+      price,
+      buyer
     );
+    const receipt = await tx.wait();
+    const balance = await provider.getBalance(address);
+    const balanceInEth = ethers.formatEther(balance);
+    // 获取区块时间戳
+    const block = await provider.getBlock(receipt.blockNumber);
+    const timestamp =  new Date(moment.unix(block.timestamp));
 
-    // 更新销售记录
-    let transactionInfo = await contract.methods
-      .updateSalesRecord(serialNumber, salesRecord)
-      .send({
-        from: account,
-      });
-    console.log("Sales record updated successfully!");
-
+    console.log("销售记录更新成功！交易哈希:", tx.hash);
     return {
-      transactionHash: transaction.transactionHash,
-      blockNumber: transaction.blockNumber,
-      timestamp: (await web3.eth.getBlock(transaction.blockNumber)).timestamp,
+      transactionHash: tx.hash,
+      blockNumber: receipt.blockNumber,
+      balance: balanceInEth,
+      timestamp: timestamp,
     };
   } catch (error) {
     console.error("Error updating sales record:", error);
@@ -205,68 +294,70 @@ exports.certifyUser = async (serialNumber, address) => {
   }
 };
 // 获取商品信息
-exports.getLuxuryItemDetails = async (serialNumber) => {
-  [contractAddress] = await web3.eth.getAccounts();
-  const contract = new web3.eth.Contract(
-    luxuryItemTrackingABI,
-    contractAddress
-  );
-  const debugContract= new ethers.Contract(
-    contractAddress,
-    luxuryItemTrackingABI,
-    provider
-  )
-  try {
-    console.log(serialNumber);
-    const gasPrice = await web3.eth.getGasPrice(); // 获取当前的gas价格
-    const estimatedGas = await contract.methods.getItemDetails(serialNumber).estimateGas({
-      from:contractAddress
-    })
-    
-    console.log("startDebug")
+// exports.getLuxuryItemDetails = async (serialNumber) => {
+//   [contractAddress] = await web3.eth.getAccounts();
+//   const contract = new web3.eth.Contract(
+//     luxuryItemTrackingABI,
+//     contractAddress
+//   );
+//   const debugContract = new ethers.Contract(
+//     contractAddress,
+//     luxuryItemTrackingABI,
+//     provider
+//   );
+//   try {
+//     console.log(serialNumber);
+//     const gasPrice = await web3.eth.getGasPrice(); // 获取当前的gas价格
+//     const estimatedGas = await contract.methods
+//       .getItemDetails(serialNumber)
+//       .estimateGas({
+//         from: contractAddress,
+//       });
 
-    const debug=await debugContract.getItemDetails(serialNumber)
-    console.log(debug)
-    const result = await contract.methods.getItemDetails(serialNumber).send({
-      from: contractAddress,
-      gasPrice:estimatedGas,
-      gas:estimatedGas,
-    })
-    // 处理并显示返回的结果
-   console.log(result)
-    return result;
-  } catch (error) {
-    console.log(
-      `Serial Number: ${serialNumber}, Contract Address: ${contractAddress}`
-    );
-    // throw error;
-    throw new Error(`Error getting item details: ${error}`);
-  }
-};
+//     console.log("startDebug");
+
+//     const debug = await debugContract.getItemDetails(serialNumber);
+//     console.log(debug);
+//     const result = await contract.methods.getItemDetails(serialNumber).send({
+//       from: contractAddress,
+//       gasPrice: estimatedGas,
+//       gas: estimatedGas,
+//     });
+//     // 处理并显示返回的结果
+//     console.log(result);
+//     return result;
+//   } catch (error) {
+//     console.log(
+//       `Serial Number: ${serialNumber}, Contract Address: ${contractAddress}`
+//     );
+//     // throw error;
+//     throw new Error(`Error getting item details: ${error}`);
+//   }
+// };
 // 判断奢侈品是否存在
-exports.isLuxuryItemExists = async (serialNumber) => {
-  console.log(serialNumber);
-  try {
-    let res = await ItemList.findOne({ where: { serialNumber: serialNumber } });
-    console.log(res);
-    let { userId } = await ItemList.findOne({
-      where: { serialNumber: serialNumber },
-    });
-    let { address } = await User.findOne({ where: { userId } });
-    [contractAddress] = await web3.eth.getAccounts();
+// exports.isLuxuryItemExists = async (serialNumber) => {
+//   console.log(serialNumber);
+//   try {
+//     let res = await ItemList.findOne({ where: { serialNumber: serialNumber } });
+//     console.log(res);
+//     let { userId } = await ItemList.findOne({
+//       where: { serialNumber: serialNumber },
+//     });
+//     let { address } = await User.findOne({ where: { userId } });
+//     [contractAddress] = await web3.eth.getAccounts();
 
-    const contract = new web3.eth.Contract(
-      luxuryItemTrackingABI,
-      contractAddress
-    );
-    console.log(contract.methods);
-    const exists = await contract.methods.itemExists(serialNumber).call();
-    return exists;
-  } catch (error) {
-    console.error("Error checking if luxury item exists:", error);
-    return false;
-  }
-};
+//     const contract = new web3.eth.Contract(
+//       luxuryItemTrackingABI,
+//       contractAddress
+//     );
+//     console.log(contract.methods);
+//     const exists = await contract.methods.itemExists(serialNumber).call();
+//     return exists;
+//   } catch (error) {
+//     console.error("Error checking if luxury item exists:", error);
+//     return false;
+//   }
+// };
 // 创建账户
 exports.createAccount = async (userId) => {
   try {
@@ -321,6 +412,32 @@ exports.createAccount = async (userId) => {
     console.error("创建账户时出错:", error);
     throw error; // 将错误向上抛出，便于调用函数处理错误
   }
+};
+
+exports.createAccountEthers = async (userId) => {
+  const wallet = ethers.Wallet.createRandom();
+  const [initAccount] = await web3.eth.getAccounts();
+  let isUnlocked = await web3.eth.personal.unlockAccount(
+    initAccount,
+    password,
+    0
+  );
+  if (!isUnlocked) {
+    return "账户解锁失败";
+  }
+  let data = {
+    privateKey: wallet.privateKey,
+    address: wallet.address,
+  };
+  const gasPrice = await web3.eth.getGasPrice(); // 获取当前的gas价格
+  await web3.eth.sendTransaction({
+    from: initAccount,
+    to: data.address,
+    value: web3.utils.toWei("2", "ether"), // 发送10 Ether
+    gas: 21000, // 设置gas限制
+    gasPrice: gasPrice, // 设置gas价格
+  });
+  return data;
 };
 
 exports.setLuxuryItemValuation = async (

@@ -10,6 +10,14 @@ const ItemList = sequelize.define("ItemList", {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  brand: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  model:{
+    type:DataTypes.STRING,
+    allowNull:false,
+  },
   itemName:{
     type:DataTypes.STRING,
     allowNull:false
@@ -17,6 +25,10 @@ const ItemList = sequelize.define("ItemList", {
   itemId: {
     type: DataTypes.STRING,
     allowNull: false,
+  },
+  tokenId:{
+    type:DataTypes. BIGINT,
+    allowNull:false
   },
   userId: {
     type: DataTypes.STRING,

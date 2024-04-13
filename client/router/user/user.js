@@ -6,6 +6,7 @@ const {
   updateSalesRecord,
   updateLogisticsInfo,
   createAccount,
+  createAccountEthers,
 } = require("../../utils/interactWithContract");
 const User = require("../../data/user");
 const sequelize = require("../../data/database");
@@ -35,18 +36,21 @@ exports.createUserPrivateKey = async (req, res) => {
 
     // Retrieve the user from the database
     let user = await User.findOne({ where: { userId } });
-    console.log(user);
+    
 
     // Check if the user already has an address
     if (!user || !user.address) {
       // Also, ensure user exists before checking its properties
       // Create a new blockchain account for the user
-      const address = await createAccount(userId);
+
+      // const address = await createAccount(userId);
+      
+      const {address,privateKey}=await createAccountEthers(userId)
       console.log(address);
 
       // Update the user's address and balance in the database
       const [updateCount] = await User.update(
-        { address, balance: "2" }, // Directly use shorthand property names
+        { address, balance: "2",privateKey }, // Directly use shorthand property names
         { where: { userId } } // Use the same shorthand notation here
       );
       console.log(updateCount);
