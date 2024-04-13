@@ -1,225 +1,94 @@
-// SPDX-License-Identifier: Academic Free License v2.1
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.13;
 
-// Updated LuxuryItemTracking.sol
-pragma solidity ^0.8.0;
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract LuxuryItemTracking {
-    enum ItemStatus {
-        Manufactured,
-        Shipped,
-        Delivered,
-        Sold
-    }
+contract LuxuryGoodsNFT is ERC721, Ownable {
+    uint256 private _tokenIds;
 
+    // 奢侈品数据结构
     struct LuxuryItem {
-        string name;
-        uint256 serialNumber;
-        address manufacturer;
-        uint256 productionDate;
-        ItemStatus status;
-        string logisticsInfo;
-        string salesRecord;
-        uint256 valuation; // 新增：奢侈品估值
-        string certificate; // 新增：奢侈品证书
+        string brand;
+        string model;
+        string manufactureDate;
+        string serialNumber;
     }
 
+    // 销售记录数据结构
+    struct SalesRecord {
+        uint256 saleDate;
+        uint256 price;
+        string buyer;
+    }
+
+    // 物流信息数据结构
+    struct LogisticsInfo {
+        string shippingDate;
+        string carrier;
+        string trackingNumber;
+        string status;
+    }
+
+    // 奢侈品详情结构，包括估值
+    struct LuxuryItemDetails {
+        LuxuryItem item;
+        SalesRecord sales;
+        LogisticsInfo logistics;
+        uint256 valuation;
+    }
+
+    // tokenId到奢侈品数据的映射
     mapping(uint256 => LuxuryItem) public luxuryItems;
-    mapping(address => mapping(uint256 => bool)) public userCertifications;
-    address public admin;
 
-    event ItemManufactured(
-        string name,
-        uint256 serialNumber,
-        address manufacturer,
-        uint256 productionDate
-    );
+    // tokenId到销售记录的映射
+    mapping(uint256 => SalesRecord) public salesRecords;
 
-    event ItemShipped(uint256 serialNumber, string logisticsInfo);
+    // tokenId到物流信息的映射
+    mapping(uint256 => LogisticsInfo) public logisticsInfoMap;
 
-    event ItemDelivered(uint256 serialNumber);
+    // tokenId到奢侈品估值的映射
+    mapping(uint256 => uint256) public valuations;
 
-    event ItemSold(uint256 serialNumber, string salesRecord);
+    constructor() ERC721("LuxuryGoodsNFT", "LGNFT") {}
 
-    event UserCertified(address user, uint256 serialNumber);
+    // 注册奢侈品并创建NFT
+    function registerLuxuryItem(string memory brand, string memory model, string memory manufactureDate, string memory serialNumber) public onlyOwner returns (uint256) {
+        _tokenIds++;
+        uint256 newItemId = _tokenIds;
 
-    event ValuationUpdated(uint256 serialNumber, uint256 newValuation);
-    event CertificateUpdated(uint256 serialNumber, string newCertificate);
+        _mint(msg.sender, newItemId);
+        luxuryItems[newItemId] = LuxuryItem(brand, model, manufactureDate, serialNumber);
 
-    constructor() {
-        admin = msg.sender;
+        return newItemId;
     }
 
-    modifier onlyAdmin() {
-        require(msg.sender == admin, "Only admin can call this function");
-        _;
+    // 设置奢侈品的销售记录
+    function setSalesRecord(uint256 tokenId, uint256 saleDate, uint256 price, string memory buyer) public onlyOwner {
+        require(_exists(tokenId), "LuxuryGoodsNFT: attempt to set sales record for nonexistent token");
+        salesRecords[tokenId] = SalesRecord(saleDate, price, buyer);
     }
 
-    modifier onlyManufacturer(uint256 _serialNumber) {
-        require(
-            msg.sender == luxuryItems[_serialNumber].manufacturer,
-            "Only manufacturer can call this function"
+    // 设置奢侈品的物流信息
+    function setLogisticsInfo(uint256 tokenId, string memory shippingDate, string memory carrier, string memory trackingNumber, string memory status) public onlyOwner {
+        require(_exists(tokenId), "LuxuryGoodsNFT: attempt to set logistics info for nonexistent token");
+        logisticsInfoMap[tokenId] = LogisticsInfo(shippingDate, carrier, trackingNumber, status);
+    }
+
+    // 设置或更新奢侈品的估值
+    function setValuation(uint256 tokenId, uint256 valuation) public onlyOwner {
+        require(_exists(tokenId), "LuxuryGoodsNFT: attempt to set valuation for nonexistent token");
+        valuations[tokenId] = valuation;
+    }
+
+    // 获取奢侈品的详细信息，包括估值
+    function getLuxuryItemDetails(uint256 tokenId) public view returns (LuxuryItemDetails memory) {
+        require(_exists(tokenId), "LuxuryGoodsNFT: query for nonexistent token");
+        return LuxuryItemDetails(
+            luxuryItems[tokenId],
+            salesRecords[tokenId],
+            logisticsInfoMap[tokenId],
+            valuations[tokenId]
         );
-        _;
-    }
-
-    modifier itemNotManufactured(uint256 _serialNumber) {
-        require(
-            luxuryItems[_serialNumber].serialNumber == 0,
-            "Item already exists"
-        );
-        _;
-    }
-
-    modifier itemManufactured(uint256 _serialNumber) {
-        require(
-            luxuryItems[_serialNumber].serialNumber != 0,
-            "Item does not exist"
-        );
-        _;
-    }
-
-    modifier itemNotSold(uint256 _serialNumber) {
-        require(
-            luxuryItems[_serialNumber].status != ItemStatus.Sold,
-            "Item already sold"
-        );
-        _;
-    }
-
-    function manufactureItem(
-        string memory _name,
-        uint256 _serialNumber,
-        uint256 _productionDate
-    ) public onlyAdmin itemNotManufactured(_serialNumber) {
-        luxuryItems[_serialNumber] = LuxuryItem({
-            name: _name,
-            serialNumber: _serialNumber,
-            manufacturer: msg.sender,
-            productionDate: _productionDate,
-            status: ItemStatus.Manufactured,
-            logisticsInfo: "",
-            salesRecord: "",
-            valuation: 0, // 默认为0
-            certificate: "" // 默认为空字符串
-        });
-
-        emit ItemManufactured(
-            _name,
-            _serialNumber,
-            msg.sender,
-            _productionDate
-        );
-    }
-
-    function shipItem(
-        uint256 _serialNumber,
-        string memory _logisticsInfo
-    )
-        public
-        onlyManufacturer(_serialNumber)
-        itemManufactured(_serialNumber)
-        itemNotSold(_serialNumber)
-    {
-        luxuryItems[_serialNumber].status = ItemStatus.Shipped;
-        luxuryItems[_serialNumber].logisticsInfo = _logisticsInfo;
-
-        emit ItemShipped(_serialNumber, _logisticsInfo);
-    }
-
-    function deliverItem(
-        uint256 _serialNumber
-    )
-        public
-        onlyManufacturer(_serialNumber)
-        itemManufactured(_serialNumber)
-        itemNotSold(_serialNumber)
-    {
-        luxuryItems[_serialNumber].status = ItemStatus.Delivered;
-
-        emit ItemDelivered(_serialNumber);
-    }
-
-    function sellItem(
-        uint256 _serialNumber,
-        string memory _salesRecord
-    )
-        public
-        onlyManufacturer(_serialNumber)
-        itemManufactured(_serialNumber)
-        itemNotSold(_serialNumber)
-    {
-        luxuryItems[_serialNumber].status = ItemStatus.Sold;
-        luxuryItems[_serialNumber].salesRecord = _salesRecord;
-
-        emit ItemSold(_serialNumber, _salesRecord);
-    }
-
-    function certifyUser(
-        uint256 _serialNumber
-    ) public itemManufactured(_serialNumber) {
-        userCertifications[msg.sender][_serialNumber] = true;
-
-        emit UserCertified(msg.sender, _serialNumber);
-    }
-
-    function getItemDetails(
-        uint256 _serialNumber
-    )
-        public
-        view
-        returns (
-            string memory,
-            address,
-            uint256,
-            ItemStatus,
-            string memory,
-            string memory
-        )
-    {
-        LuxuryItem memory item = luxuryItems[_serialNumber];
-        require(item.serialNumber != 0, "Item does not exist");
-        return (
-            item.name,
-            item.manufacturer,
-            item.productionDate,
-            item.status,
-            item.logisticsInfo,
-            item.salesRecord
-        );
-    }
-
-    function isUserCertified(
-        address _user,
-        uint256 _serialNumber
-    ) public view returns (bool) {
-        return userCertifications[_user][_serialNumber];
-    }
-
-    function updateValuation(
-        uint256 _serialNumber,
-        uint256 _newValuation
-    ) public onlyAdmin itemManufactured(_serialNumber) {
-        LuxuryItem storage item = luxuryItems[_serialNumber];
-        item.valuation = _newValuation;
-
-        emit ValuationUpdated(_serialNumber, _newValuation);
-    }
-
-    function updateCertificate(
-        uint256 _serialNumber,
-        string memory _newCertificate
-    ) public onlyAdmin itemManufactured(_serialNumber) {
-        LuxuryItem storage item = luxuryItems[_serialNumber];
-        item.certificate = _newCertificate;
-
-        emit CertificateUpdated(_serialNumber, _newCertificate);
-    }
-
-    function getValuationAndCertificate(
-        uint256 _serialNumber
-    ) public view returns (uint256, string memory) {
-        LuxuryItem storage item = luxuryItems[_serialNumber];
-        require(item.serialNumber != 0, "Item does not exist");
-        return (item.valuation, item.certificate);
     }
 }
