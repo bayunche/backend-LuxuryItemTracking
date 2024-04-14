@@ -85,7 +85,7 @@ exports.mintLuxuryItem = async (req, res) => {
         creater: userName,
         serialNumber,
         itemName,
-        itemDate,
+        itemDate:new Date(itemDate),
         itemImage,
         userId,
         tokenId,
