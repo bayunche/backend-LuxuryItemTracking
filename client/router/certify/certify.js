@@ -96,13 +96,8 @@ exports.mintLuxuryItem = async (req, res) => {
         transactionHash,
         qrcode: qrcodeBase64,
       };
-      // 打印数据中的BigInt
-      for (const [key, value] of Object.entries(data)) {
-        if (typeof value === "bigint") {
-          console.log(`${key} is a BigInt`);
-        }
-      }
-      console.log(data.serialNumber);
+
+    console.log(data)
       // 将数据存入MySQL数据库
       await ItemList.create(data);
       // 创建交易记录
