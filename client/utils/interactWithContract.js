@@ -69,6 +69,8 @@ exports.registerLuxuryItem = async (
         serialNumber
       );
       const receipt = await tx.wait(); // 等待交易被挖矿
+      console.log(`Transaction successful with hash: ${tx.hash}`);
+
     } catch (error) {
       console.log(error);
       reject(error);
