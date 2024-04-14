@@ -35,7 +35,16 @@ exports.registerLuxuryItem = async (
       manufactureDate = moment(manufactureDate).toLocaleString();
       console.log(brand, model, manufactureDate, serialNumber);
 
-      luxuryGoodsNFTWithSigner.once(
+     
+      const tx = await luxuryGoodsNFTWithSigner.registerLuxuryItem(
+        brand,
+        model,
+        manufactureDate,
+        serialNumber
+      );
+      const receipt = await tx.wait(); // 等待交易被挖矿
+      console.log(`Transaction successful with hash: ${tx.hash}`);
+ luxuryGoodsNFTWithSigner.once(
         "LuxuryItemRegistered",
         async (tokenId, brand, model, event) => {
           console.log(
@@ -62,15 +71,6 @@ exports.registerLuxuryItem = async (
           });
         }
       );
-      const tx = await luxuryGoodsNFTWithSigner.registerLuxuryItem(
-        brand,
-        model,
-        manufactureDate,
-        serialNumber
-      );
-      const receipt = await tx.wait(); // 等待交易被挖矿
-      console.log(`Transaction successful with hash: ${tx.hash}`);
-
     } catch (error) {
       console.log(error);
       reject(error);
