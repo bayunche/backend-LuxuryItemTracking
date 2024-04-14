@@ -30,10 +30,7 @@ exports.registerLuxuryItem = async (
     try {
       const serialNumber = generateSecureRandomNumber().toString();
       const wallet = new ethers.Wallet(privateKey, provider);
-      const contract = new web3.eth.Contract(luxuryItemTrackingABI, contracterAddress);
-       contract.events.LuxuryItemRegistered().once('data', (event) => {
-         console.log(event)
-       })
+     
       const luxuryGoodsNFTWithSigner = luxuryGoodsNFT.connect(wallet);
       manufactureDate = moment(manufactureDate).toLocaleString();
       console.log(brand, model, manufactureDate, serialNumber);
