@@ -30,10 +30,14 @@ exports.registerLuxuryItem = async (
     try {
       const serialNumber = generateSecureRandomNumber().toString();
       const wallet = new ethers.Wallet(privateKey, provider);
-
+      const contract = new web3.eth.Contract(luxuryItemTrackingABI, contracterAddress);
+       contract.events.LuxuryItemRegistered().once('data', (event) => {
+         console.log(event)
+       })
       const luxuryGoodsNFTWithSigner = luxuryGoodsNFT.connect(wallet);
       manufactureDate = moment(manufactureDate).toLocaleString();
       console.log(brand, model, manufactureDate, serialNumber);
+      
       luxuryGoodsNFTWithSigner.once(
         "LuxuryItemRegistered",
         async (tokenId, brand, model, event) => {
@@ -95,7 +99,6 @@ exports.getLuxuryDetails = async (tokenId, privateKey) => {
 const password = "123456";
 // 本地环境
 // const password = "";
-// const contract = new web3.eth.Contract(luxuryItemTrackingABI, contractAddress);
 
 // 创建NFTs
 // exports.mintNFTs = async (_name, _productionDate, address, passphrase) => {
