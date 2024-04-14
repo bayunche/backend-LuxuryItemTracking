@@ -56,14 +56,7 @@ exports.mintLuxuryItem = async (req, res) => {
       // 调用mintNFTs函数，生成交易hash
       // let { transactionHash, blockNumber, timeStamp, serialNumber } =
       //   await mintNFTs(itemName, itemDate, address, userId);
-      let {
-        transactionHash,
-        blockNumber,
-        timeStamp,
-        serialNumber,
-        balance,
-        tokenId,
-      } = await registerLuxuryItem(
+      let results= await registerLuxuryItem(
         brand,
         model,
         itemDate,
@@ -71,6 +64,14 @@ exports.mintLuxuryItem = async (req, res) => {
         userId,
         privateKey
       );
+      let{
+        transactionHash,
+        blockNumber,
+        timeStamp,
+        serialNumber,
+        balance,
+        tokenId,
+      } = await results
       console.log(tokenId);
       // 生成唯一标识符
       let itemId = ulid();
