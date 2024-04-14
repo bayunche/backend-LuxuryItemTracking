@@ -51,8 +51,6 @@ exports.mintLuxuryItem = async (req, res) => {
       // 将私钥转换为字符串
       // privateKey = privateKey.toString();
       // 将itemDate从ISO 8601格式转换为Unix时间戳
-      itemDate = moment(itemDate).unix();
-      itemDate = parseInt(itemDate);
       // 调用mintNFTs函数，生成交易hash
       // let { transactionHash, blockNumber, timeStamp, serialNumber } =
       //   await mintNFTs(itemName, itemDate, address, userId);

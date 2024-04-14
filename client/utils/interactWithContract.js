@@ -32,7 +32,6 @@ exports.registerLuxuryItem = async (
       const wallet = new ethers.Wallet(privateKey, provider);
 
       const luxuryGoodsNFTWithSigner = luxuryGoodsNFT.connect(wallet);
-
       manufactureDate = moment(manufactureDate).toLocaleString();
       console.log(brand, model, manufactureDate, serialNumber);
 
@@ -200,10 +199,10 @@ exports.updateLogisticsInfo = async (
     const balanceInEth = ethers.formatEther(balance);
     // 获取区块时间戳
     const block = await provider.getBlock(receipt.blockNumber);
-    const timestamp =  new Date(moment.unix(block.timestamp));
-    
+    const timestamp = new Date(moment.unix(block.timestamp));
+
     console.log("物流信息更新成功！交易哈希:", transaction.hash);
-  console.log("时间戳", timestamp)
+    console.log("时间戳", timestamp);
     return {
       transactionHash: transaction.hash,
       blockNumber: receipt.blockNumber,
@@ -227,7 +226,7 @@ exports.updateSalesRecord = async (
   const { saleDate, price, buyer } = salesRecord;
   const wallet = new ethers.Wallet(privateKey, provider);
   const luxuryGoodsNFTWithSigner = luxuryGoodsNFT.connect(wallet);
-console.log(tokenId)
+  console.log(tokenId);
   try {
     const tx = await luxuryGoodsNFTWithSigner.setSalesRecord(
       tokenId,
@@ -240,7 +239,7 @@ console.log(tokenId)
     const balanceInEth = ethers.formatEther(balance);
     // 获取区块时间戳
     const block = await provider.getBlock(receipt.blockNumber);
-    const timestamp =  new Date(moment.unix(block.timestamp));
+    const timestamp = new Date(moment.unix(block.timestamp));
 
     console.log("销售记录更新成功！交易哈希:", tx.hash);
     return {
