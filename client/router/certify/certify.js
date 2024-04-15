@@ -161,6 +161,7 @@ exports.updateLogisticInfo = async (req, res) => {
     TransportNumber,
     errorMessage,
     status,
+    remark
   } = req.body;
   let userId = req.userId;
   let item = await ItemList.findOne({ where: { itemId: itemId } });
@@ -222,6 +223,7 @@ exports.updateLogisticInfo = async (req, res) => {
       logistics_status: status,
       createTime: timestamp,
       creater: userId,
+      remark
     });
     await transactionLog.create({
       creater: userName,
