@@ -193,7 +193,7 @@ exports.deleteItem = async (req, res) => {
   }
   let { userId } = req;
   let { permission } = User.findOne({ where: { userId } });
-  if (permission != 1) {
+  if (permission == 0) {
     let result = await ItemList.findOne({
       where: { itemId, userId: req.userId },
     });
@@ -204,7 +204,7 @@ exports.deleteItem = async (req, res) => {
         data: null,
       });
     }
-  } else if (permission == 1) {
+  } else if (permission != 0) {
     let result = await ItemList.findOne({
       where: { itemId },
     });

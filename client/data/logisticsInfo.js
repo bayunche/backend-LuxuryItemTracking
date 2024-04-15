@@ -65,6 +65,10 @@ const logisiticsInfo = sequelize.define("logisiticsInfo", {
     type: DataTypes.BIGINT,
     allowNull: false,
   },
+  remark:{
+    type: DataTypes.STRING,
+    allowNull: true,
+  }
 });
 sequelize.sync();
 module.exports = logisiticsInfo;
