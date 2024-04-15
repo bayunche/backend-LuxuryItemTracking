@@ -54,7 +54,7 @@ exports.mintLuxuryItem = async (req, res) => {
       // 调用mintNFTs函数，生成交易hash
       // let { transactionHash, blockNumber, timeStamp, serialNumber } =
       //   await mintNFTs(itemName, itemDate, address, userId);
-      let results= await registerLuxuryItem(
+      let results = await registerLuxuryItem(
         brand,
         model,
         itemDate,
@@ -62,14 +62,14 @@ exports.mintLuxuryItem = async (req, res) => {
         userId,
         privateKey
       );
-      let{
+      let {
         transactionHash,
         blockNumber,
         timeStamp,
         serialNumber,
         balance,
         tokenId,
-      } = await results
+      } = await results;
       console.log(tokenId);
       // 生成唯一标识符
       let itemId = ulid();
@@ -85,7 +85,7 @@ exports.mintLuxuryItem = async (req, res) => {
         creater: userName,
         serialNumber,
         itemName,
-        itemDate:itemDate,
+        itemDate: itemDate,
         itemImage,
         userId,
         tokenId,
@@ -97,7 +97,7 @@ exports.mintLuxuryItem = async (req, res) => {
         qrcode: qrcodeBase64,
       };
 
-    console.log(data)
+      console.log(data);
       // 将数据存入MySQL数据库
       await ItemList.create(data);
       // 创建交易记录
@@ -161,25 +161,15 @@ exports.updateLogisticInfo = async (req, res) => {
     TransportNumber,
     errorMessage,
     status,
-    remark
+    remark,
   } = req.body;
   let userId = req.userId;
   let item = await ItemList.findOne({ where: { itemId: itemId } });
   let user = await User.findOne({ where: { userId: userId } });
 
-
   let { tokenId } = item;
-  let { privateKey, address,userName } = user;
-  let logisticsInfo = {
-    startPoint,
-    endPoint,
-    TransportWay,
-    TransportCompany,
-    TransportDate,
-    TransportNumber,
-    errorMessage,
-    status,
-  };
+  let { privateKey, address, userName } = user;
+
   let data = {
     shippingDate: TransportDate,
     carrier: TransportCompany,
@@ -187,12 +177,8 @@ exports.updateLogisticInfo = async (req, res) => {
     status: status,
   };
   try {
-    let { transactionHash, blockNumber, timestamp,balance } = await updateLogisticsInfo(
-      tokenId,
-      data,
-      privateKey,
-      address
-    );
+    let { transactionHash, blockNumber, timestamp, balance } =
+      await updateLogisticsInfo(tokenId, data, privateKey, address);
     await ItemList.update(
       {
         logistics_id: ulid(),
@@ -219,11 +205,11 @@ exports.updateLogisticInfo = async (req, res) => {
       errorMessage,
       transactionHash,
       blockNumber,
-      timestamp:moment(timestamp).unix(),
+      timestamp: moment(timestamp).unix(),
       logistics_status: status,
       createTime: timestamp,
       creater: userId,
-      remark
+      remark,
     });
     await transactionLog.create({
       creater: userName,
@@ -235,7 +221,7 @@ exports.updateLogisticInfo = async (req, res) => {
       blockNumber: blockNumber,
       transactionHash,
       description: "更新物流信息",
-    })
+    });
     await user.update({ balance }, { where: { userId: userId } });
     res.send({
       msg: "更新物流信息成功",
@@ -270,14 +256,14 @@ exports.updateSalesRecord = async (req, res) => {
     let item = await ItemList.findOne({ where: { itemId: itemId } });
     let user = await User.findOne({ where: { userId: userId } });
     let { tokenId } = item;
-    let { address, privateKey,userName } = user;
+    let { address, privateKey, userName } = user;
     let salesData = {
       salesTime,
       itemId,
       salesPrice,
       distributionChannel,
       salesOutlet,
-      salesStatus
+      salesStatus,
     };
     let data = {
       salesDate: salesTime,
@@ -286,8 +272,8 @@ exports.updateSalesRecord = async (req, res) => {
     };
     // 创建销售记录
     let { transactionHash, blockNumber, timestamp, balance } =
-      await updateSalesRecord(tokenId, data, address,privateKey);
-      console.log(transactionHash)
+      await updateSalesRecord(tokenId, data, address, privateKey);
+    console.log(transactionHash);
     await ItemList.update(
       {
         salesTime,
@@ -303,7 +289,7 @@ exports.updateSalesRecord = async (req, res) => {
       ...salesData,
       transactionHash,
       blockNumber,
-      timestamp:moment(timestamp).unix(),
+      timestamp: moment(timestamp).unix(),
     });
     await User.update({ balance }, { where: { userId: userId } });
     await transactionLog.create({
@@ -316,8 +302,8 @@ exports.updateSalesRecord = async (req, res) => {
       blockNumber: blockNumber,
       transactionHash,
       description: "更新销售信息",
-    })
-   
+    });
+
     res.send({
       msg: "更新销售信息成功",
       data: null,
