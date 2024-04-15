@@ -182,8 +182,8 @@ exports.getSalesList = async (req, res) => {
 };
 
 exports.deleteItem = async (req, res) => {
-  let { itemId } = req.params;
-  console.log(req.params)
+  let { itemId } = req.query;
+  console.log(req.query)
   if (itemId == null) {
     return res.send({
       status: "refuse",
