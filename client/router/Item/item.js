@@ -27,7 +27,7 @@ exports.getItemDetails = async (req, res) => {
     console.log(typeof tokenId, tokenId);
     let { privateKey } = await User.findOne({ where: { userId: userId } });
     // let result = await getLuxuryItemDetails(tokenId, privateKey);
-    let result =await getLuxuryDetails(tokenId,privateKey)
+    let result = await getLuxuryDetails(tokenId, privateKey);
     // itemData = JSONBig.stringify(itemData);
     console.log(result);
     res.send({
@@ -177,6 +177,53 @@ exports.getSalesList = async (req, res) => {
       msg: "获取销售信息列表失败",
       data: null,
       error: error,
+    });
+  }
+};
+
+exports.deleteItem = async (req, res) => {
+  let { itemId } = req.body;
+  if (itemId == null) {
+    return res.send({
+      status: "refuse",
+      msg: "参数错误",
+      data: null,
+    });
+  }
+  let { userId } = req;
+  let { permission } = User.findOne({ where: { userId } });
+  if (permission != 1) {
+    let result = await ItemList.findOne({
+      where: { itemId, userId: req.userId },
+    });
+    if (result == null) {
+      return res.send({
+        status: "refuse",
+        msg: "该物品不存在或暂无删除权限",
+        data: null,
+      });
+    }
+  } else if (permission == 1) {
+    let result = await ItemList.findOne({
+      where: { itemId },
+    });
+    if (result == null) {
+      return res.send({
+        status: "refuse",
+        msg: "该物品不存在",
+        data: null,
+      });
+    }
+  }
+
+   await ItemList.destroy({ where: { itemId } });
+   let updateCount = await ItemList.count({ where: { itemId } });
+  console.log(updateCount);
+  if (updateCount == 0) {
+    return res.send({
+      status: "success",
+      msg: "删除物品信息成功",
+      data: null,
     });
   }
 };
