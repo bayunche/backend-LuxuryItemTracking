@@ -187,6 +187,7 @@ exports.updateLogisticsInfo = async (
   let { shippingDate, carrier, trackingNumber, status } = logisticsInfo;
   const wallet = new ethers.Wallet(privateKey, provider);
   const luxuryGoodsNFTWithSigner = luxuryGoodsNFT.connect(wallet);
+  status=`${status}`
   try {
     // 在智能合约中更新物流信息
     const transaction = await luxuryGoodsNFTWithSigner.setLogisticsInfo(
