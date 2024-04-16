@@ -193,7 +193,7 @@ exports.updateLogisticInfo = async (req, res) => {
         TransportCompany,
         TransportDate,
         TransportNumber,
-        status,
+        status:2,
       },
       { where: { itemId: itemId } }
     );
