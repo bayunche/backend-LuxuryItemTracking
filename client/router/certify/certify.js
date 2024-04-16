@@ -229,6 +229,7 @@ exports.updateLogisticInfo = async (req, res) => {
     });
     await user.update({ balance }, { where: { userId: userId } });
     res.send({
+      status: "success",
       msg: "更新物流信息成功",
       data: null,
       error: null,
@@ -236,6 +237,7 @@ exports.updateLogisticInfo = async (req, res) => {
   } catch (error) {
     console.log(error);
     res.send({
+      status:"refuse",
       msg: "更新物流信息失败",
       data: null,
       error,
@@ -310,6 +312,7 @@ exports.updateSalesRecord = async (req, res) => {
     });
 
     res.send({
+      status: "success",
       msg: "更新销售信息成功",
       data: null,
       error: null,
@@ -317,6 +320,7 @@ exports.updateSalesRecord = async (req, res) => {
   } catch (error) {
     console.log(error);
     res.send({
+      status: "refuse",
       msg: "更新销售信息失败",
       data: null,
       error,
