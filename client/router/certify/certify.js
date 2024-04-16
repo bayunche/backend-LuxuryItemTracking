@@ -163,13 +163,18 @@ exports.updateLogisticInfo = async (req, res) => {
     status,
     remark,
   } = req.body;
+  if (!itemId) {
+    return res.send({
+      msg: "请输入物品id",
+      data: null,
+      error: null,
+    })
+  }
   let userId = req.userId;
   let item = await ItemList.findOne({ where: { itemId: itemId } });
   let user = await User.findOne({ where: { userId: userId } });
-
   let { tokenId } = item;
   let { privateKey, address, userName } = user;
-
   let data = {
     shippingDate: TransportDate,
     carrier: TransportCompany,
