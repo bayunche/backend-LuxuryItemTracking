@@ -290,6 +290,7 @@ exports.updateSalesRecord = async (req, res) => {
         salesPrice,
         distributionChannel,
         salesOutlet,
+        status:3,
       },
       { where: { itemId: itemId } }
     );
