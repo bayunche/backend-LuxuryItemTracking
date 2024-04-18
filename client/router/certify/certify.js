@@ -486,3 +486,73 @@ exports.listenForEvents = () => {
 
   console.log("Started listening for smart contract events.");
 };
+
+exports.updateItemInfo = async (req, res) => {
+  let { itemName, itemDate, itemImage, brand, model, itemId } = req.body;
+  let userId = req.userId;
+  try {
+    let user = await User.findOne({ where: { userId: userId } });
+    let { address, privateKey, userName } = user;
+    let results = await registerLuxuryItem(
+      brand,
+      model,
+      itemDate,
+      address,
+      userId,
+      privateKey
+    );
+    let {
+      transactionHash,
+      blockNumber,
+      timestamp,
+      balance,
+      tokenId,
+      serialNumber,
+    } = results;
+
+    await ItemList.update(
+      {
+        tokenId: tokenId,
+        itemName: itemName,
+        itemDate: itemDate,
+        itemImage: itemImage,
+        brand: brand,
+        model: model,
+        blockNumber: blockNumber,
+        transactionHash: transactionHash,
+        updater: user.userName,
+        hasChange: "true",
+      },
+      {
+        where: { itemId: itemId },
+      }
+    );
+    await User.update({ balance }, { where: { userId: userId } });
+
+    await transactionLog.create({
+      creater: userName,
+      itemName: itemName,
+      itemId: itemId,
+      userId: user.userId,
+      createTime: moment().unix(),
+      serialNumber: serialNumber,
+      blockNumber: blockNumber,
+      transactionHash,
+      description: "警告：用户更新奢侈品信息",
+    });
+    res.send({
+      status: "success",
+      msg: "更新奢侈品信息成功",
+      data: null,
+      error: null,
+    });
+  } catch (error) {
+    console.log(error);
+    res.send({
+      status: "refuse",
+      msg: "更新奢侈品信息失败",
+      data: null,
+      error: error,
+    });
+  }
+};

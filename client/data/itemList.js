@@ -122,6 +122,10 @@ const ItemList = sequelize.define("ItemList", {
   description:{
     type:DataTypes.STRING,
     allowNull:true,
+  },
+  hasChange:{
+    type:DataTypes.STRING,
+    allowNull:true,
   }
 });
 sequelize.sync();
