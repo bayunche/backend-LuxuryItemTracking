@@ -33,11 +33,15 @@ exports.getItemDetails = async (req, res) => {
       order: [["createdAt", "DESC"]],
     });
     let { serialNumber, tokenId } = itemData;
-    console.log(typeof tokenId, tokenId);
     let { privateKey } = await User.findOne({ where: { userId: userId } });
     // let result = await getLuxuryItemDetails(tokenId, privateKey);
     let result = await getLuxuryDetails(tokenId, privateKey);
     // itemData = JSONBig.stringify(itemData);
+    console.log({
+      ...itemData,
+      salesInfoBlockNumber: salesInfos.blockNumber,
+      logisticsInfoBlockNumber: logisticsInfos.blockNumber,
+    });
     res.send({
       data: {
         ...itemData,
