@@ -22,6 +22,7 @@ exports.getItemDetails = async (req, res) => {
     let { address } = await User.findOne({ where: { userId: userId } });
     let itemData = await ItemList.findOne({
       where: { itemId: itemId },
+      raw: false,
     });
     //从数据库中获取最新的销售信息的区块号
     let salesInfos = await salesInfo.findOne({
