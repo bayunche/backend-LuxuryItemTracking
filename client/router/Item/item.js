@@ -39,16 +39,14 @@ exports.getItemDetails = async (req, res) => {
     // let result = await getLuxuryItemDetails(tokenId, privateKey);
     let result = await getLuxuryDetails(tokenId, privateKey);
     // itemData = JSONBig.stringify(itemData);
-    console.log({
-      ...itemData,
-      salesInfoBlockNumber: salesInfos.blockNumber,
-      logisticsInfoBlockNumber: logisticsInfos.blockNumber,
-    });
+
     res.send({
       data: {
         ...itemData,
         salesInfoBlockNumber: salesInfos.blockNumber,
+        salesInfo_status: salesInfos.status,
         logisticsInfoBlockNumber: logisticsInfos.blockNumber,
+        logistics_status:logisticsInfos.logistics_status
       },
       // data: itemData,
       msg: "success",
