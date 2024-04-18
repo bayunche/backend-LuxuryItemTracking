@@ -40,7 +40,7 @@ exports.getItemDetails = async (req, res) => {
     // itemData = JSONBig.stringify(itemData);
     res.send({
       data: {
-        itemData,
+        ...itemData,
         salesInfoBlockNumber: salesInfos.blockNumber,
         logisticsInfoBlockNumber: logisticsInfos.blockNumber,
       },
