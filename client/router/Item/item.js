@@ -23,16 +23,28 @@ exports.getItemDetails = async (req, res) => {
     let itemData = await ItemList.findOne({
       where: { itemId: itemId },
     });
+    //从数据库中获取最新的销售信息的区块号
+    let salesInfos = await salesInfo.findOne({
+      where: { itemId: itemId },
+      order: [["createdAt", "DESC"]],
+    });
+    let logisticsInfos = await logisticsInfoData.findOne({
+      where: { itemId: itemId },
+      order: [["createdAt", "DESC"]],
+    });
     let { serialNumber, tokenId } = itemData;
     console.log(typeof tokenId, tokenId);
     let { privateKey } = await User.findOne({ where: { userId: userId } });
     // let result = await getLuxuryItemDetails(tokenId, privateKey);
     let result = await getLuxuryDetails(tokenId, privateKey);
     // itemData = JSONBig.stringify(itemData);
-    console.log(result);
     res.send({
-      data: { itemData, result },
-      data: itemData,
+      data: {
+        itemData,
+        salesInfoBlockNumber: salesInfos.blockNumber,
+        logisticsInfoBlockNumber: logisticsInfos.blockNumber,
+      },
+      // data: itemData,
       msg: "success",
     });
   } catch (error) {
@@ -183,7 +195,7 @@ exports.getSalesList = async (req, res) => {
 
 exports.deleteItem = async (req, res) => {
   let { itemId } = req.query;
-  console.log(req.query)
+  console.log(req.query);
   if (itemId == null) {
     return res.send({
       status: "refuse",
@@ -217,8 +229,8 @@ exports.deleteItem = async (req, res) => {
     }
   }
 
-   await ItemList.destroy({ where: { itemId } });
-   let updateCount = await ItemList.count({ where: { itemId } });
+  await ItemList.destroy({ where: { itemId } });
+  let updateCount = await ItemList.count({ where: { itemId } });
   console.log(updateCount);
   if (updateCount == 0) {
     return res.send({

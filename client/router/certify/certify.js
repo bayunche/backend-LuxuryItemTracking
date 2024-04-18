@@ -285,6 +285,7 @@ exports.updateSalesRecord = async (req, res) => {
     console.log(transactionHash);
     await ItemList.update(
       {
+        value: salesPrice,
         salesTime,
         itemId,
         salesPrice,
