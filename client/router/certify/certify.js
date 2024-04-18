@@ -168,7 +168,7 @@ exports.updateLogisticInfo = async (req, res) => {
       msg: "请输入物品id",
       data: null,
       error: null,
-    })
+    });
   }
   let userId = req.userId;
   let item = await ItemList.findOne({ where: { itemId: itemId } });
@@ -193,7 +193,8 @@ exports.updateLogisticInfo = async (req, res) => {
         TransportCompany,
         TransportDate,
         TransportNumber,
-        status:2,
+        updater: user.userName,
+        status: 2,
       },
       { where: { itemId: itemId } }
     );
@@ -237,7 +238,7 @@ exports.updateLogisticInfo = async (req, res) => {
   } catch (error) {
     console.log(error);
     res.send({
-      status:"refuse",
+      status: "refuse",
       msg: "更新物流信息失败",
       data: null,
       error,
@@ -255,7 +256,7 @@ exports.updateSalesRecord = async (req, res) => {
     salesOutlet,
     salesStatus,
     buyer,
-    remark
+    remark,
   } = req.body;
   // 获取用户id
   salesTime = new Date(salesTime);
@@ -272,7 +273,7 @@ exports.updateSalesRecord = async (req, res) => {
       distributionChannel,
       salesOutlet,
       salesStatus,
-      remark
+      remark,
     };
     let data = {
       salesDate: salesTime,
@@ -291,7 +292,8 @@ exports.updateSalesRecord = async (req, res) => {
         salesPrice,
         distributionChannel,
         salesOutlet,
-        status:3,
+        updater: user.userName,
+        status: 3,
       },
       { where: { itemId: itemId } }
     );
@@ -345,7 +347,7 @@ exports.setLuxuryItemValuation = async (req, res) => {
       await setLuxuryItemValuation(serialNumber, valuation, address);
 
     // 更新数据库中的估值信息
-    await ItemList.update({ valuation }, { where: { itemId: itemId } });
+    await ItemList.update({ value }, { where: { itemId: itemId } });
 
     res.send({
       msg: "奢侈品估值更新成功",
