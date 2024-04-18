@@ -24,7 +24,7 @@ exports.getItemDetails = async (req, res) => {
       where: { itemId: itemId },
       raw: false,
     });
-    itemData = JSONBig.parse(itemData);
+    itemData= itemData.toJSON()
     //从数据库中获取最新的销售信息的区块号
     let salesInfos = await salesInfo.findOne({
       where: { itemId: itemId },
