@@ -255,6 +255,7 @@ exports.updateSalesRecord = async (req, res) => {
     salesOutlet,
     salesStatus,
     buyer,
+    remark
   } = req.body;
   // 获取用户id
   salesTime = new Date(salesTime);
@@ -271,6 +272,7 @@ exports.updateSalesRecord = async (req, res) => {
       distributionChannel,
       salesOutlet,
       salesStatus,
+      remark
     };
     let data = {
       salesDate: salesTime,

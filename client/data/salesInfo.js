@@ -46,6 +46,10 @@ const salesInfo = sequelize.define("salesInfo", {
   timestamp:{ 
     type:DataTypes.BIGINT,
     allowNull:false
+  },
+  remark:{
+    type:DataTypes.STRING,
+    allowNull:true
   }
 
 });
