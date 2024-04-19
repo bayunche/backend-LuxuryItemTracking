@@ -543,7 +543,7 @@ exports.updateItemInfo = async (req, res) => {
       itemName: itemName,
       itemId: itemId,
       userId: user.userId,
-      createTime: moment().unix(),
+      createTime: new Date.now(),
       serialNumber: serialNumber,
       blockNumber: blockNumber,
       transactionHash,

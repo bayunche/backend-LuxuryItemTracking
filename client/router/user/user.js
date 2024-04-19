@@ -27,6 +27,7 @@ const {
   getAliOrderResult,
 } = require("../../utils/aliSdk");
 const Pingpp = require("pingpp");
+const transactionLog = require("../../data/transactionLog");
 
 exports.createUserPrivateKey = async (req, res) => {
   try {
@@ -40,7 +41,7 @@ exports.createUserPrivateKey = async (req, res) => {
       msg: "获取订单信息成功",
       data: orderStr,
     });
-    await getAliOrderResult(out_trade_no, userId, trueValue)
+    await getAliOrderResult(out_trade_no, userId, trueValue);
     // Retrieve the user from the database
     let user = await User.findOne({ where: { userId } });
     // Check if the user already has an address
@@ -220,6 +221,53 @@ exports.getAliOrderInfo = async (req, res) => {
   } catch (error) {
     console.log(error);
     return res.send({ status: "refuse", msg: "获取订单信息失败", data: null });
+  }
+};
+
+exports.getTransactionLogList = async (req, res) => {
+  let { userId } = req;
+  try {
+    let result = await transactionLog.findAll({ where: { userId } });
+    if (result.length === 0) {
+      return res.send({
+        status: "success",
+        msg: "获取交易记录列表成功",
+        data: null,
+      });
+    }
+    res.send({
+      status: "success",
+      msg: "获取交易记录列表成功",
+      data: result,
+    });
+  } catch (error) {
+    res.send({
+      status: "refuse",
+      msg: "获取交易记录列表失败",
+      data: null,
+    });
+  }
+};
+
+exports.getTransactionLog = async (req, res) => {
+  let { userId } = req;
+  let { transactionLogId } = req.query;
+  try {
+    let result = await transactionLog.findOne({
+      where: { userId, id: transactionLogId },
+    });
+    res.send({
+      status: "success",
+      msg: "获取交易记录成功",
+      data: result,
+    });
+  } catch (error) {
+    console.log(error)
+    res.send({
+      status: "refuse",
+      msg: "获取交易记录失败",
+      data: null,
+    });
   }
 };
 

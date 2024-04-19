@@ -9,4 +9,7 @@ router.post('/editPassword',user.editUserPassword)
 router.post('/editUserInfo',user.editUserInfo)
 router.post("/getAliOrderInfo",user.getAliOrderInfo)
 router.post("/getCharge",user.getCharge)
+router.get("/getTransactionLogList", user.getTransactionLogList);
+router.get("/getTransactionLog", user.getTransactionLog);
+
 module.exports = router;
