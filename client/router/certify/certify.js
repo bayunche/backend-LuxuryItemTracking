@@ -528,7 +528,6 @@ exports.updateItemInfo = async (req, res) => {
       }
     );
     await User.update({ balance }, { where: { userId: userId } });
-
     await transactionLog.create({
       creater: userName,
       itemName: itemName,
