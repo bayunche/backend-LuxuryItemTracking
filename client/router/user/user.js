@@ -227,7 +227,12 @@ exports.getAliOrderInfo = async (req, res) => {
 exports.getTransactionLogList = async (req, res) => {
   let { userId } = req;
   try {
-    let result = await transactionLog.findAll({ where: { userId } });
+    let result = await transactionLog.findAll({
+      where: { userId },
+      attributes: {
+        exclude: ["userId", "serialNumber", "DESC", "createdAt", "updatedAt"],
+      },
+    });
     if (result.length === 0) {
       return res.send({
         status: "success",
@@ -262,7 +267,7 @@ exports.getTransactionLog = async (req, res) => {
       data: result,
     });
   } catch (error) {
-    console.log(error)
+    console.log(error);
     res.send({
       status: "refuse",
       msg: "获取交易记录失败",
