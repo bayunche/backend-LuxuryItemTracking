@@ -492,7 +492,7 @@ exports.updateItemInfo = async (req, res) => {
   let userId = req.userId;
   try {
     //验证该物品是否在数据库中
-    let item = await LuxuryItem.findOne({ where: { itemId: itemId } });
+    let item = await ItemList.findOne({ where: { itemId: itemId } });
     if (!item) {
       return res.send({
         status: "refuse",
