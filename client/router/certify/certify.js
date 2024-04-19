@@ -491,6 +491,16 @@ exports.updateItemInfo = async (req, res) => {
   let { itemName, itemDate, itemImage, brand, model, itemId } = req.body;
   let userId = req.userId;
   try {
+    //验证该物品是否在数据库中
+    let item = await LuxuryItem.findOne({ where: { itemId: itemId } });
+    if (!item) {
+      return res.send({
+        status: "refuse",
+        msg: "该物品不存在",
+        data: null,
+      });
+    }
+
     let user = await User.findOne({ where: { userId: userId } });
     let { address, privateKey, userName } = user;
     let results = await registerLuxuryItem(
