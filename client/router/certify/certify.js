@@ -351,10 +351,10 @@ exports.setLuxuryItemValuation = async (req, res) => {
   );
   let {valuation,reason}=valuationInfo
 console.log(reason)
-  let { privateKey,userName } = user;
+  let { privateKey,userName,address } = user;
   try {
     let {  transactionHash, blockNumber, timestamp, balance} =
-      await setLuxuryItemValuation(tokenId, valuation, privateKey);
+      await setLuxuryItemValuation(tokenId, valuation, privateKey,address);
     // 更新数据库中的估值信息
     await ItemList.update(
       { value:valuation, valuationReason:reason },
