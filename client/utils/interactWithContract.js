@@ -443,19 +443,30 @@ exports.createAccountEthers = async (userId) => {
 };
 
 exports.setLuxuryItemValuation = async (
-  serialNumber,
+  tokenId,
   valuation,
   ownerAddress
 ) => {
+
+    const wallet = new ethers.Wallet(privateKey, provider);
+  const luxuryGoodsNFTWithSigner = luxuryGoodsNFT.connect(wallet);
+  console.log(tokenId);
   try {
-    const transaction = await contract.methods
-      .setLuxuryItemValuation(serialNumber, valuation)
-      .send({
-        from: ownerAddress,
-      });
+    const tx = await luxuryGoodsNFTWithSigner.setValuation(
+      tokenId,
+     valuation
+    );
+    const receipt = await tx.wait();
+    const balance = await provider.getBalance(address);
+    const balanceInEth = ethers.formatEther(balance);
+    const block = await provider.getBlock(receipt.blockNumber);
+    const timestamp = new Date(moment.unix(block.timestamp));
     console.log("Valuation set successfully!");
     return {
-      transactionHash: transaction.transactionHash,
+      transactionHash: tx.hash,
+      blockNumber: receipt.blockNumber,
+      balance: balanceInEth,
+      timestamp: timestamp,
     };
   } catch (error) {
     console.error("Error setting valuation:", error);

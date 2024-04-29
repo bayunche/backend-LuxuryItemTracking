@@ -25,6 +25,7 @@ const qrcode = require("qrcode");
 const salesInfo = require("../../data/salesInfo");
 const JSONBig = require("json-bigint");
 const transactionLog = require("../../data/transactionLog");
+const { getLuxuryItemValidation } = require("../../utils/chatGpt");
 
 // 导出mintLuxuryItem函数，用于处理发送的请求
 exports.mintLuxuryItem = async (req, res) => {
@@ -286,7 +287,7 @@ exports.updateSalesRecord = async (req, res) => {
     console.log(transactionHash);
     await ItemList.update(
       {
-        value: salesPrice,
+        // value: salesPrice,
         salesTime,
         itemId,
         salesPrice,
@@ -334,21 +335,42 @@ exports.updateSalesRecord = async (req, res) => {
   }
 };
 exports.setLuxuryItemValuation = async (req, res) => {
-  const { itemId, valuation } = req.body;
+  const { itemId } = req.body;
   let userId = req.userId;
+
   let item = await ItemList.findOne({ where: { itemId: itemId } });
+
   let user = await User.findOne({ where: { userId: userId } });
   // item = item.toJSON();
   // user = user.toJSON();
-  let { serialNumber } = item;
+  let { serialNumber, itemName, brand, model } = item;
+  let { valuation, reason } = await getLuxuryItemValidation(
+    itemName,
+    brand,
+    model
+  );
   let { address } = user;
   try {
-    let { transactionHash, blockNumber, timestamp } =
+    let {  transactionHash, blockNumber, timestamp, balance} =
       await setLuxuryItemValuation(serialNumber, valuation, address);
-
     // 更新数据库中的估值信息
-    await ItemList.update({ value }, { where: { itemId: itemId } });
-
+    await ItemList.update(
+      { value, valuationReason },
+      { where: { itemId: itemId } }
+    );
+    await User.update({ balance }, { where: { userId: userId } });
+    await transactionLog.create({
+      creater: userName,
+      itemName: item.itemName,
+      itemId: item.itemId,
+      userId: user.userId,
+      createTime: timestamp,
+      serialNumber: item.serialNumber,
+      blockNumber: blockNumber,
+      transactionHash,
+      description: "设置奢侈品估值",
+    });
+    
     res.send({
       msg: "奢侈品估值更新成功",
       data: {
