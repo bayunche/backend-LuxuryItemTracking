@@ -343,7 +343,7 @@ exports.setLuxuryItemValuation = async (req, res) => {
   let user = await User.findOne({ where: { userId: userId } });
   // item = item.toJSON();
   // user = user.toJSON();
-  let { serialNumber, itemName, brand, model } = item;
+  let { tokenId, itemName, brand, model } = item;
   let { valuation, reason } = await getLuxuryItemValidation(
     itemName,
     brand,
@@ -352,7 +352,7 @@ exports.setLuxuryItemValuation = async (req, res) => {
   let { privateKey,userName } = user;
   try {
     let {  transactionHash, blockNumber, timestamp, balance} =
-      await setLuxuryItemValuation(serialNumber, valuation, privateKey);
+      await setLuxuryItemValuation(tokenId, valuation, privateKey);
     // 更新数据库中的估值信息
     await ItemList.update(
       { value:valuation, valuationReason:reason },
