@@ -344,11 +344,13 @@ exports.setLuxuryItemValuation = async (req, res) => {
   // item = item.toJSON();
   // user = user.toJSON();
   let { tokenId, itemName, brand, model } = item;
-  let { valuation, reason } = await getLuxuryItemValidation(
+  let valuationInfo = await getLuxuryItemValidation(
     itemName,
     brand,
     model
   );
+  console.log(valuationInfo)
+  
   let { privateKey,userName } = user;
   try {
     let {  transactionHash, blockNumber, timestamp, balance} =
