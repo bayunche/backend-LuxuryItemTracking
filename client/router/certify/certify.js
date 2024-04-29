@@ -349,8 +349,8 @@ exports.setLuxuryItemValuation = async (req, res) => {
     brand,
     model
   );
-  console.log(valuationInfo)
-  
+  let {valuation,reason}=valuationInfo
+console.log(valuation)
   let { privateKey,userName } = user;
   try {
     let {  transactionHash, blockNumber, timestamp, balance} =
