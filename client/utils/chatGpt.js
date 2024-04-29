@@ -17,9 +17,13 @@ const getLuxuryItemValidation = async (itemName, model, brand) =>{
       // max_tokens: 150  // Adjust based on expected response length
     });
 
-    console.log(completion.choices[0].message);
-    const valuationInfo = JSONBig.parse(completion.choices[0].message.content);
-    console.log(valuationInfo);
+    // console.log(completion.choices[0].message);
+    const validJsonStr = completion.choices[0].message.content
+    .replace(/(\w+)\s*:/g, '"$1":') // 添加引号包围键名
+    .replace(/'/g, '"'); // 将单引号转换为双引号
+    // console.log(valuationInfo);
+    const valuationInfo = JSONBig.parse(validJsonStr);
+   
     return valuationInfo;
   } catch (error) {
     console.error("Error:", error);
