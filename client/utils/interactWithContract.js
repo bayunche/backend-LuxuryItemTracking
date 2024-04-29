@@ -450,7 +450,7 @@ exports.setLuxuryItemValuation = async (
 
     const wallet = new ethers.Wallet(privateKey, provider);
   const luxuryGoodsNFTWithSigner = luxuryGoodsNFT.connect(wallet);
-  valuation=Number(valuation)
+
   console.log(tokenId,valuation,privateKey);
 
   try {
