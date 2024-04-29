@@ -349,13 +349,13 @@ exports.setLuxuryItemValuation = async (req, res) => {
     brand,
     model
   );
-  let { address } = user;
+  let { privateKey,userName } = user;
   try {
     let {  transactionHash, blockNumber, timestamp, balance} =
-      await setLuxuryItemValuation(serialNumber, valuation, address);
+      await setLuxuryItemValuation(serialNumber, valuation, privateKey);
     // 更新数据库中的估值信息
     await ItemList.update(
-      { value, valuationReason },
+      { value:valuation, valuationReason:reason },
       { where: { itemId: itemId } }
     );
     await User.update({ balance }, { where: { userId: userId } });
@@ -370,7 +370,7 @@ exports.setLuxuryItemValuation = async (req, res) => {
       transactionHash,
       description: "设置奢侈品估值",
     });
-    
+
     res.send({
       msg: "奢侈品估值更新成功",
       data: {

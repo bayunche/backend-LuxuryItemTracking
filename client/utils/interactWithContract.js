@@ -445,7 +445,7 @@ exports.createAccountEthers = async (userId) => {
 exports.setLuxuryItemValuation = async (
   tokenId,
   valuation,
-  ownerAddress
+  privateKey
 ) => {
 
     const wallet = new ethers.Wallet(privateKey, provider);
