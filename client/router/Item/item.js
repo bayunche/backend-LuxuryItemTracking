@@ -43,10 +43,10 @@ exports.getItemDetails = async (req, res) => {
     res.send({
       data: {
         ...itemData,
-        salesInfoBlockNumber: salesInfos.blockNumber,
-        salesInfo_status: salesInfos.status,
-        logisticsInfoBlockNumber: logisticsInfos.blockNumber,
-        logistics_status:logisticsInfos.logistics_status
+        salesInfoBlockNumber: salesInfos?.blockNumber||null,
+        salesInfo_status: salesInfos?.status||null,
+        logisticsInfoBlockNumber: logisticsInfos?.blockNumber||null,
+        logistics_status:logisticsInfos?.logistics_status||null
       },
       // data: itemData,
       msg: "success",
