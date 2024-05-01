@@ -2,13 +2,7 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 const path = require("path");
-const fs = require('fs')
-const https = require("https");
-//线上配置ssl
-const httpsOption = {
-  key : fs.readFileSync("/etc/nginx/cert/www.hasunmiku.top.key"),
-  cert: fs.readFileSync("/etc/nginx/cert/www.hasunmiku.top.pem")
-}
+
 const {jwtcheck} = require("./middleWare/jwtCheck");
 const bodyParser = require("body-parser");
 const {
@@ -58,9 +52,7 @@ app.use("/item", item);
 app.use("/certify", certify);
 const port = 3101;
 
-
-const server=httpsOption.key&&httpsOption.cert?https.createServer(httpsOption,app):http.createServer(app);
-server.listen(port, (error) => {
+app.listen(port, (error) => {
   console.log("server is running on port " + port);
   if (error) {
     console.log(error);
