@@ -66,7 +66,7 @@ const port = 3101;
 // 生产环境
 const httpsServer = https.createServer(credentials,app);
 httpsServer.listen(port, function() {
-  console.log(`HTTPS Server is running on: https://localhost:${port}`);
+  console.log(`HTTPS Server is running on: https://localhost:${port},certyfy:${credentials}`);
 });
 
 
