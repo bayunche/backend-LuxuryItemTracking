@@ -56,17 +56,18 @@ app.use("/item", item);
 app.use("/certify", certify);
 const port = 3101;
 // 本地环境
-app.listen(port, (error) => {
-  console.log("server is running on port " + port);
-  if (error) {
-    console.log(error);
-  }
-});
+// app.listen(port, (error) => {
+//   console.log("server is running on port " + port);
+//   if (error) {
+//     console.log(error);
+//   }
+// });
 
 // 生产环境
-// const httpsServer = https.createServer(credentials,app);
-// httpsServer.listen(port, function() {
-//   console.log(`HTTPS Server is running on: https://localhost:${port}`);
-// });
+const httpsServer = https.createServer(credentials,app);
+httpsServer.listen(port, function() {
+  console.log(`HTTPS Server is running on: https://localhost:${port}`);
+});
+
 
 
