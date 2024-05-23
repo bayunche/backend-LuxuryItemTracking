@@ -91,39 +91,77 @@ exports.getLogisticsInfo = async (req, res) => {
 exports.getItemList = async (req, res) => {
   let userId = req.userId;
   // let { pageNum, pageSize } = req.params;
-  try {
-    let data = await ItemList.findAll({
-      attributes: [
-        "id",
-        "itemId",
-        "itemName",
-        "itemImage",
-        "itemDate",
-        "value",
-      ],
-      where: {
-        // limit: pageSize,
-        // offset: pageSize * pageNum - 1,
-        userId,
-      },
-    });
-    // if (data.length === 0) {
-    //   data = data.toJSON();
+  let { itemName } = req.query;
+  if (!itemName) {
+    try {
+      let data = await ItemList.findAll({
+        attributes: [
+          "id",
+          "itemId",
+          "itemName",
+          "itemImage",
+          "itemDate",
+          "value",
+        ],
+        order: [["itemDate", "DESC"]],
 
-    // }
-    console.log(data);
-    res.send({
-      msg: "获取物品列表成功",
-      data,
-      error: null,
-    });
-  } catch (error) {
-    console.log(error);
-    res.send({
-      msg: "获取物品列表失败",
-      data: null,
-      status: "refuse",
-    });
+        where: {
+          // limit: pageSize,
+          // offset: pageSize * pageNum - 1,
+          userId,
+        },
+      });
+      // if (data.length === 0) {
+      //   data = data.toJSON();
+
+      // }
+      console.log(data);
+      res.send({
+        msg: "获取物品列表成功",
+        data,
+        error: null,
+      });
+    } catch (error) {
+      console.log(error);
+      res.send({
+        msg: "获取物品列表失败",
+        data: null,
+        status: "refuse",
+      });
+    }
+  } else {
+    try {
+      let data = await ItemList.findAll({
+        attributes: [
+          "id",
+          "itemId",
+          "itemName",
+          "itemImage",
+          "itemDate",
+          "value",
+        ],
+        order: [["itemDate", "DESC"]],
+        where: {
+          // limit: pageSize,
+          // offset: pageSize * pageNum - 1,
+          userId,
+          itemName,
+        },
+      });
+      console.log(data);
+      res.send({
+        msg: "获取物品列表成功",
+        data,
+        error: null,
+      });
+    } catch (error) {
+      console.log(error);
+      res.send({
+        msg: "获取物品列表失败",
+        data: null,
+        status: "refuse",
+      });
+    }
   }
 };
 exports.getLogisticsList = async (req, res) => {
