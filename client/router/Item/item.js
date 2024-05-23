@@ -24,7 +24,7 @@ exports.getItemDetails = async (req, res) => {
       where: { itemId: itemId },
       raw: false,
     });
-    itemData= itemData.toJSON()
+    itemData = itemData.toJSON();
     //从数据库中获取最新的销售信息的区块号
     let salesInfos = await salesInfo.findOne({
       where: { itemId: itemId },
@@ -43,10 +43,10 @@ exports.getItemDetails = async (req, res) => {
     res.send({
       data: {
         ...itemData,
-        salesInfoBlockNumber: salesInfos?.blockNumber||null,
-        salesInfo_status: salesInfos?.status||null,
-        logisticsInfoBlockNumber: logisticsInfos?.blockNumber||null,
-        logistics_status:logisticsInfos?.logistics_status||null
+        salesInfoBlockNumber: salesInfos?.blockNumber || null,
+        salesInfo_status: salesInfos?.status || null,
+        logisticsInfoBlockNumber: logisticsInfos?.blockNumber || null,
+        logistics_status: logisticsInfos?.logistics_status || null,
       },
       // data: itemData,
       msg: "success",
@@ -240,6 +240,33 @@ exports.deleteItem = async (req, res) => {
     return res.send({
       status: "success",
       msg: "删除物品信息成功",
+      data: null,
+    });
+  }
+};
+exports.getBanner = async (req, res) => {
+  let { userId } = req;
+  try {
+    let result = ItemList.findAll({
+      where: { userId: userId },
+      attributes: { include: ["value", "itemName", "itemImage", "createdAt"] },
+      limit: 5,
+      //按照时间升序
+      order: [["createdAt", "DESC"]],
+    });
+
+    console.log(result);
+
+    res.send({
+      status: "success",
+      msg: "获取轮播图成功",
+      data: result,
+    });
+  } catch (error) {
+    console.log(error);
+    res.send({
+      status: "refuse",
+      msg: "获取轮播图失败",
       data: null,
     });
   }
