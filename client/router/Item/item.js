@@ -289,7 +289,7 @@ exports.deleteItem = async (req, res) => {
 exports.getBanner = async (req, res) => {
   let { userId } = req;
   try {
-    let result = ItemList.findAll({
+    let result = await ItemList.findAll({
       where: { userId: userId },
       attributes: { include: ["value", "itemName", "itemImage", "createdAt"] },
       limit: 5,
