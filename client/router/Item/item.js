@@ -291,7 +291,7 @@ exports.getBanner = async (req, res) => {
   try {
     let result = await ItemList.findAll({
       where: { userId: userId },
-      attributes: { include: ["value", "itemName", "itemImage", "createdAt"] },
+      attributes: ["value", "itemName", "itemImage", "createdAt"],
       limit: 5,
       //按照时间升序
       order: [["createdAt", "DESC"]],
