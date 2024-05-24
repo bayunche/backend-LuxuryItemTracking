@@ -13,6 +13,9 @@ const logisticsInfoData = require("../../data/logisticsInfo");
 const ItemList = require("../../data/itemList");
 const salesInfo = require("../../data/salesInfo");
 const JSONBig = require("json-bigint");
+//图床api
+const api =
+  "chv_5bLG_a0b16a697f3597094743173545af55a721d32c44ce962915bd17129ff02b7b7e2586fa9cd6b91e168502046cb67037544f902d10a070878d929827ba120f68cd";
 
 exports.getItemDetails = async (req, res) => {
   console.log(req.query);
@@ -282,6 +285,7 @@ exports.deleteItem = async (req, res) => {
     });
   }
 };
+
 exports.getBanner = async (req, res) => {
   let { userId } = req;
   try {
@@ -292,9 +296,7 @@ exports.getBanner = async (req, res) => {
       //按照时间升序
       order: [["createdAt", "DESC"]],
     });
-
     console.log(result);
-
     res.send({
       status: "success",
       msg: "获取轮播图成功",
