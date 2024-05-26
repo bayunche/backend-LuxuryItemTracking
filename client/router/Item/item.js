@@ -432,55 +432,5 @@ exports.getItembanner = async (req, res) => {
       }
     }
   }
-  if (dimension == 1) {
-    //按照时间降序
-    order = "DESC";
-    try {
-      let result = await ItemList.findAll({
-        where: { userId: userId },
-        attributes: ["value", "itemName", "itemImage", "createdAt", "itemId"],
-        limit: 5,
-        //按照时间升序
-        order: [["createdAt", "DESC"]],
-      });
-      res.send({
-        status: "success",
-        msg: "获取轮播图成功",
-        data: result,
-      });
-      console.log(result);
-    } catch (error) {
-      console.log(error, order);
-      res.send({
-        status: "refuse",
-        msg: "获取物品失败",
-        data: null,
-      });
-    }
-  } else if (dimension == 2) {
-    //按照物品名称A-Z排序
-    order = "ASC";
-    try {
-      let result = await ItemList.findAll({
-        where: { userId: userId },
-        attributes: ["value", "itemName", "itemImage", "createdAt", "itemId"],
-        limit: 5,
-        //按照A-Z排序
-        order: [["itemName", "ASC"]],
-      });
-      res.send({
-        status: "success",
-        msg: "获取轮播图成功",
-        data: result,
-      });
-      console.log(result);
-    } catch (error) {
-      console.log(error, order);
-      res.send({
-        status: "refuse",
-        msg: "获取物品失败",
-        data: null,
-      });
-    }
-  }
+
 };
