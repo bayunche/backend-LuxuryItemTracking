@@ -311,3 +311,175 @@ exports.getBanner = async (req, res) => {
     });
   }
 };
+exports.getItembanner = async (req, res) => {
+  let { userId } = req;
+  let { dimension, dateRange } = req.query;
+  let order = "DESC";
+  if (dateRange == null) {
+    //返回最近五条
+    if (dimension == 1) {
+      //按照时间降序
+      order = "DESC";
+      try {
+        let result = await ItemList.findAll({
+          where: { userId: userId },
+          attributes: ["value", "itemName", "itemImage", "createdAt", "itemId"],
+          limit: 5,
+          //按照时间升序
+          order: [["createdAt", "DESC"]],
+        });
+        res.send({
+          status: "success",
+          msg: "获取轮播图成功",
+          data: result,
+          dateRange: null,
+        });
+        console.log(result);
+      } catch (error) {
+        console.log(error, order);
+        res.send({
+          status: "refuse",
+          msg: "获取物品失败",
+          data: null,
+        });
+      }
+    } else if (dimension == 2) {
+      //按照物品名称A-Z排序
+      order = "ASC";
+      try {
+        let result = await ItemList.findAll({
+          where: { userId: userId },
+          attributes: ["value", "itemName", "itemImage", "createdAt", "itemId"],
+          limit: 5,
+          //按照A-Z排序
+          order: [["itemName", "ASC"]],
+          dateRange: null,
+        });
+        res.send({
+          status: "success",
+          msg: "获取轮播图成功",
+          data: result,
+          dateRange: null,
+        });
+        console.log(result);
+      } catch (error) {
+        console.log(error, order);
+        res.send({
+          status: "refuse",
+          msg: "获取物品失败",
+          data: null,
+        });
+      }
+    }
+  } else {
+    //返回近一月的五条奢侈品（以服务器时间为准）
+    let start = new Date();
+    start.setMonth(start.getMonth() - 1);
+    let end = new Date();
+    if (dimension == 1) {
+      //按照时间降序
+      order = "DESC";
+      try {
+        let result = await ItemList.findAll({
+          where: { userId: userId, createdAt: { [Op.between]: [start, end] } },
+          attributes: ["value", "itemName", "itemImage", "createdAt", "itemId"],
+          limit: 5,
+          //按照时间升序
+          order: [["createdAt", "DESC"]],
+        });
+        res.send({
+          status: "success",
+          msg: "获取轮播图成功",
+          data: result,
+          dateRange: dateRange,
+        });
+        console.log(result);
+      } catch (error) {
+        console.log(error, order);
+        res.send({
+          status: "refuse",
+          msg: "获取物品失败",
+          data: null,
+        });
+      }
+    } else if (dimension == 2) {
+      //按照物品名称A-Z排序
+      order = "ASC";
+      try {
+        let result = await ItemList.findAll({
+          where: { userId: userId, createdAt: { [Op.between]: [start, end] } },
+          attributes: ["value", "itemName", "itemImage", "createdAt", "itemId"],
+          limit: 5,
+          //按照A-Z排序
+          order: [["itemName", "ASC"]],
+          dateRange: dateRange,
+        });
+        res.send({
+          status: "success",
+          msg: "获取轮播图成功",
+          data: result,
+          dateRange: dateRange,
+        });
+        console.log(result);
+      } catch (error) {
+        console.log(error, order);
+        res.send({
+          status: "refuse",
+          msg: "获取物品失败",
+          data: null,
+        });
+      }
+    }
+  }
+  if (dimension == 1) {
+    //按照时间降序
+    order = "DESC";
+    try {
+      let result = await ItemList.findAll({
+        where: { userId: userId },
+        attributes: ["value", "itemName", "itemImage", "createdAt", "itemId"],
+        limit: 5,
+        //按照时间升序
+        order: [["createdAt", "DESC"]],
+      });
+      res.send({
+        status: "success",
+        msg: "获取轮播图成功",
+        data: result,
+      });
+      console.log(result);
+    } catch (error) {
+      console.log(error, order);
+      res.send({
+        status: "refuse",
+        msg: "获取物品失败",
+        data: null,
+      });
+    }
+  } else if (dimension == 2) {
+    //按照物品名称A-Z排序
+    order = "ASC";
+    try {
+      let result = await ItemList.findAll({
+        where: { userId: userId },
+        attributes: ["value", "itemName", "itemImage", "createdAt", "itemId"],
+        limit: 5,
+        //按照A-Z排序
+        order: [["itemName", "ASC"]],
+      });
+      res.send({
+        status: "success",
+        msg: "获取轮播图成功",
+        data: result,
+      });
+      console.log(result);
+    } catch (error) {
+      console.log(error, order);
+      res.send({
+        status: "refuse",
+        msg: "获取物品失败",
+        data: null,
+      });
+    }
+  }
+};
