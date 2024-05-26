@@ -13,6 +13,7 @@ const logisticsInfoData = require("../../data/logisticsInfo");
 const ItemList = require("../../data/itemList");
 const salesInfo = require("../../data/salesInfo");
 const JSONBig = require("json-bigint");
+const { Op } = require("sequelize");
 //图床api
 const api =
   "chv_5bLG_a0b16a697f3597094743173545af55a721d32c44ce962915bd17129ff02b7b7e2586fa9cd6b91e168502046cb67037544f902d10a070878d929827ba120f68cd";
