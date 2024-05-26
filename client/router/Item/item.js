@@ -391,7 +391,7 @@ exports.getItembanner = async (req, res) => {
           status: "success",
           msg: "获取轮播图成功",
           data: result,
-          dateRange: dateRange,
+          dateRange: start + end,
         });
         console.log(result);
       } catch (error) {
@@ -412,13 +412,13 @@ exports.getItembanner = async (req, res) => {
           limit: 5,
           //按照A-Z排序
           order: [["itemName", "ASC"]],
-          dateRange: dateRange,
+          // dateRange: dateRange,
         });
         res.send({
           status: "success",
           msg: "获取轮播图成功",
           data: result,
-          dateRange: dateRange,
+          dateRange: start + end,
         });
         console.log(result);
       } catch (error) {
