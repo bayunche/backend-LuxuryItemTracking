@@ -432,5 +432,70 @@ exports.getItembanner = async (req, res) => {
       }
     }
   }
-
+};
+exports.searchItem = async (req, res) => {
+  let { userId } = req;
+  let { dimension, searchQuery } = req.query;
+  if (dimension == 1) {
+    //按照时间降序
+    order = "DESC";
+    try {
+      let result = await ItemList.findAll({
+        where: {
+          userId: userId,
+          itemName: { [Op.like]: "%" + searchQuery + "%" },
+        },
+        attributes: ["value", "itemName", "itemImage", "createdAt", "itemId"],
+        limit: 5,
+        //按照时间升序
+        order: [["createdAt", "DESC"]],
+        dateRange: null,
+      });
+      res.send({
+        status: "success",
+        msg: "搜索物品成功",
+        data: result,
+        dateRange: null,
+      });
+      console.log(result);
+    } catch (error) {
+      console.log(error, order);
+      res.send({
+        status: "refuse",
+        msg: "搜索物品失败",
+        data: null,
+      });
+    }
+  } else if (dimension == 2) {
+    //按照物品名称A-Z排序
+    order = "ASC";
+    try {
+      let result = await ItemList.findAll({
+        where: {
+          userId: userId,
+          itemName: { [Op.like]: "%" + searchQuery + "%" },
+        },
+        attributes: ["value", "itemName", "itemImage", "createdAt", "itemId"],
+        limit: 5,
+        //按照A-Z排序
+        order: [["itemName", "ASC"]],
+        // dateRange: null,
+        // dateRange: dateRange,
+      });
+      res.send({
+        status: "success",
+        msg: "搜索物品成功",
+        data: result,
+        dateRange: null,
+      });
+      console.log(result);
+    } catch (error) {
+      console.log(error, order);
+      res.send({
+        status: "refuse",
+        msg: "搜索物品失败",
+        data: null,
+      });
+    }
+  }
 };

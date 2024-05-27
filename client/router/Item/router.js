@@ -12,4 +12,5 @@ router.get("/getSalesDetail",item.getSalesDetail)
 router.delete("/deleteItem",item.deleteItem)
 router.get("/getBanner",item.getBanner)
 router.get("/getItembanner",item.getItembanner)
+router.get("/searchItem",item.searchItem)
 module.exports = router;
