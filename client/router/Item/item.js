@@ -497,5 +497,33 @@ exports.searchItem = async (req, res) => {
         data: null,
       });
     }
+  } else {
+    try {
+      let result = await ItemList.findAll({
+        where: {
+          userId: userId,
+          itemName: { [Op.like]: "%" + searchQuery + "%" },
+        },
+        attributes: ["value", "itemName", "itemImage", "createdAt", "itemId"],
+        limit: 5,
+        //按照时间升序
+        order: [["createdAt", "DESC"]],
+        dateRange: null,
+      });
+      res.send({
+        status: "success",
+        msg: "搜索物品成功",
+        data: result,
+        dateRange: null,
+      });
+      console.log(result);
+    } catch (error) {
+      console.log(error, order);
+      res.send({
+        status: "refuse",
+        msg: "搜索物品失败",
+        data: null,
+      });
+    }
   }
 };
