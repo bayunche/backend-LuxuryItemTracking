@@ -402,7 +402,7 @@ exports.getConsumeById = async (req, res) => {
       where: {
         id,
         userId,
-        consumeId,
+        out_trade_no:consumeId,
       },
       attributes: {
         exclude: [
