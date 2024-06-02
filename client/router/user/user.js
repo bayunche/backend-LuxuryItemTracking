@@ -28,6 +28,7 @@ const {
 } = require("../../utils/aliSdk");
 const Pingpp = require("pingpp");
 const transactionLog = require("../../data/transactionLog");
+const tradeList = require("../../data/tradeList");
 
 exports.createUserPrivateKey = async (req, res) => {
   try {
@@ -351,4 +352,88 @@ exports.getCharge = async (req, res) => {
   //     data: null,
   //   });
   // }
+};
+
+exports.getConsumeList = async (req, res) => {
+  let { userId } = req;
+  let { page, limit } = req.query;
+  try {
+    let result = await tradeList.findAll({
+      where: { userId },
+
+      attributes: {
+        exclude: [
+          "userId",
+          " balance",
+          "beforeBalance",
+          "afterBalance",
+          "tradeTime",
+          "trueValue",
+        ],
+      },
+    });
+    if (result.length === 0) {
+      return res.send({
+        status: "success",
+        msg: "获取交易记录列表成功",
+        data: null,
+      });
+    }
+    res.send({
+      status: "success",
+      msg: "获取交易记录列表成功",
+      data: result,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.send({
+      status: "fail",
+      msg: "获取消费记录失败",
+      data: null,
+    });
+  }
+};
+
+exports.getConsumeById = async (req, res) => {
+  let { userId } = req;
+  let { consumeId } = req.query;
+  try {
+    let result = await tradeList.findOne({
+      where: {
+        id,
+        userId,
+        consumeId,
+      },
+      attributes: {
+        exclude: [
+          "userId",
+          "balance",
+          "beforeBalance",
+          "afterBalance",
+          "tradeTime",
+          "trueValue",
+        ],
+      },
+    });
+
+    if (result.length === 0) {
+      return res.send({
+        status: "success",
+        msg: "获取消费记录成功",
+        data: null,
+      });
+    }
+    res.send({
+      status: "success",
+      msg: "获取消费记录成功",
+      data: result,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.send({
+      status: "refuse",
+      msg: "获取消费记录失败",
+      data: null,
+    });
+  }
 };

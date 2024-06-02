@@ -5,11 +5,14 @@ const user = require("./user");
 router.post("/signupUser", user.createUserPrivateKey);
 router.get("/certifiedUser", user.certifiedUser);
 router.get("/getUserInfo", user.getUserInfo);
-router.post('/editPassword',user.editUserPassword)
-router.post('/editUserInfo',user.editUserInfo)
-router.post("/getAliOrderInfo",user.getAliOrderInfo)
-router.post("/getCharge",user.getCharge)
+router.post("/editPassword", user.editUserPassword);
+router.post("/editUserInfo", user.editUserInfo);
+router.post("/getAliOrderInfo", user.getAliOrderInfo);
+router.post("/getCharge", user.getCharge);
 router.get("/getTransactionLogList", user.getTransactionLogList);
 router.get("/getTransactionLog", user.getTransactionLog);
+
+router.get("/getConsumeList", user.getConsumeList);
+router.get("/getConsume", user.getConsumeById);
 
 module.exports = router;

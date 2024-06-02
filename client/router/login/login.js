@@ -6,6 +6,7 @@ const sequelize = require("../../data/database");
 const { generateToken } = require("../../utils/jwtCheck");
 const { argon, verifyArgon } = require("../../utils/argon");
 const configList = require("../../data/configList");
+const tradeList = require("../../data/tradeList");
 
 exports.login = async (req, res) => {
   try {
@@ -85,3 +86,4 @@ exports.getTopUp = async (req, res) => {
     });
   }
 };
+
