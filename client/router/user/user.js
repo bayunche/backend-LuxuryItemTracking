@@ -400,7 +400,7 @@ exports.getConsumeById = async (req, res) => {
   try {
     let result = await tradeList.findOne({
       where: {
-        id,
+        
         userId,
         out_trade_no:consumeId,
       },
