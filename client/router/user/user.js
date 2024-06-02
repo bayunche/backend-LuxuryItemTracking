@@ -364,7 +364,7 @@ exports.getConsumeList = async (req, res) => {
       attributes: {
         include: [
           "userId",
-          " balance",
+          "balance",
           "beforeBalance",
           "afterBalance",
           "tradeTime",
