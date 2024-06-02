@@ -362,13 +362,14 @@ exports.getConsumeList = async (req, res) => {
       where: { userId },
 
       attributes: {
-        exclude: [
+        include: [
           "userId",
           " balance",
           "beforeBalance",
           "afterBalance",
           "tradeTime",
           "trueValue",
+          "out_trade_no",
         ],
       },
     });
@@ -400,19 +401,11 @@ exports.getConsumeById = async (req, res) => {
   try {
     let result = await tradeList.findOne({
       where: {
-        
         userId,
-        out_trade_no:consumeId,
+        out_trade_no: consumeId,
       },
       attributes: {
-        exclude: [
-          "userId",
-          "balance",
-          "beforeBalance",
-          "afterBalance",
-          "tradeTime",
-          "trueValue",
-        ],
+        exclude: [" out_trade_no"],
       },
     });
 
