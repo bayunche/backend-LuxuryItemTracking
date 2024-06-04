@@ -1,3 +1,26 @@
+
+
+# 主要技术栈
+
+
+	node 
+	Express.js 
+	Sequelize
+	 truffle
+	 web3
+	 ethers
+
+
+
+# App端可查看以下仓库
+
+
+[bayunche/fontend-LuxuryItemTracking- (github.com)](https://github.com/bayunche/fontend-LuxuryItemTracking-)
+
+
+
+
+
 # 运行环境
 
 ```
@@ -11,6 +34,18 @@ mysql >= 8.0.0
 
 # 服务器端部署（以ubuntu22为例）
 
+
+首先进入项目目录运行：
+
+```bash
+yarn install
+```
+然后进入node服务运行
+
+```bash
+cd client
+yarn install 
+```
 
 node服务启动命令如下
 
