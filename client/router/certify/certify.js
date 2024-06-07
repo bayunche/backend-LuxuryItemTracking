@@ -108,7 +108,7 @@ exports.mintLuxuryItem = async (req, res) => {
         itemName,
         creater: userName,
         userId,
-        createTime: moment().unix(),
+        createTime: moment(),
         blockNumber,
         serialNumber,
         description: "注册奢侈品",
